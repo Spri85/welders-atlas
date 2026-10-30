@@ -15,6 +15,7 @@ import { sheetGridTool } from './calculators/sheet-grid.tool';
 import { circularKerfTool } from './calculators/circular-kerf.tool';
 import { stockMassTool } from './calculators/stock-mass.tool';
 import { positionerSpeedTool } from './calculators/positioner-speed.tool';
+import { intermittentWeldTool } from './calculators/intermittent-weld.tool';
 import type { CalculatorTool } from './calculator-tool';
 
-export const calculatorTools: readonly CalculatorTool[] = [miteredCornerTool, pipeOffsetTool, rectangularFrameTool, gateBarsTool, boltCircleTool, filletFillerTool, plateOpeningTool, bracketBlankTool, segmentedElbowTool, rolledSleeveTool, tubeBendTool, measuredRadiusTool, squareTransitionTool, sheetGridTool, circularKerfTool, stockMassTool, positionerSpeedTool];
+export const calculatorTools: readonly CalculatorTool[] = [miteredCornerTool, pipeOffsetTool, rectangularFrameTool, gateBarsTool, boltCircleTool, filletFillerTool, plateOpeningTool, bracketBlankTool, segmentedElbowTool, rolledSleeveTool, tubeBendTool, measuredRadiusTool, squareTransitionTool, sheetGridTool, circularKerfTool, stockMassTool, positionerSpeedTool, intermittentWeldTool];

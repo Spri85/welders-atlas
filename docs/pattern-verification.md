@@ -194,3 +194,9 @@ Physical panel assembly and print scale remain pending.
 - All 164 tests and the production build passed (including upcoming weld-mark/bevel calculation tests).
 - Tests cover RPM/time, diameter scaling, exact limits and inverted ranges.
 - Browser checks verified 0.955 rpm, the below-range flag, invalid clearing and phone layout after reloading the dev-server error overlay.
+
+## G21 intermittent weld marks
+
+- All 168 tests and the production build passed (including the remaining calculation specs).
+- Tests cover the worked marks, exact end boundary, zero fit, clearance mismatch and invalid pitch/start.
+- Browser checks verified full segments, preserving pitch on a mismatch, zero fit and phone layout.
