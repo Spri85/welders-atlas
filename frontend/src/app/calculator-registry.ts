@@ -17,6 +17,7 @@ import { stockMassTool } from './calculators/stock-mass.tool';
 import { positionerSpeedTool } from './calculators/positioner-speed.tool';
 import { intermittentWeldTool } from './calculators/intermittent-weld.tool';
 import { singleVTool } from './calculators/single-v.tool';
+import { gasBudgetTool } from './calculators/gas-budget.tool';
 import type { CalculatorTool } from './calculator-tool';
 
-export const calculatorTools: readonly CalculatorTool[] = [miteredCornerTool, pipeOffsetTool, rectangularFrameTool, gateBarsTool, boltCircleTool, filletFillerTool, plateOpeningTool, bracketBlankTool, segmentedElbowTool, rolledSleeveTool, tubeBendTool, measuredRadiusTool, squareTransitionTool, sheetGridTool, circularKerfTool, stockMassTool, positionerSpeedTool, intermittentWeldTool, singleVTool];
+export const calculatorTools: readonly CalculatorTool[] = [miteredCornerTool, pipeOffsetTool, rectangularFrameTool, gateBarsTool, boltCircleTool, filletFillerTool, plateOpeningTool, bracketBlankTool, segmentedElbowTool, rolledSleeveTool, tubeBendTool, measuredRadiusTool, squareTransitionTool, sheetGridTool, circularKerfTool, stockMassTool, positionerSpeedTool, intermittentWeldTool, singleVTool, gasBudgetTool];

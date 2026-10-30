@@ -206,3 +206,9 @@ Physical panel assembly and print scale remain pending.
 - All 169 tests and the production build passed.
 - Tests cover unrounded mouth width, zero face/opening and invalid root faces/angles.
 - Browser checks verified the 13.55 mm mouth, both half-angle references, zero face/opening and phone layout.
+
+## G23 shielding gas budget
+
+- All 170 tests and the production build passed.
+- Tests cover pre/postflow cycles, supply shortfall, zero extensions, empty jobs, omitted supply and inconsistent cycle counts.
+- Browser checks verified 22 minutes / 264 L, the 14 L shortfall, zero extensions, empty job and phone layout.
