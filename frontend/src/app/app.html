@@ -25,6 +25,7 @@
     @case ('round-reducer') { <app-reducer-calculator [language]="language()" /> }
     @case ('square-to-round') { <app-square-to-round-calculator [language]="language()" /> }
     @case ('branch-saddle') { <app-branch-saddle-calculator [language]="language()" /> }
+    @default { @if (selectedTool(); as tool) { <app-calculator-workbench [tool]="tool" [language]="language()" /> } }
   }
 </main>
 <footer>{{ text().title }} <span class="footer-divider">/</span> {{ text().footer }}</footer>

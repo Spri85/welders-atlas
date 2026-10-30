@@ -3,6 +3,8 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { ReducerCalculator } from './reducer-calculator';
 import { SquareToRoundCalculator } from './square-to-round-calculator';
 import { BranchSaddleCalculator } from './branch-saddle-calculator';
+import { CalculatorWorkbench } from './calculator-workbench';
+import { calculatorTools } from './calculator-registry';
 import { reducerCopy } from './reducer-copy';
 import { squareToRoundCopy } from './square-to-round-copy';
 import { branchSaddleCopy } from './branch-saddle-copy';
@@ -38,21 +40,24 @@ const copy = {
   },
 };
 
-@Component({ selector: 'app-root', imports: [ReducerCalculator, SquareToRoundCalculator, BranchSaddleCalculator], templateUrl: './app.html' })
+@Component({ selector: 'app-root', imports: [ReducerCalculator, SquareToRoundCalculator, BranchSaddleCalculator, CalculatorWorkbench], templateUrl: './app.html' })
 export class App {
   private readonly document = inject(DOCUMENT);
   readonly language = signal<Language>('ua');
   readonly text = computed(() => copy[this.language()]);
   readonly languages = ['ua', 'ru', 'en'] as const;
-  readonly selectedCalculator = signal<'round-reducer' | 'square-to-round' | 'branch-saddle'>('round-reducer');
+  readonly selectedCalculator = signal<string>('round-reducer');
   readonly calculators = computed(() => [
     { id: 'round-reducer', title: reducerCopy[this.language()].heading },
     { id: 'square-to-round', title: squareToRoundCopy[this.language()].heading },
     { id: 'branch-saddle', title: branchSaddleCopy[this.language()].heading },
+    ...calculatorTools.map((tool) => ({ id: tool.id, title: tool.title[this.language()] })),
   ]);
 
+  readonly selectedTool = computed(() => calculatorTools.find((tool) => tool.id === this.selectedCalculator()));
+
   selectCalculator(value: string): void {
-    if (value === 'round-reducer' || value === 'square-to-round' || value === 'branch-saddle') {
+    if (this.calculators().some((calculator) => calculator.id === value)) {
       this.selectedCalculator.set(value);
     }
   }

@@ -72,3 +72,12 @@ Physical metal marking and fitting remain pending.
 - All 77 tests and the production build passed on Node 24.22.1.
 - On-screen drawings display identifiers, with numeric values in the tables and hover/focus tooltips. This applies to reducers, square-to-round panels and saddles.
 - Browser checks verified hover, keyboard focus and Escape dismissal for all three calculator types. The directive also removes active tooltips when their calculator is destroyed.
+
+## G4 two-piece mitered corner
+
+- All 85 tests and the production build passed on Node 24.22.1.
+- The 60 mm / 60° worked example returns 30° off square, 34.64 mm rise and 188.50 mm wrap. Tests cover quarter rises, wrap closure, a 90° corner and invalid angle endpoints.
+- Browser checks covered reference values, identifier tooltips, the phone layout, successful PDF download and disabled export after invalid input.
+- The three-page A4 PDF was reopened and rendered. It includes the reference sheet, cut profile, square datum and instruction to mark two pieces.
+
+Physical print and assembly checks remain pending.

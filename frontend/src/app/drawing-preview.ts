@@ -13,14 +13,14 @@ export interface ModelLine { points: readonly Point3[]; seam?: boolean; label?: 
   selector: 'app-drawing-preview',
   imports: [PatternDimensions, MeasurementTooltip],
   template: `
-    <div class="view-buttons" role="group" [attr.aria-label]="text().view">
-      <button type="button" [attr.aria-pressed]="view() === 'formed'" (click)="view.set('formed')">{{ text().formed }}</button>
-      <button type="button" [attr.aria-pressed]="view() === 'flat'" (click)="view.set('flat')">{{ text().flat }}</button>
-    </div>
-    @if (view() === 'flat' && instructions()) { <p class="instructions">{{ instructions() }}</p> }
+    @if (model().length) { <div class="view-buttons" role="group" [attr.aria-label]="text().view">
+      <button type="button" [attr.aria-pressed]="activeView() === 'formed'" (click)="view.set('formed')">{{ text().formed }}</button>
+      <button type="button" [attr.aria-pressed]="activeView() === 'flat'" (click)="view.set('flat')">{{ text().flat }}</button>
+    </div> }
+    @if (activeView() === 'flat' && instructions()) { <p class="instructions">{{ instructions() }}</p> }
     <svg viewBox="0 0 560 360" role="img" [attr.aria-label]="title()">
-      <title>{{ title() }} — {{ view() === 'formed' ? text().formed : text().flat }}</title>
-      @if (view() === 'flat') {
+      <title>{{ title() }} — {{ activeView() === 'formed' ? text().formed : text().flat }}</title>
+      @if (activeView() === 'flat') {
         @if (flat(); as drawing) {
           <path class="blank" [attr.d]="drawing.path" />
           @for (line of drawing.folds; track $index) {
@@ -39,10 +39,10 @@ export interface ModelLine { points: readonly Point3[]; seam?: boolean; label?: 
               <text class="vertex-label" [measurementTooltip]="vertex.tooltip" [attr.x]="vertex.point.x + 5" [attr.y]="vertex.point.y - 7">{{ vertex.id }}</text>
             }
           }
-          <line class="dimension-line" [attr.x1]="drawing.left" [attr.x2]="drawing.right" y1="329" y2="329" />
+          @if (showDimensions()) { <line class="dimension-line" [attr.x1]="drawing.left" [attr.x2]="drawing.right" y1="329" y2="329" />
           <text class="dimension-label" x="280" y="350" text-anchor="middle" [measurementTooltip]="'W = ' + measurement(drawing.width)">W</text>
           <line class="dimension-line" x1="24" x2="24" [attr.y1]="drawing.top" [attr.y2]="drawing.bottom" />
-          <text class="dimension-label" x="-180" y="15" transform="rotate(-90)" text-anchor="middle" [measurementTooltip]="'H = ' + measurement(drawing.height)">H</text>
+          <text class="dimension-label" x="-180" y="15" transform="rotate(-90)" text-anchor="middle" [measurementTooltip]="'H = ' + measurement(drawing.height)">H</text> }
         }
       } @else {
         @for (line of formed(); track $index) {
@@ -51,7 +51,7 @@ export interface ModelLine { points: readonly Point3[]; seam?: boolean; label?: 
         }
       }
     </svg>
-    @if (view() === 'formed') {
+    @if (activeView() === 'formed') {
       <label>{{ text().rotation }} <output>{{ rotation() }}°</output>
         <input #rotate type="range" min="0" max="360" [attr.aria-label]="text().rotation" [value]="rotation()" (input)="rotation.set(rotate.valueAsNumber)">
       </label>
@@ -59,7 +59,7 @@ export interface ModelLine { points: readonly Point3[]; seam?: boolean; label?: 
         <input #incline type="range" min="15" max="165" [attr.aria-label]="text().tilt" [value]="tilt()" (input)="tilt.set(incline.valueAsNumber)">
       </label>
     }
-    @if (view() === 'flat') {
+    @if (activeView() === 'flat' && showDimensions()) {
       <app-pattern-dimensions [drawing]="drawing()" [language]="language()" [unit]="unit()" />
     }
   `,
@@ -88,13 +88,16 @@ export interface ModelLine { points: readonly Point3[]; seam?: boolean; label?: 
 })
 export class DrawingPreview {
   readonly drawing = input.required<PatternDrawing>();
-  readonly model = input.required<readonly ModelLine[]>();
+  readonly model = input<readonly ModelLine[]>([]);
   readonly language = input<Language>('ua');
   readonly unit = input<'mm' | 'in'>('mm');
   readonly title = input.required<string>();
   readonly instructions = input('');
+  readonly showDimensions = input(true);
+  readonly hints = input<Readonly<Record<string, string>>>({});
   readonly text = computed(() => reducerCopy[this.language()]);
   readonly view = signal<'formed' | 'flat'>('formed');
+  readonly activeView = computed(() => this.model().length ? this.view() : 'flat');
   readonly rotation = signal(30);
   readonly tilt = signal(65);
   readonly flat = computed(() => {
@@ -103,7 +106,7 @@ export class DrawingPreview {
     const coordinateHints = new Map(drawingCoordinates(drawing).map((point) => [point.id,
       `${point.id} · X = ${this.measurement(point.x)} · Y = ${this.measurement(point.y)}`,
     ]));
-    const scale = Math.min(460 / bounds.width, 270 / bounds.height);
+    const scale = Math.min(460 / Math.max(bounds.width, 1e-9), 270 / Math.max(bounds.height, 1e-9));
     const project = (point: { x: number; y: number }) => ({
       x: 280 + (point.x - bounds.minX - bounds.width / 2) * scale,
       y: 180 - (point.y - bounds.minY - bounds.height / 2) * scale,
@@ -114,7 +117,7 @@ export class DrawingPreview {
       construction: (drawing.construction ?? []).map((line) => ({ start: project(line.start), end: project(line.end) })),
       labels: (drawing.labels ?? []).map((label) => ({
         ...label, point: project(label.point),
-        tooltip: label.measurementId ? drawingLabelText(drawing, label, this.unit(), this.language()) : coordinateHints.get(label.text) ?? label.text,
+        tooltip: this.hints()[label.text] ?? (label.measurementId ? drawingLabelText(drawing, label, this.unit(), this.language()) : coordinateHints.get(label.text) ?? label.text),
         anchor: ({ left: 'start', center: 'middle', right: 'end' } as const)[label.align ?? 'left'],
         construction: drawing.measurements?.some((item) => item.id === label.measurementId && item.kind === 'construction'),
       })),
