@@ -1,31 +1,24 @@
-import { Component, computed, input, signal } from '@angular/core';
+import { Component, computed, input, signal, viewChild } from '@angular/core';
 import { exportCopy, type Language } from './export-copy';
 import type { PatternDrawing } from './pattern-drawing';
 import type { PaperSize } from './pattern-tiles';
+import { PdfExportOptions } from './pdf-export-options';
 
 @Component({
   selector: 'app-pattern-export',
+  imports: [PdfExportOptions],
   template: `
-    <label>{{ text().paper }}
-      <select #size [value]="paper()" (change)="selectPaper(size.value)">
-        <option value="a4">A4</option><option value="letter">US Letter</option>
-      </select>
-    </label>
-    <button class="export" type="button" [disabled]="!drawing() || busy()" (click)="download()">
-      {{ busy() ? text().busy : text().download }}
+    <button class="export" type="button" [disabled]="!drawing() || busy()" (click)="options.open()">
+      {{ text().download }}
     </button>
-    <p>{{ text().actualSize }}</p>
-    <p role="status">{{ failed() ? text().error : text().unverified }}</p>
+    <app-pdf-export-options #options [language]="language()" [title]="title()" [summary]="summary()"
+      [busy]="busy()" [failed]="failed()" [valid]="!!drawing()" (download)="download($event)" />
   `,
   styles: `
     :host { display: block; margin-top: 24px; }
-    label { display: block; font-size: 14px; }
-    select, button { font: inherit; min-height: 44px; border: 1px solid #a6b0ab; border-radius: 3px; padding: 8px; }
-    select { margin: 0 0 12px 10px; background: #fff; }
-    button { color: #fff; background: #172a30; cursor: pointer; }
+    button { font: inherit; min-height: 44px; border: 1px solid #a6b0ab; border-radius: 3px; padding: 10px 16px; color: #fff; background: #172a30; cursor: pointer; }
     button:disabled { color: #526267; background: #ecefe8; cursor: default; }
-    :is(select, button):focus-visible { outline: 3px solid #bd5c2b; outline-offset: 3px; }
-    p { font-size: 13px; line-height: 1.6; color: #526267; }
+    button:focus-visible { outline: 3px solid #bd5c2b; outline-offset: 3px; }
   `,
 })
 export class PatternExport {
@@ -35,18 +28,15 @@ export class PatternExport {
   readonly summary = input('');
   readonly unit = input<'mm' | 'in'>('mm');
   readonly text = computed(() => exportCopy[this.language()]);
-  readonly paper = signal<PaperSize>('a4');
   readonly busy = signal(false);
   readonly failed = signal(false);
 
-  selectPaper(value: string): void {
-    if (value === 'a4' || value === 'letter') this.paper.set(value);
-  }
+  private readonly options = viewChild.required(PdfExportOptions);
 
-  async download(): Promise<void> {
+  async download(paper: PaperSize): Promise<void> {
     const drawing = this.drawing();
     if (!drawing || this.busy()) return;
-    const options = { paper: this.paper(), language: this.language(), title: this.title(), summary: this.summary(), unit: this.unit() };
+    const options = { paper, language: this.language(), title: this.title(), summary: this.summary(), unit: this.unit() };
     this.busy.set(true);
     this.failed.set(false);
     try {
@@ -56,6 +46,7 @@ export class PatternExport {
       const bytes = new Uint8Array(await response.arrayBuffer());
       const font = Array.from(bytes, (byte) => String.fromCharCode(byte)).join('');
       createPatternPdf(drawing, options, font).save(`welders-atlas-${options.paper}.pdf`);
+      this.options().close();
     } catch {
       this.failed.set(true);
     } finally {
