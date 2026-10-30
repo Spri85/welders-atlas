@@ -212,3 +212,9 @@ Physical panel assembly and print scale remain pending.
 - All 170 tests and the production build passed.
 - Tests cover pre/postflow cycles, supply shortfall, zero extensions, empty jobs, omitted supply and inconsistent cycle counts.
 - Browser checks verified 22 minutes / 264 L, the 14 L shortfall, zero extensions, empty job and phone layout.
+
+## G24 steady-arc energy
+
+- All 171 tests and the production build passed.
+- Tests cover arc/effective energy, speed scaling, omitted/full efficiency and invalid inputs.
+- Browser checks verified 0.96/0.768 kJ/mm, omitted efficiency, 24.384 kJ/in and phone layout.
