@@ -11,7 +11,7 @@ type Dimension = keyof ReducerDimensions;
   selector: 'app-reducer-calculator',
   imports: [PatternExport],
   templateUrl: './reducer-calculator.html',
-  styleUrl: './reducer-calculator.css',
+  styleUrls: ['./calculator.css', './reducer-calculator.css'],
 })
 export class ReducerCalculator {
   readonly language = input<'ua' | 'ru' | 'en'>('ua');

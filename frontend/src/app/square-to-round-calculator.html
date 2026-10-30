@@ -1,0 +1,34 @@
+<section class="calculator" aria-labelledby="square-heading">
+  <div class="calculator-heading"><h2 id="square-heading">{{ text().heading }}</h2><p>{{ text().intro }}</p></div>
+  <div class="workbench">
+    <div class="controls">
+      <fieldset class="units">
+        <legend>{{ common().units }}</legend>
+        <label><input type="radio" name="square-units" [checked]="unit() === 'mm'" (change)="unit.set('mm')"> {{ common().mm }}</label>
+        <label><input type="radio" name="square-units" [checked]="unit() === 'in'" (change)="unit.set('in')"> {{ common().inches }}</label>
+      </fieldset>
+      @for (field of fields; track field.key) {
+        <label class="dimension" [for]="field.key">{{ text()[field.label] }} ({{ unitLabel() }})</label>
+        <input #dimension [id]="field.key" type="number" step="any" required inputmode="decimal"
+          [value]="inputValue(field.key)" [attr.aria-invalid]="!!calculation().error"
+          [attr.aria-describedby]="calculation().error ? 'square-error' : null"
+          (input)="update(field.key, dimension.valueAsNumber)">
+      }
+      <div class="validation" aria-live="polite">@if (calculation().error; as error) { <p id="square-error">{{ error }}</p> }</div>
+      <app-pattern-export [drawing]="calculation().result?.drawing ?? null" [language]="language()" [title]="text().heading" [summary]="summary()" [unit]="unit()" />
+    </div>
+    <div class="output">
+      @if (calculation().result; as result) {
+        <app-drawing-preview [drawing]="result.drawing" [model]="model()" [language]="language()" [title]="text().heading" />
+        <p>{{ text().folds }}</p>
+        <dl class="measurements">
+          <div><dt>{{ text().width }}</dt><dd>{{ measurement(dimensions().squareWidthMm) }}</dd></div>
+          <div><dt>{{ text().outlet }}</dt><dd>{{ measurement(dimensions().roundDiameterMm) }}</dd></div>
+          <div><dt>{{ text().copies }}</dt><dd>4</dd></div>
+          <div><dt>{{ text().facets }}</dt><dd>16</dd></div>
+        </dl>
+        <p class="allowance"><strong>{{ common().allowance }}</strong>{{ text().approximation }}</p>
+      }
+    </div>
+  </div>
+</section>

@@ -1,23 +1,10 @@
+import type { PatternArc, PatternPoint } from './pattern-geometry';
+export type { PatternArc, PatternPoint } from './pattern-geometry';
+
 export interface ReducerDimensions {
   inletDiameterMm: number;
   outletDiameterMm: number;
   axialLengthMm: number;
-}
-
-export interface PatternPoint {
-  x: number;
-  y: number;
-}
-
-export interface PatternArc {
-  kind: 'arc';
-  center: PatternPoint;
-  radiusMm: number;
-  start: PatternPoint;
-  end: PatternPoint;
-  startAngleRadians: number;
-  sweepAngleRadians: number;
-  lengthMm: number;
 }
 
 export interface PatternSeam {

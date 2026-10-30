@@ -14,11 +14,12 @@
     <div class="weld-lines" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
   </section>
   <app-reducer-calculator [language]="language()" />
+  <app-square-to-round-calculator [language]="language()" />
   <section class="essentials" aria-labelledby="essentials">
     <div class="section-heading"><h2 id="essentials">{{ text().section }}</h2><p>{{ text().note }}</p></div>
     <div class="topics">
       @for (topic of text().topics; track $index) {
-        <article><span class="topic-number">0{{ $index + 2 }}</span><span class="planned">{{ text().planned }}</span><h3>{{ topic }}</h3><p>{{ text().descriptions[$index] }}</p></article>
+        <article><span class="topic-number">0{{ $index + 3 }}</span><span class="planned">{{ text().planned }}</span><h3>{{ topic }}</h3><p>{{ text().descriptions[$index] }}</p></article>
       }
     </div>
   </section>

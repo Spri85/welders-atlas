@@ -1,10 +1,5 @@
-import type { PatternArc, PatternPoint } from './centered-round-reducer';
-
-export interface DrawingLine {
-  kind: 'line';
-  start: PatternPoint;
-  end: PatternPoint;
-}
+import type { DrawingLine, PatternArc, PatternPoint } from './pattern-geometry';
+export type { DrawingLine } from './pattern-geometry';
 
 export interface PatternDrawing {
   outline: readonly (PatternArc | DrawingLine)[];
