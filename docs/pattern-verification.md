@@ -200,3 +200,9 @@ Physical panel assembly and print scale remain pending.
 - All 168 tests and the production build passed (including the remaining calculation specs).
 - Tests cover the worked marks, exact end boundary, zero fit, clearance mismatch and invalid pitch/start.
 - Browser checks verified full segments, preserving pitch on a mismatch, zero fit and phone layout.
+
+## G22 single-V bevel preparation
+
+- All 169 tests and the production build passed.
+- Tests cover unrounded mouth width, zero face/opening and invalid root faces/angles.
+- Browser checks verified the 13.55 mm mouth, both half-angle references, zero face/opening and phone layout.
