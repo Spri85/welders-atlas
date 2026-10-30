@@ -10,6 +10,7 @@ import { segmentedElbowTool } from './calculators/segmented-elbow.tool';
 import { rolledSleeveTool } from './calculators/rolled-sleeve.tool';
 import { tubeBendTool } from './calculators/tube-bend.tool';
 import { measuredRadiusTool } from './calculators/measured-radius.tool';
+import { squareTransitionTool } from './calculators/square-transition.tool';
 import type { CalculatorTool } from './calculator-tool';
 
-export const calculatorTools: readonly CalculatorTool[] = [miteredCornerTool, pipeOffsetTool, rectangularFrameTool, gateBarsTool, boltCircleTool, filletFillerTool, plateOpeningTool, bracketBlankTool, segmentedElbowTool, rolledSleeveTool, tubeBendTool, measuredRadiusTool];
+export const calculatorTools: readonly CalculatorTool[] = [miteredCornerTool, pipeOffsetTool, rectangularFrameTool, gateBarsTool, boltCircleTool, filletFillerTool, plateOpeningTool, bracketBlankTool, segmentedElbowTool, rolledSleeveTool, tubeBendTool, measuredRadiusTool, squareTransitionTool];

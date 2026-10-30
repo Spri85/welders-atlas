@@ -162,3 +162,11 @@ Physical assembly, fit and print-scale checks remain pending.
 - All 135 tests and the production build passed.
 - Tests cover the 925 mm example, semicircle, shallow arcs and unsupported rises.
 - Browser checks verified the semicircle arc, radius tooltip and phone layout.
+
+## G25 centered square-to-square transition
+
+- All 142 tests and the production build passed (including the upcoming sheet-grid calculation tests).
+- Tests compare flat and 3D seams, opening perimeters, reversed transitions, equal sides, zero allowance and invalid dimensions.
+- Browser checks verified the worked values, seam tooltip, expander, phone layout and invalid export disabling. The three-page A4 panel PDF was reopened and rendered, with the instruction to cut four identical panels.
+
+Physical panel assembly and print scale remain pending.
