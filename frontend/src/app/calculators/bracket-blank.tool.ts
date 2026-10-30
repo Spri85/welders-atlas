@@ -1,2 +1,158 @@
-import{field,text,type CalculatorTool}from'../calculator-tool';import{calculateBracketBlank}from'./bracket-blank';
-export const bracketBlankTool:CalculatorTool={id:'bracket-blank',ticket:'G12',title:text('Press-brake bracket blank','Заготовка гнутого кронштейна','Заготовка гнутого кронштейна'),description:text('Outside legs to the theoretical sharp corner. Bend angle is measured from flat. K must be 0–1; measured allowance must lie between the inside- and outside-surface arc lengths. Blank width is schematic. Verify the allowance with a shop coupon for the actual material and tooling.','Зовнішні полиці до теоретичного гострого кута. Кут гнуття від плоского стану. K у межах 0–1; виміряний припуск між довжинами внутрішньої та зовнішньої дуг. Ширина заготовки умовна. Перевірте припуск пробним гнуттям для матеріалу й оснащення.','Наружные полки до теоретического острого угла. Угол гибки от плоского состояния. K в пределах 0–1; измеренный припуск между длинами внутренней и наружной дуг. Ширина заготовки условная. Проверьте припуск пробной гибкой для материала и оснастки.'),fields:[field('leg1',text('Outside leg 1','Зовнішня полиця 1','Наружная полка 1'),50),field('leg2',text('Outside leg 2','Зовнішня полиця 2','Наружная полка 2'),30),field('thickness',text('Thickness','Товщина','Толщина'),2),field('radius',text('Inside radius','Внутрішній радіус','Внутренний радиус'),3),field('angle',text('Bend from flat','Кут від плоского стану','Угол от плоского состояния'),90,'degree'),field('method',text('Allowance method','Метод припуску','Метод припуска'),0,'ratio',{choices:[{value:0,label:text('K-factor','K-фактор','K-фактор')},{value:1,label:text('Measured allowance','Виміряний припуск','Измеренный припуск')}]}),field('k',text('K-factor','K-фактор','K-фактор'),.4,'ratio',{when:v=>v['method']===0}),field('measured',text('Measured bend allowance','Виміряний припуск на згин','Измеренный припуск на гиб'),5.969026041820607,'mm',{when:v=>v['method']===1})],calculate({leg1,leg2,thickness,radius,angle,method,k,measured}){const r=calculateBracketBlank({leg1Mm:leg1,leg2Mm:leg2,thicknessMm:thickness,insideRadiusMm:radius,bendDegrees:angle,allowance:method===0?{kFactor:k}:{measuredMm:measured}});return{drawing:r.drawing,diagrams:[{title:text('Folded section','Гнутий переріз','Гнутое сечение'),drawing:r.sectionDrawing}],metrics:[{id:'1',label:text('Outside leg 1','Зовнішня полиця 1','Наружная полка 1'),value:leg1,unit:'mm'},{id:'2',label:text('Outside leg 2','Зовнішня полиця 2','Наружная полка 2'),value:leg2,unit:'mm'},{id:'r',label:text('Inside radius','Внутрішній радіус','Внутренний радиус'),value:radius,unit:'mm'},{id:'S',label:text('Outside setback','Зовнішній відступ','Наружный отступ'),value:r.setbackMm,unit:'mm'},{id:'BA',label:text('Bend allowance','Припуск на згин','Припуск на гиб'),value:r.allowanceMm,unit:'mm'},{id:'BD',label:text('Bend deduction','Вирахування згину','Вычет гиба'),value:r.deductionMm,unit:'mm'},{id:'L',label:text('Blank length','Довжина заготовки','Длина заготовки'),value:r.blankMm,unit:'mm'},{id:'B',label:text('Bend center from first edge','Центр згину від першого краю','Центр гиба от первого края'),value:r.centerMm,unit:'mm'}]};}};
+import { field, text, type CalculatorTool } from '../calculator-tool';
+import { calculateBracketBlank } from './bracket-blank';
+export const bracketBlankTool: CalculatorTool = {
+  id: 'bracket-blank',
+  ticket: 'G12',
+  title: text(
+    'Press-brake bracket blank',
+    'Заготовка гнутого кронштейна',
+    'Заготовка гнутого кронштейна',
+  ),
+  description: text(
+    'Outside legs to the theoretical sharp corner. Bend angle is measured from flat. K must be 0–1; measured allowance must lie between the inside- and outside-surface arc lengths. Blank width is schematic. Verify the allowance with a shop coupon for the actual material and tooling.',
+    'Зовнішні полиці до теоретичного гострого кута. Кут гнуття від плоского стану. K у межах 0–1; виміряний припуск між довжинами внутрішньої та зовнішньої дуг. Ширина заготовки умовна. Перевірте припуск пробним гнуттям для матеріалу й оснащення.',
+    'Наружные полки до теоретического острого угла. Угол гибки от плоского состояния. K в пределах 0–1; измеренный припуск между длинами внутренней и наружной дуг. Ширина заготовки условная. Проверьте припуск пробной гибкой для материала и оснастки.',
+  ),
+  fields: [
+    field(
+      'leg1',
+      text('Outside leg 1', 'Зовнішня полиця 1', 'Наружная полка 1'),
+      50,
+    ),
+    field(
+      'leg2',
+      text('Outside leg 2', 'Зовнішня полиця 2', 'Наружная полка 2'),
+      30,
+    ),
+    field('thickness', text('Thickness', 'Товщина', 'Толщина'), 2),
+    field(
+      'radius',
+      text('Inside radius', 'Внутрішній радіус', 'Внутренний радиус'),
+      3,
+    ),
+    field(
+      'angle',
+      text(
+        'Bend from flat',
+        'Кут від плоского стану',
+        'Угол от плоского состояния',
+      ),
+      90,
+      'degree',
+    ),
+    field(
+      'method',
+      text('Allowance method', 'Метод припуску', 'Метод припуска'),
+      0,
+      'ratio',
+      {
+        choices: [
+          { value: 0, label: text('K-factor', 'K-фактор', 'K-фактор') },
+          {
+            value: 1,
+            label: text(
+              'Measured allowance',
+              'Виміряний припуск',
+              'Измеренный припуск',
+            ),
+          },
+        ],
+      },
+    ),
+    field('k', text('K-factor', 'K-фактор', 'K-фактор'), 0.4, 'ratio', {
+      when: (v) => v['method'] === 0,
+    }),
+    field(
+      'measured',
+      text(
+        'Measured bend allowance',
+        'Виміряний припуск на згин',
+        'Измеренный припуск на гиб',
+      ),
+      5.969026041820607,
+      'mm',
+      { when: (v) => v['method'] === 1 },
+    ),
+  ],
+  calculate({ leg1, leg2, thickness, radius, angle, method, k, measured }) {
+    const r = calculateBracketBlank({
+      leg1Mm: leg1,
+      leg2Mm: leg2,
+      thicknessMm: thickness,
+      insideRadiusMm: radius,
+      bendDegrees: angle,
+      allowance: method === 0 ? { kFactor: k } : { measuredMm: measured },
+    });
+    return {
+      drawing: r.drawing,
+      diagrams: [
+        {
+          title: text('Folded section', 'Гнутий переріз', 'Гнутое сечение'),
+          drawing: r.sectionDrawing,
+        },
+      ],
+      metrics: [
+        {
+          id: '1',
+          label: text('Outside leg 1', 'Зовнішня полиця 1', 'Наружная полка 1'),
+          value: leg1,
+          unit: 'mm',
+        },
+        {
+          id: '2',
+          label: text('Outside leg 2', 'Зовнішня полиця 2', 'Наружная полка 2'),
+          value: leg2,
+          unit: 'mm',
+        },
+        {
+          id: 'r',
+          label: text(
+            'Inside radius',
+            'Внутрішній радіус',
+            'Внутренний радиус',
+          ),
+          value: radius,
+          unit: 'mm',
+        },
+        {
+          id: 'S',
+          label: text(
+            'Outside setback',
+            'Зовнішній відступ',
+            'Наружный отступ',
+          ),
+          value: r.setbackMm,
+          unit: 'mm',
+        },
+        {
+          id: 'BA',
+          label: text('Bend allowance', 'Припуск на згин', 'Припуск на гиб'),
+          value: r.allowanceMm,
+          unit: 'mm',
+        },
+        {
+          id: 'BD',
+          label: text('Bend deduction', 'Вирахування згину', 'Вычет гиба'),
+          value: r.deductionMm,
+          unit: 'mm',
+        },
+        {
+          id: 'L',
+          label: text('Blank length', 'Довжина заготовки', 'Длина заготовки'),
+          value: r.blankMm,
+          unit: 'mm',
+        },
+        {
+          id: 'B',
+          label: text(
+            'Bend center from first edge',
+            'Центр згину від першого краю',
+            'Центр гиба от первого края',
+          ),
+          value: r.centerMm,
+          unit: 'mm',
+        },
+      ],
+    };
+  },
+};

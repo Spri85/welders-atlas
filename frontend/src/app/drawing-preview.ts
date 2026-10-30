@@ -47,7 +47,7 @@ export interface ModelLine { points: readonly Point3[]; seam?: boolean; label?: 
       } @else {
         @for (line of formed(); track $index) {
           <polyline [class.seam]="line.seam" [attr.points]="line.points" />
-          @if (line.label) { <text [measurementTooltip]="hints()[line.label] ?? line.label" [attr.x]="line.labelPoint.x + 5" [attr.y]="line.labelPoint.y - 5">{{ line.label }}</text> }
+          @if (line.label) { <text [measurementTooltip]="labelHint(line.label)" [attr.x]="line.labelPoint.x + 5" [attr.y]="line.labelPoint.y - 5">{{ line.label }}</text> }
         }
       }
     </svg>
@@ -150,6 +150,12 @@ export class DrawingPreview {
       labelPoint: project(line.points[Math.floor(line.points.length / 2)]),
     }));
   });
+
+  labelHint(id: string): string {
+    const label = this.drawing().labels?.find((label) => label.text === id)
+      ?? { point: { x: 0, y: 0 }, text: id, measurementId: id };
+    return this.hints()[id] ?? drawingLabelText(this.drawing(), label, this.unit(), this.language());
+  }
 
   measurement(mm: number): string {
     return formatPatternMeasurement(mm, 'mm', this.unit(), this.language());

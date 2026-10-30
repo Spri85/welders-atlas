@@ -2,7 +2,11 @@
 
 A multilingual workbench for metal fabrication calculations and cutting templates. The application runs entirely in the browser.
 
-Select round reducer, square-to-round transition or branch saddle from the action selector. Each calculator provides formed and flat views, millimetres or decimal inches, and a PDF download. The download button opens paper and printing options in a separate dialog.
+Choose one of 25 calculators from the action selector. Tools cover fitting layouts, pipe offsets and bends, frames and bar spacing, stock and sheet cutting, material estimates, weld preparation and measured process values. Inputs and results support Ukrainian, Russian and English. Lengths support millimetres or decimal inches, preserving the physical job when switching units.
+
+Drawings show reference identifiers; hover or focus them for numeric measurements. Matching results and marking tables stay below the drawing. Tools use formed views, sections, flat outlines or timelines as appropriate.
+
+Full-scale PDF templates are available for the round reducer, square-to-round and square-to-square transitions, branch saddle, mitered corner, bolt circle, angled plate opening and segmented elbow. The download button opens paper and printing options in a separate dialog.
 
 Flat outlines include measurement tables. Square-to-round panels have numbered vertices with every cut-edge and fold-line length, overall dimensions and vertex coordinates. PDF downloads begin with the matching dimension reference sheet, followed by full-scale tiles.
 
@@ -61,4 +65,4 @@ The production build writes static files to `dist/welders-atlas/browser`.
 
 ## Code structure
 
-Each fitting has a pure TypeScript calculation and colocated geometry tests. Angular calculator components own their input state and translations. Shared drawing types, previews and calculator styles support the fitting UIs. PDF options live in their own dialog component, and the PDF renderer is loaded when a download is requested. Both preview and export consume the calculated drawing geometry.
+Each fitting has a pure TypeScript calculation and colocated geometry tests. The shared calculator workbench uses small tool adapters for input definitions, translations, results and tables. The stock planner adds editable part and stock rows. The original fitting components retain their shared preview/export contracts. Shared drawing types, previews and calculator styles support the tools. PDF options live in their own dialog component, and the PDF renderer is loaded when a download is requested. Both preview and export consume the calculated drawing geometry.

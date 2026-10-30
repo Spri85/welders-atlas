@@ -218,3 +218,13 @@ Physical panel assembly and print scale remain pending.
 - All 171 tests and the production build passed.
 - Tests cover arc/effective energy, speed scaling, omitted/full efficiency and invalid inputs.
 - Browser checks verified 0.96/0.768 kJ/mm, omitted efficiency, 24.384 kJ/in and phone layout.
+
+## Complete calculator library verification
+
+- All 25 planned calculators are present, including G25. The application test selects every entry and verifies that exactly one calculator and its drawing are mounted.
+- Final verification on Node 24.22.1: `npm test` passed 194 tests in 36 files; `npm run build` passed without warnings. `git diff --check` passed.
+- Shared workbench tests preserve full-precision canonical values across millimetre/inch switching and all three languages. Formed-view reference labels reuse the corresponding flat measurements.
+- Browser checks covered all 25 calculators in Ukrainian, Russian and English at a 375 px phone width (75 combinations), with valid SVG geometry and no page overflow. Each type also passed numeric keyboard-focus tooltip and Escape-dismissal checks.
+- The new calculation modules and tool adapters were formatted for readability; shared input, result, drawing and PDF contracts remain reusable. README coverage now reflects the complete library.
+
+Automated verification does not complete physical print-scale, assembly, coupon, cutting or drilling-registration checks. Those remain pending as recorded above.

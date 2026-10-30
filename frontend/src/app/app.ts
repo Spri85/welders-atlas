@@ -13,35 +13,48 @@ import { branchSaddleCopy } from './branch-saddle-copy';
 type Language = 'ua' | 'ru' | 'en';
 const copy = {
   ua: {
-    title: "Атлас зварника",
-    eyebrow: "Інструменти для майстерні",
-    heading: "Розрахунки та шаблони для різання металу",
-    intro: "Атлас допоможе перенести розміри деталі на метал перед різанням і зварюванням.",
-    action: "Дія",
-    footer: "Шаблони для майстерні",
-    language: "Мова",
+    title: 'Атлас зварника',
+    eyebrow: 'Інструменти для майстерні',
+    heading: 'Розрахунки та шаблони для різання металу',
+    intro:
+      'Атлас допоможе перенести розміри деталі на метал перед різанням і зварюванням.',
+    action: 'Дія',
+    footer: 'Шаблони для майстерні',
+    language: 'Мова',
   },
   ru: {
-    title: "Атлас сварщика",
-    eyebrow: "Инструменты для мастерской",
-    heading: "Расчёты и шаблоны для резки металла",
-    intro: "Атлас поможет перенести размеры детали на металл перед резкой и сваркой.",
-    action: "Действие",
-    footer: "Шаблоны для мастерской",
-    language: "Язык",
+    title: 'Атлас сварщика',
+    eyebrow: 'Инструменты для мастерской',
+    heading: 'Расчёты и шаблоны для резки металла',
+    intro:
+      'Атлас поможет перенести размеры детали на металл перед резкой и сваркой.',
+    action: 'Действие',
+    footer: 'Шаблоны для мастерской',
+    language: 'Язык',
   },
   en: {
-    title: "Welder’s Atlas",
-    eyebrow: "Workshop tools",
-    heading: "Calculations and cutting templates",
-    intro: "Use the atlas to transfer fitting dimensions onto metal before cutting and welding.",
-    action: "Action",
-    footer: "Fabrication templates",
-    language: "Language",
+    title: 'Welder’s Atlas',
+    eyebrow: 'Workshop tools',
+    heading: 'Calculations and cutting templates',
+    intro:
+      'Use the atlas to transfer fitting dimensions onto metal before cutting and welding.',
+    action: 'Action',
+    footer: 'Fabrication templates',
+    language: 'Language',
   },
 };
 
-@Component({ selector: 'app-root', imports: [ReducerCalculator, SquareToRoundCalculator, BranchSaddleCalculator, CalculatorWorkbench, StockPlanner], templateUrl: './app.html' })
+@Component({
+  selector: 'app-root',
+  imports: [
+    ReducerCalculator,
+    SquareToRoundCalculator,
+    BranchSaddleCalculator,
+    CalculatorWorkbench,
+    StockPlanner,
+  ],
+  templateUrl: './app.html',
+})
 export class App {
   private readonly document = inject(DOCUMENT);
   readonly language = signal<Language>('ua');
@@ -50,13 +63,30 @@ export class App {
   readonly selectedCalculator = signal<string>('round-reducer');
   readonly calculators = computed(() => [
     { id: 'round-reducer', title: reducerCopy[this.language()].heading },
-    { id: 'square-to-round', title: squareToRoundCopy[this.language()].heading },
+    {
+      id: 'square-to-round',
+      title: squareToRoundCopy[this.language()].heading,
+    },
     { id: 'branch-saddle', title: branchSaddleCopy[this.language()].heading },
-    { id: 'stock-planner', title: stockPlannerTitle[this.language()] },
-    ...calculatorTools.map((tool) => ({ id: tool.id, title: tool.title[this.language()] })),
+    ...[
+      {
+        id: 'stock-planner',
+        title: stockPlannerTitle[this.language()],
+        ticket: 'G8',
+      },
+      ...calculatorTools.map((tool) => ({
+        id: tool.id,
+        title: tool.title[this.language()],
+        ticket: tool.ticket,
+      })),
+    ]
+      .sort((a, b) => Number(a.ticket.slice(1)) - Number(b.ticket.slice(1)))
+      .map(({ id, title }) => ({ id, title })),
   ]);
 
-  readonly selectedTool = computed(() => calculatorTools.find((tool) => tool.id === this.selectedCalculator()));
+  readonly selectedTool = computed(() =>
+    calculatorTools.find((tool) => tool.id === this.selectedCalculator()),
+  );
 
   selectCalculator(value: string): void {
     if (this.calculators().some((calculator) => calculator.id === value)) {
