@@ -99,3 +99,9 @@ Physical print and assembly checks remain pending.
 - All 97 tests and the production build passed.
 - Tests verify the five-bar example, single centered bar, unrounded fractional gaps and rejected counts/openings.
 - Browser checks verified changed marks, numeric keyboard-focus tooltips and phone layout.
+
+## G8 straight stock cutting planner
+
+- All 103 tests and the production build passed.
+- Tests cover kerf/trim conservation, exact consumption, reusable offcuts, deterministic opened-bar ties, incompatible profiles, unavailable pieces and invalid quantities.
+- Browser checks verified editing the suggested plan, preserving the job in inches, phone layout and clearing invalid results.

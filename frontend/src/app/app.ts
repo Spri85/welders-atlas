@@ -1,3 +1,4 @@
+import { StockPlanner, stockPlannerTitle } from './stock-planner';
 import { DOCUMENT } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { ReducerCalculator } from './reducer-calculator';
@@ -40,7 +41,7 @@ const copy = {
   },
 };
 
-@Component({ selector: 'app-root', imports: [ReducerCalculator, SquareToRoundCalculator, BranchSaddleCalculator, CalculatorWorkbench], templateUrl: './app.html' })
+@Component({ selector: 'app-root', imports: [ReducerCalculator, SquareToRoundCalculator, BranchSaddleCalculator, CalculatorWorkbench, StockPlanner], templateUrl: './app.html' })
 export class App {
   private readonly document = inject(DOCUMENT);
   readonly language = signal<Language>('ua');
@@ -51,6 +52,7 @@ export class App {
     { id: 'round-reducer', title: reducerCopy[this.language()].heading },
     { id: 'square-to-round', title: squareToRoundCopy[this.language()].heading },
     { id: 'branch-saddle', title: branchSaddleCopy[this.language()].heading },
+    { id: 'stock-planner', title: stockPlannerTitle[this.language()] },
     ...calculatorTools.map((tool) => ({ id: tool.id, title: tool.title[this.language()] })),
   ]);
 

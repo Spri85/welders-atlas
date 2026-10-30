@@ -1,0 +1,10 @@
+import { describe, expect, it } from 'vitest';
+import { calculateStockPlan, type StockPlanInputs } from './stock-plan';
+const input: StockPlanInputs = { stock: [{ id:'S',group:'steel',lengthMm:1000,quantity:1 }], parts:[{ id:'P',group:'steel',lengthMm:400,quantity:2 }],kerfMm:3,trimMm:0,reusableMm:100 };
+describe('G8 stock plan',()=>{
+ it('accounts for parts, separating kerfs and reusable offcuts',()=>{const r=calculateStockPlan(input);expect(r.bars[0].remainderMm).toBe(194);expect(r.bars[0].reusable).toBe(true);expect(r.bars[0].cuts.reduce((n,c)=>n+c.kerfMm,0)).toBe(6);});
+ it('charges no cut on exact final consumption',()=>{const r=calculateStockPlan({...input,parts:[{...input.parts[0],quantity:1,lengthMm:600},{...input.parts[0],id:'B',quantity:1,lengthMm:397}]});expect(r.bars[0].remainderMm).toBe(0);expect(r.bars[0].cuts.map(c=>c.kerfMm)).toEqual([3,0]);});
+ it('keeps conservation with trims and lists unplaced incompatible or excess pieces',()=>{const r=calculateStockPlan({...input,trimMm:10,parts:[{...input.parts[0],quantity:3},{...input.parts[0],id:'other',group:'aluminium',quantity:1},{...input.parts[0],id:'long',lengthMm:1100,quantity:1}]});const b=r.bars[0];expect(b.cuts.reduce((s,c)=>s+c.lengthMm+c.kerfMm,0)+b.trimMm+b.remainderMm).toBe(b.lengthMm);expect(r.unplaced.reduce((s,p)=>s+p.quantity,0)+b.cuts.length).toBe(5);});
+ it('prefers opened stock when remaining lengths tie',()=>{const tie=calculateStockPlan({...input,stock:[{id:'small',group:'steel',lengthMm:1000,quantity:1},{id:'big',group:'steel',lengthMm:2100,quantity:1}],parts:[{id:'A',group:'steel',lengthMm:1100,quantity:1},{id:'B',group:'steel',lengthMm:500,quantity:1}],kerfMm:0});expect(tie.bars.length).toBe(1);expect(tie.bars[0].id).toBe('big/1');expect(tie.bars[0].cuts.map(c=>c.id)).toEqual(['A','B']);});
+ it('requires the whole kerf and validates counts',()=>{expect(calculateStockPlan({...input,parts:[{...input.parts[0],lengthMm:999,quantity:1}]}).unplaced[0].quantity).toBe(1);expect(()=>calculateStockPlan({...input,kerfMm:-1})).toThrow();expect(()=>calculateStockPlan({...input,parts:[{...input.parts[0],quantity:1.5}]})).toThrow();});
+});

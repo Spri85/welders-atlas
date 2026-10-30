@@ -22,6 +22,7 @@
     </select>
   </div>
   @switch (selectedCalculator()) {
+    @case ('stock-planner') { <app-stock-planner [language]="language()" /> }
     @case ('round-reducer') { <app-reducer-calculator [language]="language()" /> }
     @case ('square-to-round') { <app-square-to-round-calculator [language]="language()" /> }
     @case ('branch-saddle') { <app-branch-saddle-calculator [language]="language()" /> }
