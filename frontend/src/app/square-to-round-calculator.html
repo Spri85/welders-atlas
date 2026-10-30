@@ -19,7 +19,7 @@
     </div>
     <div class="output">
       @if (calculation().result; as result) {
-        <app-drawing-preview [drawing]="result.drawing" [model]="model()" [language]="language()" [title]="text().heading" />
+        <app-drawing-preview [drawing]="result.drawing" [model]="model()" [language]="language()" [unit]="unit()" [title]="text().heading" />
         <p>{{ text().folds }}</p>
         <dl class="measurements">
           <div><dt>{{ text().width }}</dt><dd>{{ measurement(dimensions().squareWidthMm) }}</dd></div>

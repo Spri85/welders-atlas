@@ -18,7 +18,7 @@
     </div>
     <div class="output">
       @if (calculation().result; as result) {
-        <app-drawing-preview [drawing]="result.drawing" [model]="model()" [language]="language()" [title]="text().heading" />
+        <app-drawing-preview [drawing]="result.drawing" [model]="model()" [language]="language()" [unit]="unit()" [title]="text().heading" />
         <dl class="measurements" aria-live="polite">
           <div><dt>{{ text().depth }}</dt><dd>{{ measurement(result.notchDepthMm) }}</dd></div>
           <div><dt>{{ text().wrap }}</dt><dd>{{ measurement(result.wrapLengthMm) }}</dd></div>

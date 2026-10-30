@@ -46,10 +46,22 @@ export function calculateSquareToRound(dimensions: SquareToRoundDimensions) {
   const triangles: readonly (readonly [number, number, number])[] = [[0, 1, 4], [0, 4, 3], [0, 3, 2], [1, 4, 5], [1, 5, 6]];
   const edge = (from: number, to: number) => ({ kind: 'line' as const, start: flat[from], end: flat[to] });
   const perimeter = [0, 1, 6, 5, 4, 3, 2];
+  const foldPairs = [[0, 4], [0, 3], [1, 4], [1, 5]] as const;
   const drawing: PatternDrawing = {
     outline: perimeter.map((from, index) => edge(from, perimeter[(index + 1) % perimeter.length])),
-    folds: [[0, 4], [0, 3], [1, 4], [1, 5]].map(([from, to]) => edge(from, to)),
+    folds: foldPairs.map(([from, to]) => edge(from, to)),
     labels: [[0, 2], [1, 6]].map(([from, to]) => ({ text: 'A', point: { x: (flat[from].x + flat[to].x) / 2, y: (flat[from].y + flat[to].y) / 2 } })),
+    vertices: flat.map((point, index) => ({ id: String(index + 1), point })),
+    measurements: [
+      ...perimeter.map((from, index) => {
+        const to = perimeter[(index + 1) % perimeter.length];
+        return { id: `${from + 1}–${to + 1}`, kind: 'edge' as const, unit: 'mm' as const, value: Math.hypot(flat[to].x - flat[from].x, flat[to].y - flat[from].y) };
+      }),
+      ...foldPairs.map(([from, to]) => ({
+        id: `${from + 1}–${to + 1}`, kind: 'fold' as const, unit: 'mm' as const,
+        value: Math.hypot(flat[to].x - flat[from].x, flat[to].y - flat[from].y),
+      })),
+    ],
   };
   const formedPanels = Array.from({ length: 4 }, (_, index) => formed.map((point) => ({
     x: point.x * Math.cos(index * Math.PI / 2) - point.y * Math.sin(index * Math.PI / 2),

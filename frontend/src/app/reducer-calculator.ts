@@ -3,13 +3,14 @@ import { calculateCenteredRoundReducer, type PatternPoint, type ReducerDimension
 import { reducerCopy } from './reducer-copy';
 import { PatternExport } from './pattern-export';
 import { drawingBounds, drawingSvgPath, type PatternDrawing } from './pattern-drawing';
+import { PatternDimensions } from './pattern-dimensions';
 
 type Unit = 'mm' | 'in';
 type Dimension = keyof ReducerDimensions;
 
 @Component({
   selector: 'app-reducer-calculator',
-  imports: [PatternExport],
+  imports: [PatternExport, PatternDimensions],
   templateUrl: './reducer-calculator.html',
   styleUrls: ['./calculator.css', './reducer-calculator.css'],
 })
@@ -55,6 +56,14 @@ export class ReducerCalculator {
       labels: pattern.outline.segments.filter((segment) => segment.kind === 'line').map((seam) => ({
         text: 'A', point: { x: (seam.start.x + seam.end.x) / 2 + 2, y: (seam.start.y + seam.end.y) / 2 + 2 },
       })),
+      measurements: [
+        { id: 'A', kind: 'edge', value: pattern.slantHeightMm, unit: 'mm' },
+        { id: 'R', kind: 'radius', value: pattern.outerRadiusMm, unit: 'mm' },
+        { id: 'r', kind: 'radius', value: pattern.innerRadiusMm, unit: 'mm' },
+        { id: 'L (R)', kind: 'arc', value: pattern.outline.segments[0].lengthMm, unit: 'mm' },
+        { id: 'L (r)', kind: 'arc', value: pattern.outline.segments[2].lengthMm, unit: 'mm' },
+        { id: 'θ', kind: 'angle', value: pattern.sectorAngle.degrees, unit: 'degree' },
+      ],
     };
   });
 

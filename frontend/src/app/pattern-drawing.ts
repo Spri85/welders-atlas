@@ -5,6 +5,15 @@ export interface PatternDrawing {
   outline: readonly (PatternArc | DrawingLine)[];
   folds?: readonly DrawingLine[];
   labels?: readonly { point: PatternPoint; text: string }[];
+  vertices?: readonly { id: string; point: PatternPoint }[];
+  measurements?: readonly PatternMeasurement[];
+}
+
+export interface PatternMeasurement {
+  id: string;
+  kind: 'width' | 'height' | 'depth' | 'edge' | 'fold' | 'radius' | 'arc' | 'angle' | 'length';
+  value: number;
+  unit: 'mm' | 'degree';
 }
 
 export function drawingBounds(drawing: PatternDrawing) {

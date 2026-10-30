@@ -35,3 +35,14 @@ Physical assembly and fabrication checks remain pending.
 - The top action selector shows one calculator at a time. Switching among all three tools, keyboard selection and PDF export were verified at port 4200.
 
 Physical pipe fitting and printed-template scale checks remain pending.
+
+## Complete flat-outline dimensions
+
+- All 71 tests and the production build passed on Node 24.22.1.
+- Square-to-round drawings label seven vertices. The measurement table includes all seven cut edges, four fold lines, overall width and height, and all seven vertex coordinates relative to the lower-left bounds corner.
+- Shared measurement data drives the preview tables and PDF reference sheets. Reducer details include both arc lengths and radii, seam length and sweep. Saddle details include wrap length, quarter spacing, notch depth, reference-band height and quarter-turn profile coordinates.
+- Browser checks verified the complete panel tables, millimetre/inch switching and the 375 px phone layout.
+- Downloaded English Letter panel, Ukrainian A4 reducer and Russian A4 saddle PDFs were reopened and checked for localized reference values, page sizes, print preferences and a 50 mm scale line on their full-size tiles. Rendered reference and tile pages were inspected.
+- Each PDF now includes one dimension reference sheet before the tiles. The default samples have three panel pages, seven reducer pages and three saddle pages in total.
+
+Physical verification remains pending.

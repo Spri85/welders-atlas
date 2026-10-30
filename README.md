@@ -4,6 +4,8 @@ A multilingual workbench for metal fabrication calculations and cutting template
 
 Select round reducer, square-to-round transition or branch saddle from the action selector. Each calculator provides formed and flat views, millimetres or decimal inches, and a PDF download. The download button opens paper and printing options in a separate dialog.
 
+Flat outlines include measurement tables. Square-to-round panels have numbered vertices with every cut-edge and fold-line length, overall dimensions and vertex coordinates. PDF downloads begin with the matching dimension reference sheet, followed by full-scale tiles.
+
 The square-to-round pattern uses four matching panels and a 16-sided approximation of the round rim. The saddle wrap includes a 20 mm reference band for transferring the profile. Templates use zero allowances. Print at actual size and complete the physical checks described in [pattern verification](docs/pattern-verification.md) before workshop use.
 
 | Language selector | Product name |

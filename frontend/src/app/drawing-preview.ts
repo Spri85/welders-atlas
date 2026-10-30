@@ -3,11 +3,14 @@ import { drawingBounds, drawingSvgPath, type PatternDrawing } from './pattern-dr
 import type { Point3 } from './pattern-geometry';
 import { reducerCopy } from './reducer-copy';
 import type { Language } from './export-copy';
+import { PatternDimensions } from './pattern-dimensions';
+import { formatPatternMeasurement } from './pattern-measurements';
 
 export interface ModelLine { points: readonly Point3[]; seam?: boolean; label?: string }
 
 @Component({
   selector: 'app-drawing-preview',
+  imports: [PatternDimensions],
   template: `
     <div class="view-buttons" role="group" [attr.aria-label]="text().view">
       <button type="button" [attr.aria-pressed]="view() === 'formed'" (click)="view.set('formed')">{{ text().formed }}</button>
@@ -24,6 +27,16 @@ export interface ModelLine { points: readonly Point3[]; seam?: boolean; label?: 
           @for (label of drawing.labels; track $index) {
             <text [attr.x]="label.point.x + 4" [attr.y]="label.point.y - 4">{{ label.text }}</text>
           }
+          @for (vertex of drawing.vertices; track vertex.id) {
+            <circle class="vertex" [attr.cx]="vertex.point.x" [attr.cy]="vertex.point.y" r="2.5" />
+            @if (vertex.showLabel) {
+              <text class="vertex-label" [attr.x]="vertex.point.x + 5" [attr.y]="vertex.point.y - 7">{{ vertex.id }}</text>
+            }
+          }
+          <line class="dimension-line" [attr.x1]="drawing.left" [attr.x2]="drawing.right" y1="329" y2="329" />
+          <text class="dimension-label" x="280" y="350" text-anchor="middle">W = {{ measurement(drawing.width) }}</text>
+          <line class="dimension-line" x1="24" x2="24" [attr.y1]="drawing.top" [attr.y2]="drawing.bottom" />
+          <text class="dimension-label" x="-180" y="15" transform="rotate(-90)" text-anchor="middle">H = {{ measurement(drawing.height) }}</text>
         }
       } @else {
         @for (line of formed(); track $index) {
@@ -40,6 +53,9 @@ export interface ModelLine { points: readonly Point3[]; seam?: boolean; label?: 
         <input #incline type="range" min="15" max="165" [attr.aria-label]="text().tilt" [value]="tilt()" (input)="tilt.set(incline.valueAsNumber)">
       </label>
     }
+    @if (view() === 'flat') {
+      <app-pattern-dimensions [drawing]="drawing()" [language]="language()" [unit]="unit()" />
+    }
   `,
   styles: `
     :host { display: block; min-width: 0; }
@@ -52,6 +68,10 @@ export interface ModelLine { points: readonly Point3[]; seam?: boolean; label?: 
     .blank { fill: #e5ebe6; stroke: #526267; stroke-width: 1.5; }
     .fold, .seam { stroke: #a24c21; stroke-dasharray: 5 3; stroke-width: 1.5; }
     text { fill: #8a491f; font-size: 16px; font-weight: 700; paint-order: stroke; stroke: #fafaf7; stroke-width: 3px; }
+    .vertex { fill: #172a30; }
+    .vertex-label { fill: #172a30; font-size: 14px; }
+    .dimension-label { fill: #526267; font-size: 13px; font-weight: 400; }
+    .dimension-line { stroke: #526267; stroke-width: 1; }
     label { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; font-size: 14px; }
     input { flex: 1; min-width: 100px; min-height: 44px; accent-color: #8a491f; }
   `,
@@ -60,6 +80,7 @@ export class DrawingPreview {
   readonly drawing = input.required<PatternDrawing>();
   readonly model = input.required<readonly ModelLine[]>();
   readonly language = input<Language>('ua');
+  readonly unit = input<'mm' | 'in'>('mm');
   readonly title = input.required<string>();
   readonly text = computed(() => reducerCopy[this.language()]);
   readonly view = signal<'formed' | 'flat'>('formed');
@@ -77,6 +98,12 @@ export class DrawingPreview {
       path: drawingSvgPath(drawing, project),
       folds: (drawing.folds ?? []).map((line) => ({ start: project(line.start), end: project(line.end) })),
       labels: (drawing.labels ?? []).map((label) => ({ ...label, point: project(label.point) })),
+      vertices: (drawing.vertices ?? []).map((vertex) => ({
+        ...vertex, point: project(vertex.point), showLabel: !drawing.labels?.some((label) => label.text === vertex.id),
+      })),
+      width: bounds.width, height: bounds.height,
+      left: 280 - bounds.width * scale / 2, right: 280 + bounds.width * scale / 2,
+      top: 180 - bounds.height * scale / 2, bottom: 180 + bounds.height * scale / 2,
     };
   });
   readonly formed = computed(() => {
@@ -97,4 +124,8 @@ export class DrawingPreview {
       labelPoint: project(line.points[Math.floor(line.points.length / 2)]),
     }));
   });
+
+  measurement(mm: number): string {
+    return formatPatternMeasurement(mm, 'mm', this.unit(), this.language());
+  }
 }

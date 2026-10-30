@@ -41,6 +41,13 @@ export function calculateBranchSaddle(dimensions: BranchSaddleDimensions) {
       { text: 'A', point: { x: 1, y: notchDepthMm + 7 } },
       { text: 'A', point: { x: wrapLengthMm - 5, y: notchDepthMm + 7 } },
     ],
+    vertices: Array.from({ length: 5 }, (_, index) => ({ id: `${index * 90}°`, point: profile[index * 180] })),
+    measurements: [
+      { id: '0°–360°', kind: 'length', value: wrapLengthMm, unit: 'mm' },
+      { id: '0°–90°', kind: 'length', value: wrapLengthMm / 4, unit: 'mm' },
+      { id: 'Δ', kind: 'depth', value: notchDepthMm, unit: 'mm' },
+      { id: 'A', kind: 'edge', value: referenceBandMm, unit: 'mm' },
+    ],
   };
   return { allowance: 'zero-allowance' as const, notchDepthMm, wrapLengthMm, referenceBandMm, sampleStepDegrees: 0.5, profile, intersection, drawing };
 }

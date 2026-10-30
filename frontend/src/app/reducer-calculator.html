@@ -65,6 +65,11 @@
           </svg>
           <figcaption>{{ text().seam }}</figcaption>
         </figure>
+        @if (view() === 'flat') {
+          @if (printDrawing(); as drawing) {
+            <app-pattern-dimensions [drawing]="drawing" [language]="language()" [unit]="unit()" />
+          }
+        }
         @if (view() === 'formed') {
           <div class="rotation-controls">
             <label for="rotation">{{ text().rotation }} <output>{{ format(rotation()) }}°</output></label>
