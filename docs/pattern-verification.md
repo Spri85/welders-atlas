@@ -135,3 +135,12 @@ Physical front/far registration after flipping remains pending.
 - Browser checks verified method switching, displayed blank/centerline, invalid-result clearing and phone layout.
 
 Shop coupon verification for material and tooling remains pending.
+
+## G13 segmented round elbow
+
+- All 123 tests and the production build passed without warnings.
+- Tests compare every joint at 361 circumferential stations, verify the 30°/15° worked angles, inside/outside lengths, end geometry, radius scaling and invalid inputs.
+- Browser checks verified radius tooltips, the numbered middle-piece PDF, phone layout and invalid-piece clearing. The three-page PDF was reopened and rendered.
+- The gore construction follows [Brian Coey’s Round Elbow development](https://pressbooks.bccampus.ca/pressbookbccampussmlt1/chapter/round-elbow/), with one gore per end and two per middle piece. The tangent geometry and coordinate checks are derived in the calculation/tests.
+
+Physical assembly, fit and print-scale checks remain pending.

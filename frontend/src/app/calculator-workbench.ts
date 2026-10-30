@@ -15,7 +15,7 @@ const errors = {
   range: text('The result exceeds the numeric range.', 'Результат перевищує числовий діапазон.', 'Результат превышает числовой диапазон.'),
   pair: text('Supply both optional measurements together.', 'Введіть обидва необов’язкові виміри разом.', 'Введите оба необязательных измерения вместе.'),
   fraction: text('Check the fraction or efficiency range.', 'Перевірте діапазон частки або ефективності.', 'Проверьте диапазон доли или эффективности.'),
-  limit: text('The job exceeds the 10,000-item display limit.', 'Завдання перевищує ліміт відображення 10 000 елементів.', 'Задание превышает предел отображения 10 000 элементов.'),
+  limit: text('The job exceeds this tool’s supported display limit.', 'Завдання перевищує допустимий ліміт відображення цього інструмента.', 'Задание превышает допустимый предел отображения этого инструмента.'),
 };
 
 @Component({

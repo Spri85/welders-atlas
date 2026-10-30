@@ -47,7 +47,7 @@ export interface ModelLine { points: readonly Point3[]; seam?: boolean; label?: 
       } @else {
         @for (line of formed(); track $index) {
           <polyline [class.seam]="line.seam" [attr.points]="line.points" />
-          @if (line.label) { <text [attr.x]="line.labelPoint.x + 5" [attr.y]="line.labelPoint.y - 5">{{ line.label }}</text> }
+          @if (line.label) { <text [measurementTooltip]="hints()[line.label] ?? line.label" [attr.x]="line.labelPoint.x + 5" [attr.y]="line.labelPoint.y - 5">{{ line.label }}</text> }
         }
       }
     </svg>
@@ -95,7 +95,7 @@ export class DrawingPreview {
   readonly title = input.required<string>();
   readonly instructions = input('');
   readonly showDimensions = input(true);
-  readonly hints = input<Readonly<Record<string, string>>>({});
+  readonly hints = input<Readonly<Partial<Record<string, string>>>>({});
   readonly text = computed(() => reducerCopy[this.language()]);
   readonly view = signal<'formed' | 'flat'>('formed');
   readonly activeView = computed(() => this.model().length ? this.view() : 'flat');
