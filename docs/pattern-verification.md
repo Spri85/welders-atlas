@@ -182,3 +182,9 @@ Physical panel assembly and print scale remain pending.
 - All 153 tests and the production build passed (including the upcoming mass/speed calculation tests).
 - Tests cover both scrap sides, controller compensation, zero kerf and nonpositive hole paths.
 - Browser checks verified 52/48 mm manual paths, 50 mm controller programming, reference-only tooltips and phone layout.
+
+## G19 stock mass and material cost
+
+- All 157 tests and the production build passed (including the upcoming speed/weld-mark calculation tests).
+- Tests cover plate volume/density, supplier kg/m, batch quantity, omitted/zero price and invalid inputs.
+- Browser checks verified plate cost, 30 kg section mass, removing optional price and phone layout.
