@@ -7,6 +7,7 @@ import { filletFillerTool } from './calculators/fillet-filler.tool';
 import { plateOpeningTool } from './calculators/plate-opening.tool';
 import { bracketBlankTool } from './calculators/bracket-blank.tool';
 import { segmentedElbowTool } from './calculators/segmented-elbow.tool';
+import { rolledSleeveTool } from './calculators/rolled-sleeve.tool';
 import type { CalculatorTool } from './calculator-tool';
 
-export const calculatorTools: readonly CalculatorTool[] = [miteredCornerTool, pipeOffsetTool, rectangularFrameTool, gateBarsTool, boltCircleTool, filletFillerTool, plateOpeningTool, bracketBlankTool, segmentedElbowTool];
+export const calculatorTools: readonly CalculatorTool[] = [miteredCornerTool, pipeOffsetTool, rectangularFrameTool, gateBarsTool, boltCircleTool, filletFillerTool, plateOpeningTool, bracketBlankTool, segmentedElbowTool, rolledSleeveTool];

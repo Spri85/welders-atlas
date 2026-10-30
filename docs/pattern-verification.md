@@ -144,3 +144,9 @@ Shop coupon verification for material and tooling remains pending.
 - The gore construction follows [Brian Coey’s Round Elbow development](https://pressbooks.bccampus.ca/pressbookbccampussmlt1/chapter/round-elbow/), with one gore per end and two per middle piece. The tangent geometry and coordinate checks are derived in the calculation/tests.
 
 Physical assembly, fit and print-scale checks remain pending.
+
+## G14 rolled sleeve blank
+
+- All 127 tests and the production build passed.
+- Tests verify ID/OD equivalence, neutral-axis endpoints, adding allowance once and invalid walls/fractions.
+- Browser checks verified both diameter modes, the 627.04 mm allowance example and phone layout.
