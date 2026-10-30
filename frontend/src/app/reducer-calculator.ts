@@ -1,12 +1,15 @@
 import { Component, computed, input, signal } from '@angular/core';
 import { calculateCenteredRoundReducer, type PatternPoint, type ReducerDimensions } from './centered-round-reducer';
 import { reducerCopy } from './reducer-copy';
+import { PatternExport } from './pattern-export';
+import { drawingBounds, drawingSvgPath, type PatternDrawing } from './pattern-drawing';
 
 type Unit = 'mm' | 'in';
 type Dimension = keyof ReducerDimensions;
 
 @Component({
   selector: 'app-reducer-calculator',
+  imports: [PatternExport],
   templateUrl: './reducer-calculator.html',
   styleUrl: './reducer-calculator.css',
 })
@@ -44,36 +47,30 @@ export class ReducerCalculator {
     }
   });
 
-  readonly flat = computed(() => {
+  readonly printDrawing = computed<PatternDrawing | null>(() => {
     const pattern = this.calculation().pattern;
     if (!pattern) return null;
-    const [outer, endSeam, inner, startSeam] = pattern.outline.segments;
-    const points = [outer.start, outer.end, inner.start, inner.end];
-    for (const angle of [0, Math.PI / 2, Math.PI, 3 * Math.PI / 2]) {
-      if (angle <= pattern.sectorAngle.radians) {
-        for (const arc of [outer, inner]) {
-          points.push({ x: arc.radiusMm * Math.cos(angle), y: arc.radiusMm * Math.sin(angle) });
-        }
-      }
-    }
-    const minX = Math.min(...points.map((point) => point.x));
-    const maxX = Math.max(...points.map((point) => point.x));
-    const minY = Math.min(...points.map((point) => point.y));
-    const maxY = Math.max(...points.map((point) => point.y));
+    return {
+      outline: pattern.outline.segments,
+      labels: pattern.outline.segments.filter((segment) => segment.kind === 'line').map((seam) => ({
+        text: 'A', point: { x: (seam.start.x + seam.end.x) / 2 + 2, y: (seam.start.y + seam.end.y) / 2 + 2 },
+      })),
+    };
+  });
+
+  readonly flat = computed(() => {
+    const drawing = this.printDrawing();
+    if (!drawing) return null;
+    const { minX, maxX, minY, maxY } = drawingBounds(drawing);
     const scale = Math.min(440 / (maxX - minX), 230 / (maxY - minY));
     const project = (point: PatternPoint): PatternPoint => ({
       x: 280 + (point.x - minX - (maxX - minX) / 2) * scale,
       y: 180 - (point.y - minY - (maxY - minY) / 2) * scale,
     });
-    const outerStart = project(outer.start);
-    const outerEnd = project(outer.end);
-    const innerStart = project(inner.start);
-    const innerEnd = project(inner.end);
-    const largeArc = Math.abs(outer.sweepAngleRadians) > Math.PI ? 1 : 0;
     return {
-      path: `M ${outerStart.x} ${outerStart.y} A ${outer.radiusMm * scale} ${outer.radiusMm * scale} 0 ${largeArc} 0 ${outerEnd.x} ${outerEnd.y}`
-        + ` L ${innerStart.x} ${innerStart.y} A ${inner.radiusMm * scale} ${inner.radiusMm * scale} 0 ${largeArc} 1 ${innerEnd.x} ${innerEnd.y} Z`,
-      seams: [endSeam, startSeam].map((seam) => ({ start: project(seam.start), end: project(seam.end) })),
+      path: drawingSvgPath(drawing, project),
+      seams: drawing.outline.filter((segment) => segment.kind === 'line')
+        .map((seam) => ({ start: project(seam.start), end: project(seam.end) })),
     };
   });
 

@@ -15,7 +15,6 @@ export const reducerCopy = {
     positive: 'Усі розміри мають бути скінченними числами, більшими за нуль.',
     smaller: 'Вихідний діаметр має бути меншим за вхідний.',
     range: 'Розміри перевищують числовий діапазон. Введіть менші значення.',
-    export: 'Експорт PDF', exportPending: 'Друк шаблону буде доступний на наступному етапі.',
   },
   ru: {
     heading: 'Круглый переход',
@@ -33,7 +32,6 @@ export const reducerCopy = {
     positive: 'Все размеры должны быть конечными числами больше нуля.',
     smaller: 'Выходной диаметр должен быть меньше входного.',
     range: 'Размеры превышают числовой диапазон. Введите меньшие значения.',
-    export: 'Экспорт PDF', exportPending: 'Печать шаблона будет доступна на следующем этапе.',
   },
   en: {
     heading: 'Round reducer',
@@ -51,6 +49,5 @@ export const reducerCopy = {
     positive: 'All dimensions must be finite numbers greater than zero.',
     smaller: 'Outlet diameter must be smaller than inlet diameter.',
     range: 'Dimensions exceed the numeric range. Enter smaller values.',
-    export: 'Export PDF', exportPending: 'Pattern printing will be available in the next milestone.',
   },
 };

@@ -22,8 +22,8 @@
           <p id="reducer-error">{{ text()[error] }}</p>
         }
       </div>
-      <button class="export" type="button" disabled aria-describedby="export-status">{{ text().export }}</button>
-      <p id="export-status" class="hint">{{ text().exportPending }}</p>
+      <app-pattern-export [drawing]="printDrawing()" [language]="language()" [title]="text().heading" [unit]="unit()"
+        [summary]="text().inlet + ' ' + measurement(dimensions().inletDiameterMm) + ' / ' + text().outlet + ' ' + measurement(dimensions().outletDiameterMm) + ' / ' + text().length + ' ' + measurement(dimensions().axialLengthMm)" />
     </div>
     <div class="output">
       <div class="view-buttons" role="group" [attr.aria-label]="text().view">

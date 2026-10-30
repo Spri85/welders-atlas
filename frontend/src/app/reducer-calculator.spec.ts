@@ -37,7 +37,7 @@ describe('Reducer calculator', () => {
     expect(root.querySelectorAll('svg .seam-label')).toHaveLength(2);
     expect(root.querySelector('svg')!.textContent).toContain('A = 158.11 mm');
     expect(root.textContent).toContain('Zero-allowance pattern');
-    expect(root.querySelector<HTMLButtonElement>('.export')!.disabled).toBe(true);
+    expect(root.querySelector<HTMLButtonElement>('.export')!.disabled).toBe(false);
   });
 
   it.each([

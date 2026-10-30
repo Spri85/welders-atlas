@@ -1,6 +1,6 @@
 :host { display: block; }
 .calculator { border-top: 1px solid #d8ddd8; padding-block: 32px 56px; }
-.calculator-heading p, .hint, figcaption, .allowance { color: #526267; font-size: 14px; line-height: 1.6; }
+.calculator-heading p, figcaption, .allowance { color: #526267; font-size: 14px; line-height: 1.6; }
 .calculator-heading p { margin-bottom: 28px; }
 .workbench { display: grid; grid-template-columns: minmax(220px, 280px) minmax(0, 1fr); gap: 32px; }
 .controls, .output { min-width: 0; }
@@ -17,8 +17,6 @@ input:focus-visible, button:focus-visible { outline: 3px solid #bd5c2b; outline-
 button { min-height: 44px; padding: 10px 16px; font: inherit; border: 1px solid #a6b0ab; border-radius: 3px; background: transparent; color: #172a30; cursor: pointer; }
 button[aria-pressed=true] { background: #172a30; border-color: #172a30; color: #fff; }
 button:disabled { cursor: default; color: #526267; background: #ecefe8; }
-.export { margin-top: 20px; }
-.hint { margin-top: 8px; }
 .view-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
 figure { margin: 18px 0; border: 1px solid #d8ddd8; border-radius: 5px; background: #fafaf7; }
 svg { display: block; width: 100%; height: auto; }
