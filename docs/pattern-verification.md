@@ -119,3 +119,11 @@ Physical drilling-template registration and scale checks remain pending.
 - All 111 tests and the production build passed.
 - Tests cover deposited/consumable mass, unrounded batch scaling, full efficiency, invalid assumptions and omitted versus zero price.
 - Browser checks verified batch edits, zero cost, leg-size tooltips and phone layout.
+
+## G11 angled pipe opening
+
+- All 115 tests and the production build passed.
+- Tests cover axes/shift, a normal passage, all datum directions, mirrored far-face coordinates and excluded tilt inputs.
+- Browser checks verified dimensions, direction changes, section/face views, phone layout and two PDF downloads. Both two-page A4 files were reopened; the far-face template was rendered. Flip instructions retain the printed side visible after flipping about datum A.
+
+Physical front/far registration after flipping remains pending.

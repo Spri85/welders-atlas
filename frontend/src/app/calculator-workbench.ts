@@ -68,6 +68,10 @@ const errors = {
                 }</tr> }</tbody>
               </table></div>
             }
+            @for (diagram of result.diagrams ?? []; track $index) {
+              <h3>{{ diagram.title[language()] }}</h3>
+              <app-drawing-preview [drawing]="diagram.drawing" [language]="language()" [unit]="inches() ? 'in' : 'mm'" [title]="diagram.title[language()]" [showDimensions]="false" [hints]="hints()" />
+            }
             @for (template of result.templates ?? []; track $index) {
               <h3>{{ template.title[language()] }}</h3>
               <app-pattern-export [drawing]="template.drawing" [language]="language()" [title]="template.title[language()]" [unit]="inches() ? 'in' : 'mm'" [summary]="summary()" />

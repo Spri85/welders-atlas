@@ -31,6 +31,7 @@ export interface CalculatorResult {
   model?: readonly ModelLine[];
   notes?: readonly Localized[];
   tables?: readonly CalculatorTable[];
+  diagrams?: readonly { title: Localized; drawing: PatternDrawing }[];
   templates?: readonly { title: Localized; drawing: PatternDrawing }[];
 }
 export interface CalculatorTool {
