@@ -1,6 +1,7 @@
 import { miteredCornerTool } from './calculators/mitered-corner.tool';
 import { pipeOffsetTool } from './calculators/pipe-offset.tool';
 import { rectangularFrameTool } from './calculators/rectangular-frame.tool';
+import { gateBarsTool } from './calculators/gate-bars.tool';
 import type { CalculatorTool } from './calculator-tool';
 
-export const calculatorTools: readonly CalculatorTool[] = [miteredCornerTool, pipeOffsetTool, rectangularFrameTool];
+export const calculatorTools: readonly CalculatorTool[] = [miteredCornerTool, pipeOffsetTool, rectangularFrameTool, gateBarsTool];
