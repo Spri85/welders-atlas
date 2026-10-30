@@ -53,7 +53,7 @@ export function calculateSquareToRound(dimensions: SquareToRoundDimensions) {
     folds: foldPairs.map(([from, to]) => edge(from, to)),
     construction: [edge(2, 6), { kind: 'line', start: midpoint, end: flat[4] }],
     labels: [
-      ...[[0, 2], [1, 6]].map(([from, to]) => ({ text: 'A', point: { x: (flat[from].x + flat[to].x) / 2, y: (flat[from].y + flat[to].y) / 2 } })),
+      ...([[0, 2, '3–1'], [1, 6, '2–7']] as const).map(([from, to, measurementId]) => ({ text: 'A', measurementId, point: { x: (flat[from].x + flat[to].x) / 2, y: (flat[from].y + flat[to].y) / 2 } })),
       { text: 'M', point: midpoint },
       { text: 'h', measurementId: 'h', point: { x: midpoint.x + 2, y: flat[4].y / 2 } },
       { text: '3–7', measurementId: '3–7', point: { x: midpoint.x, y: flat[4].y * 0.84 }, align: 'center' },

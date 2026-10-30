@@ -66,3 +66,9 @@ Physical marking and fitting checks remain pending.
 - Browser checks covered guide labels, millimetre/inch conversion and the phone layout. The downloaded Letter PDF was reopened and rendered, and its serialized guide lengths and line style were checked.
 
 Physical metal marking and fitting remain pending.
+
+## Shared on-screen measurement tooltips
+
+- All 77 tests and the production build passed on Node 24.22.1.
+- On-screen drawings display identifiers, with numeric values in the tables and hover/focus tooltips. This applies to reducers, square-to-round panels and saddles.
+- Browser checks verified hover, keyboard focus and Escape dismissal for all three calculator types. The directive also removes active tooltips when their calculator is destroyed.

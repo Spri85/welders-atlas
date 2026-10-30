@@ -4,13 +4,14 @@ import { reducerCopy } from './reducer-copy';
 import { PatternExport } from './pattern-export';
 import { drawingBounds, drawingSvgPath, type PatternDrawing } from './pattern-drawing';
 import { PatternDimensions } from './pattern-dimensions';
+import { MeasurementTooltip } from './measurement-tooltip';
 
 type Unit = 'mm' | 'in';
 type Dimension = keyof ReducerDimensions;
 
 @Component({
   selector: 'app-reducer-calculator',
-  imports: [PatternExport, PatternDimensions],
+  imports: [PatternExport, PatternDimensions, MeasurementTooltip],
   templateUrl: './reducer-calculator.html',
   styleUrls: ['./calculator.css', './reducer-calculator.css'],
 })

@@ -10,17 +10,17 @@ describe('branch saddle controls', () => {
     const root: HTMLElement = fixture.nativeElement;
     root.querySelectorAll<HTMLButtonElement>('.view-buttons button')[1].click();
     await fixture.whenStable();
-    expect(root.querySelector('svg')!.textContent).toContain('B = 30 mm');
+    expect(root.querySelector('svg text[aria-label="B = 30 mm"]')).not.toBeNull();
     expect(root.querySelectorAll('table[aria-label="Vertex coordinates"] tbody tr')).toHaveLength(25);
     const field = root.querySelector<HTMLInputElement>('#branchDiameterMm')!;
     field.value = '100';
     field.dispatchEvent(new Event('input'));
     await fixture.whenStable();
-    expect(root.querySelector('svg')!.textContent).toContain('B = 70 mm');
-    expect(root.querySelector('svg')!.textContent).toContain('A = 20 mm');
+    expect(root.querySelector('svg text[aria-label="B = 70 mm"]')).not.toBeNull();
+    expect(root.querySelector('svg text[aria-label="A = 20 mm"]')).not.toBeNull();
     root.querySelectorAll<HTMLInputElement>('input[type=radio]')[1].click();
     await fixture.whenStable();
-    expect(root.querySelector('svg')!.textContent).toContain('B = 2.7559 in');
+    expect(root.querySelector('svg text[aria-label="B = 2.7559 in"]')).not.toBeNull();
   });
 
   it('shows reference dimensions, accepts equal pipes and hides stale results for an oversized branch', async () => {

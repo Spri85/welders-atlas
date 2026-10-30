@@ -26,3 +26,6 @@ footer { border-top: 1px solid #d8ddd8; padding-block: 24px; font-size: 11px; co
 .configurator label { font-size: 14px; font-weight: 700; }
 .configurator select { font: inherit; max-width: 100%; min-height: 44px; padding: 10px 16px; color: #172a30; background: #fff; border: 1px solid #a6b0ab; border-radius: 3px; }
 .configurator select:focus-visible { outline: 3px solid #bd5c2b; outline-offset: 3px; }
+.measurement-tooltip { position: fixed; z-index: 1000; max-width: min(320px, calc(100vw - 16px)); padding: 9px 12px; border-radius: 4px; color: #fff; background: #172a30; font-size: 13px; line-height: 1.5; pointer-events: none; }
+svg [tabindex="0"] { cursor: help; }
+svg [tabindex="0"]:focus-visible { outline: 2px solid #bd5c2b; outline-offset: 4px; }

@@ -35,7 +35,7 @@ describe('Reducer calculator', () => {
     await click('.view-buttons button:last-child');
     expect(root.querySelector('[data-view=flat]')).not.toBeNull();
     expect(root.querySelectorAll('svg .seam-label')).toHaveLength(2);
-    expect(root.querySelector('svg')!.textContent).toContain('A = 158.11 mm');
+    expect(root.querySelector('svg text[aria-label="A = 158.11 mm"]')).not.toBeNull();
     expect(root.textContent).toContain('Zero-allowance pattern');
     expect(root.querySelector<HTMLButtonElement>('.export')!.disabled).toBe(false);
   });

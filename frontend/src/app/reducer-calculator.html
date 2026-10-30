@@ -44,7 +44,7 @@
                   <polyline [attr.points]="model.inlet" />
                   <polyline [attr.points]="model.outlet" />
                   <line class="seam" [attr.x1]="model.seam.start.x" [attr.y1]="model.seam.start.y" [attr.x2]="model.seam.end.x" [attr.y2]="model.seam.end.y" />
-                  <text class="seam-label" [attr.x]="(model.seam.start.x + model.seam.end.x) / 2 + 12" [attr.y]="(model.seam.start.y + model.seam.end.y) / 2">A</text>
+                  <text [measurementTooltip]="'A = ' + measurement(pattern.slantHeightMm)" class="seam-label" [attr.x]="(model.seam.start.x + model.seam.end.x) / 2 + 12" [attr.y]="(model.seam.start.y + model.seam.end.y) / 2">A</text>
                 </g>
               }
             } @else {
@@ -53,12 +53,12 @@
                   <path class="blank" [attr.d]="outline.path" />
                   @for (line of outline.seams; track $index) {
                     <line class="seam" [attr.x1]="line.start.x" [attr.y1]="line.start.y" [attr.x2]="line.end.x" [attr.y2]="line.end.y" />
-                    <text class="seam-label" [attr.x]="(line.start.x + line.end.x) / 2 + 10" [attr.y]="(line.start.y + line.end.y) / 2 - 8">A</text>
+                    <text [measurementTooltip]="'A = ' + measurement(pattern.slantHeightMm)" class="seam-label" [attr.x]="(line.start.x + line.end.x) / 2 + 10" [attr.y]="(line.start.y + line.end.y) / 2 - 8">A</text>
                   }
-                  <text x="18" y="24">R = {{ measurement(pattern.outerRadiusMm) }}</text>
-                  <text x="18" y="46">r = {{ measurement(pattern.innerRadiusMm) }}</text>
-                  <text x="18" y="324">A = {{ measurement(pattern.slantHeightMm) }}</text>
-                  <text x="18" y="346">θ = {{ format(pattern.sectorAngle.degrees) }}°</text>
+                  <text x="18" y="24" [measurementTooltip]="'R = ' + measurement(pattern.outerRadiusMm)">R</text>
+                  <text x="18" y="46" [measurementTooltip]="'r = ' + measurement(pattern.innerRadiusMm)">r</text>
+                  <text x="18" y="324" [measurementTooltip]="'A = ' + measurement(pattern.slantHeightMm)">A</text>
+                  <text x="18" y="346" [measurementTooltip]="'θ = ' + format(pattern.sectorAngle.degrees) + '°'">θ</text>
                 </g>
               }
             }

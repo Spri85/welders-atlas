@@ -4,13 +4,14 @@ import type { Point3 } from './pattern-geometry';
 import { reducerCopy } from './reducer-copy';
 import type { Language } from './export-copy';
 import { PatternDimensions } from './pattern-dimensions';
-import { drawingLabelText, formatPatternMeasurement } from './pattern-measurements';
+import { drawingCoordinates, drawingLabelText, formatPatternMeasurement } from './pattern-measurements';
+import { MeasurementTooltip } from './measurement-tooltip';
 
 export interface ModelLine { points: readonly Point3[]; seam?: boolean; label?: string }
 
 @Component({
   selector: 'app-drawing-preview',
-  imports: [PatternDimensions],
+  imports: [PatternDimensions, MeasurementTooltip],
   template: `
     <div class="view-buttons" role="group" [attr.aria-label]="text().view">
       <button type="button" [attr.aria-pressed]="view() === 'formed'" (click)="view.set('formed')">{{ text().formed }}</button>
@@ -30,18 +31,18 @@ export interface ModelLine { points: readonly Point3[]; seam?: boolean; label?: 
           }
           @for (label of drawing.labels; track $index) {
             <text [class.measurement-label]="label.measurementId" [class.construction-label]="label.construction" [attr.text-anchor]="label.anchor"
-              [attr.x]="label.point.x + 4" [attr.y]="label.point.y - 4">{{ label.text }}</text>
+              [measurementTooltip]="label.tooltip" [attr.x]="label.point.x + 4" [attr.y]="label.point.y - 4">{{ label.text }}</text>
           }
           @for (vertex of drawing.vertices; track vertex.id) {
             <circle class="vertex" [attr.cx]="vertex.point.x" [attr.cy]="vertex.point.y" r="2.5" />
             @if (vertex.showLabel) {
-              <text class="vertex-label" [attr.x]="vertex.point.x + 5" [attr.y]="vertex.point.y - 7">{{ vertex.id }}</text>
+              <text class="vertex-label" [measurementTooltip]="vertex.tooltip" [attr.x]="vertex.point.x + 5" [attr.y]="vertex.point.y - 7">{{ vertex.id }}</text>
             }
           }
           <line class="dimension-line" [attr.x1]="drawing.left" [attr.x2]="drawing.right" y1="329" y2="329" />
-          <text class="dimension-label" x="280" y="350" text-anchor="middle">W = {{ measurement(drawing.width) }}</text>
+          <text class="dimension-label" x="280" y="350" text-anchor="middle" [measurementTooltip]="'W = ' + measurement(drawing.width)">W</text>
           <line class="dimension-line" x1="24" x2="24" [attr.y1]="drawing.top" [attr.y2]="drawing.bottom" />
-          <text class="dimension-label" x="-180" y="15" transform="rotate(-90)" text-anchor="middle">H = {{ measurement(drawing.height) }}</text>
+          <text class="dimension-label" x="-180" y="15" transform="rotate(-90)" text-anchor="middle" [measurementTooltip]="'H = ' + measurement(drawing.height)">H</text>
         }
       } @else {
         @for (line of formed(); track $index) {
@@ -99,6 +100,9 @@ export class DrawingPreview {
   readonly flat = computed(() => {
     const drawing = this.drawing();
     const bounds = drawingBounds(drawing);
+    const coordinateHints = new Map(drawingCoordinates(drawing).map((point) => [point.id,
+      `${point.id} · X = ${this.measurement(point.x)} · Y = ${this.measurement(point.y)}`,
+    ]));
     const scale = Math.min(460 / bounds.width, 270 / bounds.height);
     const project = (point: { x: number; y: number }) => ({
       x: 280 + (point.x - bounds.minX - bounds.width / 2) * scale,
@@ -110,12 +114,13 @@ export class DrawingPreview {
       construction: (drawing.construction ?? []).map((line) => ({ start: project(line.start), end: project(line.end) })),
       labels: (drawing.labels ?? []).map((label) => ({
         ...label, point: project(label.point),
-        text: drawingLabelText(drawing, label, this.unit(), this.language()),
+        tooltip: label.measurementId ? drawingLabelText(drawing, label, this.unit(), this.language()) : coordinateHints.get(label.text) ?? label.text,
         anchor: ({ left: 'start', center: 'middle', right: 'end' } as const)[label.align ?? 'left'],
         construction: drawing.measurements?.some((item) => item.id === label.measurementId && item.kind === 'construction'),
       })),
       vertices: (drawing.vertices ?? []).map((vertex) => ({
         ...vertex, point: project(vertex.point), showLabel: !drawing.labels?.some((label) => label.text === vertex.id),
+        tooltip: coordinateHints.get(vertex.id) ?? vertex.id,
       })),
       width: bounds.width, height: bounds.height,
       left: 280 - bounds.width * scale / 2, right: 280 + bounds.width * scale / 2,
