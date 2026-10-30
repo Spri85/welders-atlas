@@ -113,3 +113,9 @@ Physical print and assembly checks remain pending.
 - Browser checks verified rotated coordinate tooltips, phone layout, PDF download and invalid export disabling. The two-page A4 PDF was reopened and rendered; label placement was corrected after visual inspection.
 
 Physical drilling-template registration and scale checks remain pending.
+
+## G10 equal-leg fillet filler estimate
+
+- All 111 tests and the production build passed.
+- Tests cover deposited/consumable mass, unrounded batch scaling, full efficiency, invalid assumptions and omitted versus zero price.
+- Browser checks verified batch edits, zero cost, leg-size tooltips and phone layout.
