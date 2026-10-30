@@ -22,7 +22,7 @@ export interface ModelLine { points: readonly Point3[]; seam?: boolean; label?: 
       <title>{{ title() }} — {{ activeView() === 'formed' ? text().formed : text().flat }}</title>
       @if (activeView() === 'flat') {
         @if (flat(); as drawing) {
-          <path class="blank" [attr.d]="drawing.path" />
+          <path class="blank" [class.open]="drawing.open" [attr.d]="drawing.path" />
           @for (line of drawing.folds; track $index) {
             <line class="fold" [attr.x1]="line.start.x" [attr.y1]="line.start.y" [attr.x2]="line.end.x" [attr.y2]="line.end.y" />
           }
@@ -72,6 +72,7 @@ export interface ModelLine { points: readonly Point3[]; seam?: boolean; label?: 
     svg { width: 100%; height: auto; display: block; background: #fafaf7; border: 1px solid #d8ddd8; border-radius: 4px; margin-block: 16px; }
     polyline, line { fill: none; stroke: #526267; stroke-width: 1; }
     .blank { fill: #e5ebe6; stroke: #526267; stroke-width: 1.5; }
+    .blank.open { fill: none; stroke-width: 2; }
     .fold, .seam { stroke: #a24c21; stroke-dasharray: 5 3; stroke-width: 1.5; }
     .construction { stroke: #366780; stroke-dasharray: 8 3 1 3; stroke-width: 1; }
     .construction-label { fill: #366780; }
@@ -113,6 +114,7 @@ export class DrawingPreview {
     });
     return {
       path: drawingSvgPath(drawing, project),
+      open: drawing.closed === false,
       folds: (drawing.folds ?? []).map((line) => ({ start: project(line.start), end: project(line.end) })),
       construction: (drawing.construction ?? []).map((line) => ({ start: project(line.start), end: project(line.end) })),
       labels: (drawing.labels ?? []).map((label) => ({

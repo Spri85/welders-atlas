@@ -81,3 +81,9 @@ Physical metal marking and fitting remain pending.
 - The three-page A4 PDF was reopened and rendered. It includes the reference sheet, cut profile, square datum and instruction to mark two pieces.
 
 Physical print and assembly checks remain pending.
+
+## G5 two-elbow pipe offset
+
+- All 89 tests and the production build passed.
+- The worked example returns 212.13 mm center travel, 150 mm advance and 142.13 mm straight cut. Tests cover zero straight, overlap and a rejected zero-degree angle.
+- Browser checks verified the worked result, a zero-straight job, a 1 mm overlap warning and removal of stale geometry after invalid input.

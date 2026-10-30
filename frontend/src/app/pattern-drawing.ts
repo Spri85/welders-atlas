@@ -2,6 +2,7 @@ import type { DrawingLine, PatternArc, PatternPoint } from './pattern-geometry';
 export type { DrawingLine } from './pattern-geometry';
 
 export interface PatternDrawing {
+  closed?: boolean;
   outline: readonly (PatternArc | DrawingLine)[];
   folds?: readonly DrawingLine[];
   construction?: readonly DrawingLine[];
@@ -28,6 +29,9 @@ export interface PatternMeasurement {
 
 export function drawingBounds(drawing: PatternDrawing) {
   const points = drawing.outline.flatMap((segment) => [segment.start, segment.end]);
+  if (drawing.closed === false) {
+    points.push(...[...(drawing.construction ?? []), ...(drawing.folds ?? [])].flatMap((segment) => [segment.start, segment.end]));
+  }
   for (const segment of drawing.outline) {
     if (segment.kind !== 'arc') continue;
     const from = Math.min(segment.startAngleRadians, segment.startAngleRadians + segment.sweepAngleRadians);
@@ -75,5 +79,5 @@ export function drawingSvgPath(drawing: PatternDrawing, project: (point: Pattern
       commands.push(`A ${radius} ${radius} 0 ${Math.abs(segment.sweepAngleRadians) > Math.PI ? 1 : 0} ${segment.sweepAngleRadians < 0 ? 1 : 0} ${end.x} ${end.y}`);
     }
   }
-  return `${commands.join(' ')} Z`;
+  return commands.join(' ') + (drawing.closed === false ? '' : ' Z');
 }

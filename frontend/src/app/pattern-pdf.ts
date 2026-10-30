@@ -110,7 +110,8 @@ export function createPatternPdf(drawing: PatternDrawing, options: PdfOptions, f
       const projected = tile.project(point);
       pdf.lineTo(projected.x, projected.y);
     }
-    pdf.close().stroke();
+    if (drawing.closed !== false) pdf.close();
+    pdf.stroke();
     pdf.setLineDashPattern([2, 1], 0);
     for (const line of drawing.folds ?? []) {
       const from = tile.project(line.start);
