@@ -1,0 +1,25 @@
+<header class="site-header">
+  <a class="brand" href="/"><span class="brand-mark" aria-hidden="true">W<span>•</span>A</span><span>{{ text().title }}</span></a>
+  <nav class="languages" [attr.aria-label]="text().language">
+    @for (option of languages; track option) {
+      <button type="button" [attr.aria-pressed]="option === language()" (click)="selectLanguage(option)">{{ option }}</button>
+    }
+  </nav>
+</header>
+<main>
+  <section class="hero" aria-labelledby="welcome">
+    <p class="eyebrow"><span aria-hidden="true"></span>{{ text().eyebrow }}</p>
+    <h1 id="welcome">{{ text().heading }}</h1>
+    <p class="intro">{{ text().intro }}</p>
+    <div class="weld-lines" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+  </section>
+  <section class="essentials" aria-labelledby="essentials">
+    <div class="section-heading"><h2 id="essentials">{{ text().section }}</h2><p>{{ text().note }}</p></div>
+    <div class="topics">
+      @for (topic of text().topics; track $index) {
+        <article><span class="topic-number">0{{ $index + 1 }}</span><span class="planned">{{ text().planned }}</span><h3>{{ topic }}</h3><p>{{ text().descriptions[$index] }}</p></article>
+      }
+    </div>
+  </section>
+</main>
+<footer>{{ text().title }} <span class="footer-divider">/</span> {{ text().footer }}</footer>
