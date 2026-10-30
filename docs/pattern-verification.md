@@ -170,3 +170,9 @@ Physical assembly, fit and print-scale checks remain pending.
 - Browser checks verified the worked values, seam tooltip, expander, phone layout and invalid export disabling. The three-page A4 panel PDF was reopened and rendered, with the instruction to cut four identical panels.
 
 Physical panel assembly and print scale remain pending.
+
+## G17 rectangular sheet grid
+
+- All 149 tests and the production build passed (including the upcoming kerf/mass calculation tests).
+- Tests cover orientation selection, rotation-only fits, ties, exact spacing, zero fit and invalid inputs.
+- Browser checks verified sixteen blanks, 5 mm unused strips, zero fit and phone layout.
