@@ -1,0 +1,86 @@
+<section class="calculator" aria-labelledby="reducer-heading">
+  <div class="calculator-heading">
+    <h2 id="reducer-heading">{{ text().heading }}</h2>
+    <p>{{ text().intro }}</p>
+  </div>
+  <div class="workbench">
+    <div class="controls">
+      <fieldset class="units">
+        <legend>{{ text().units }}</legend>
+        <label><input type="radio" name="units" value="mm" [checked]="unit() === 'mm'" (change)="unit.set('mm')"> {{ text().mm }}</label>
+        <label><input type="radio" name="units" value="in" [checked]="unit() === 'in'" (change)="unit.set('in')"> {{ text().inches }}</label>
+      </fieldset>
+      @for (field of fields; track field.key) {
+        <label class="dimension" [for]="field.key">{{ text()[field.label] }} <span>({{ unitLabel() }})</span></label>
+        <input #dimension type="number" [id]="field.key" inputmode="decimal" step="any" required
+          [value]="inputValue(field.key)" [attr.aria-invalid]="invalidField(field.key)"
+          [attr.aria-describedby]="calculation().error ? 'reducer-error' : null"
+          (input)="updateDimension(field.key, dimension.valueAsNumber)">
+      }
+      <div class="validation" aria-live="polite">
+        @if (calculation().error; as error) {
+          <p id="reducer-error">{{ text()[error] }}</p>
+        }
+      </div>
+      <button class="export" type="button" disabled aria-describedby="export-status">{{ text().export }}</button>
+      <p id="export-status" class="hint">{{ text().exportPending }}</p>
+    </div>
+    <div class="output">
+      <div class="view-buttons" role="group" [attr.aria-label]="text().view">
+        <button type="button" [attr.aria-pressed]="view() === 'formed'" (click)="view.set('formed')">{{ text().formed }}</button>
+        <button type="button" [attr.aria-pressed]="view() === 'flat'" (click)="view.set('flat')">{{ text().flat }}</button>
+      </div>
+      @if (calculation().pattern; as pattern) {
+        <figure>
+          <svg viewBox="0 0 560 360" role="img" [attr.aria-label]="text().preview">
+            <title>{{ view() === 'formed' ? text().formed : text().flat }}</title>
+            <desc>{{ view() === 'formed' ? text().formedDescription : text().flatDescription }}</desc>
+            @if (view() === 'formed') {
+              @if (formed(); as model) {
+                <g class="wireframe" data-view="formed">
+                  @for (line of model.generators; track $index) {
+                    <line class="generator" [attr.x1]="line.start.x" [attr.y1]="line.start.y" [attr.x2]="line.end.x" [attr.y2]="line.end.y" />
+                  }
+                  <polyline [attr.points]="model.inlet" />
+                  <polyline [attr.points]="model.outlet" />
+                  <line class="seam" [attr.x1]="model.seam.start.x" [attr.y1]="model.seam.start.y" [attr.x2]="model.seam.end.x" [attr.y2]="model.seam.end.y" />
+                  <text class="seam-label" [attr.x]="(model.seam.start.x + model.seam.end.x) / 2 + 12" [attr.y]="(model.seam.start.y + model.seam.end.y) / 2">A</text>
+                </g>
+              }
+            } @else {
+              @if (flat(); as outline) {
+                <g data-view="flat">
+                  <path class="blank" [attr.d]="outline.path" />
+                  @for (line of outline.seams; track $index) {
+                    <line class="seam" [attr.x1]="line.start.x" [attr.y1]="line.start.y" [attr.x2]="line.end.x" [attr.y2]="line.end.y" />
+                    <text class="seam-label" [attr.x]="(line.start.x + line.end.x) / 2 + 10" [attr.y]="(line.start.y + line.end.y) / 2 - 8">A</text>
+                  }
+                  <text x="18" y="24">R = {{ measurement(pattern.outerRadiusMm) }}</text>
+                  <text x="18" y="46">r = {{ measurement(pattern.innerRadiusMm) }}</text>
+                  <text x="18" y="324">A = {{ measurement(pattern.slantHeightMm) }}</text>
+                  <text x="18" y="346">θ = {{ format(pattern.sectorAngle.degrees) }}°</text>
+                </g>
+              }
+            }
+          </svg>
+          <figcaption>{{ text().seam }}</figcaption>
+        </figure>
+        @if (view() === 'formed') {
+          <div class="rotation-controls">
+            <label for="rotation">{{ text().rotation }} <output>{{ format(rotation()) }}°</output></label>
+            <input #rotate id="rotation" type="range" min="0" max="360" step="1" [value]="rotation()" (input)="rotation.set(rotate.valueAsNumber)">
+            <label for="tilt">{{ text().tilt }} <output>{{ format(tilt()) }}°</output></label>
+            <input #incline id="tilt" type="range" min="15" max="165" step="1" [value]="tilt()" (input)="tilt.set(incline.valueAsNumber)">
+          </div>
+        }
+        <dl class="measurements" aria-live="polite">
+          <div><dt>{{ text().slant }}</dt><dd data-result="slant">{{ measurement(pattern.slantHeightMm) }}</dd></div>
+          <div><dt>{{ text().outer }}</dt><dd>{{ measurement(pattern.outerRadiusMm) }}</dd></div>
+          <div><dt>{{ text().inner }}</dt><dd>{{ measurement(pattern.innerRadiusMm) }}</dd></div>
+          <div><dt>{{ text().angle }}</dt><dd>{{ format(pattern.sectorAngle.degrees) }}°</dd></div>
+        </dl>
+        <p class="allowance"><strong>{{ text().allowance }}</strong> {{ text().allowanceNote }}</p>
+      }
+    </div>
+  </div>
+</section>
