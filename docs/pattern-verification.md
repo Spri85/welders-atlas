@@ -156,3 +156,9 @@ Physical assembly, fit and print-scale checks remain pending.
 - All 134 tests and the production build passed (including the new chord/rise calculation tests).
 - Tests verify tangent setbacks, stock length, swapped legs, exact setback and invalid legs/angles.
 - Browser checks verified 328.54 mm stock, mirrored tangent marks, invalid clearing and phone layout.
+
+## G16 radius from chord and rise
+
+- All 135 tests and the production build passed.
+- Tests cover the 925 mm example, semicircle, shallow arcs and unsupported rises.
+- Browser checks verified the semicircle arc, radius tooltip and phone layout.
