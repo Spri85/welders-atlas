@@ -5,6 +5,7 @@ import { gateBarsTool } from './calculators/gate-bars.tool';
 import { boltCircleTool } from './calculators/bolt-circle.tool';
 import { filletFillerTool } from './calculators/fillet-filler.tool';
 import { plateOpeningTool } from './calculators/plate-opening.tool';
+import { bracketBlankTool } from './calculators/bracket-blank.tool';
 import type { CalculatorTool } from './calculator-tool';
 
-export const calculatorTools: readonly CalculatorTool[] = [miteredCornerTool, pipeOffsetTool, rectangularFrameTool, gateBarsTool, boltCircleTool, filletFillerTool, plateOpeningTool];
+export const calculatorTools: readonly CalculatorTool[] = [miteredCornerTool, pipeOffsetTool, rectangularFrameTool, gateBarsTool, boltCircleTool, filletFillerTool, plateOpeningTool, bracketBlankTool];

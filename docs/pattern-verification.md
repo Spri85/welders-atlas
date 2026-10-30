@@ -127,3 +127,11 @@ Physical drilling-template registration and scale checks remain pending.
 - Browser checks verified dimensions, direction changes, section/face views, phone layout and two PDF downloads. Both two-page A4 files were reopened; the far-face template was rendered. Flip instructions retain the printed side visible after flipping about datum A.
 
 Physical front/far registration after flipping remains pending.
+
+## G12 press-brake bracket blank
+
+- All 119 tests and the production build passed.
+- Tests cover the worked allowance/deduction/blank, exact measured-mode equivalence, zero inside radius, minimum flange and invalid allowances.
+- Browser checks verified method switching, displayed blank/centerline, invalid-result clearing and phone layout.
+
+Shop coupon verification for material and tooling remains pending.
