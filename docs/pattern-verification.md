@@ -188,3 +188,9 @@ Physical panel assembly and print scale remain pending.
 - All 157 tests and the production build passed (including the upcoming speed/weld-mark calculation tests).
 - Tests cover plate volume/density, supplier kg/m, batch quantity, omitted/zero price and invalid inputs.
 - Browser checks verified plate cost, 30 kg section mass, removing optional price and phone layout.
+
+## G20 rotary positioner speed
+
+- All 164 tests and the production build passed (including upcoming weld-mark/bevel calculation tests).
+- Tests cover RPM/time, diameter scaling, exact limits and inverted ranges.
+- Browser checks verified 0.955 rpm, the below-range flag, invalid clearing and phone layout after reloading the dev-server error overlay.
