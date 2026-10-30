@@ -18,16 +18,11 @@ h1 { position: relative; z-index: 1; max-width: 800px; margin: 26px 0; font-size
 .intro { max-width: 580px; font-size: 18px; line-height: 1.7; color: #526267; margin: 0; }
 .weld-lines { position: absolute; right: 10px; top: 70px; display: flex; gap: 19px; transform: rotate(30deg); opacity: .4; z-index: 0; }
 .weld-lines span { height: 260px; width: 1px; background: #bac8c3; }
-.essentials { border-top: 1px solid #d8ddd8; padding: 32px 0 64px; }
-.section-heading { display: flex; justify-content: space-between; gap: 40px; margin-bottom: 28px; }
 h2 { font-size: 22px; margin: 0; letter-spacing: -.5px; }
-.section-heading p { max-width: 460px; font-size: 14px; line-height: 1.6; color: #526267; margin: 0; }
-.topics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-article { border: 1px solid #d8ddd8; border-radius: 5px; background: #fafaf7; padding: 26px; }
-.topic-number { font-family: monospace; font-size: 13px; color: #8a491f; }
-.planned { float: right; font-size: 10px; color: #526267; background: #ecefe8; border-radius: 3px; padding: 4px 7px; }
-h3 { font-size: 19px; margin: 36px 0 12px; letter-spacing: -.4px; }
-article p { font-size: 14px; color: #526267; line-height: 1.65; margin: 0; }
 footer { border-top: 1px solid #d8ddd8; padding-block: 24px; font-size: 11px; color: #526267; }
 .footer-divider { margin-inline: 10px; color: #a6b0ab; }
-@media (max-width: 700px) { .site-header, main, footer { width: calc(100% - 36px); } .site-header { padding-block: 20px; gap: 10px; } .brand { gap: 8px; font-size: 16px; } .languages { gap: 0; } .languages button { padding: 8px; } .hero { padding-block: 54px 60px; } h1 { letter-spacing: -1.7px; } .intro { font-size: 16px; } .weld-lines { opacity: .2; right: -40px; } .section-heading { flex-direction: column; gap: 14px; } .topics { grid-template-columns: 1fr; gap: 14px; } h3 { margin-top: 26px; } .essentials { padding-bottom: 38px; } }
+@media (max-width: 700px) { .site-header, main, footer { width: calc(100% - 36px); } .site-header { padding-block: 20px; gap: 10px; } .brand { gap: 8px; font-size: 16px; } .languages { gap: 0; } .languages button { padding: 8px; } .hero { padding-block: 54px 60px; } h1 { letter-spacing: -1.7px; } .intro { font-size: 16px; } .weld-lines { opacity: .2; right: -40px; } }
+.configurator { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; padding-bottom: 24px; }
+.configurator label { font-size: 14px; font-weight: 700; }
+.configurator select { font: inherit; max-width: 100%; min-height: 44px; padding: 10px 16px; color: #172a30; background: #fff; border: 1px solid #a6b0ab; border-radius: 3px; }
+.configurator select:focus-visible { outline: 3px solid #bd5c2b; outline-offset: 3px; }

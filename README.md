@@ -1,6 +1,10 @@
 # Welder’s Atlas
 
-A multilingual workbench for metal fabrication calculations and cutting templates. The Angular starter runs entirely in the browser.
+A multilingual workbench for metal fabrication calculations and cutting templates. The application runs entirely in the browser.
+
+Select round reducer, square-to-round transition or branch saddle from the action selector. Each calculator provides formed and flat views, millimetres or decimal inches, and a PDF download. The download button opens paper and printing options in a separate dialog.
+
+The square-to-round pattern uses four matching panels and a 16-sided approximation of the round rim. The saddle wrap includes a 20 mm reference band for transferring the profile. Templates use zero allowances. Print at actual size and complete the physical checks described in [pattern verification](docs/pattern-verification.md) before workshop use.
 
 | Language selector | Product name |
 | --- | --- |
@@ -38,7 +42,7 @@ docker compose logs -f
 docker compose down
 ```
 
-## Verify the starter
+## Verify the application
 
 Run the tests and production build from `frontend`.
 
@@ -48,3 +52,7 @@ npm run build
 ```
 
 The production build writes static files to `dist/welders-atlas/browser`.
+
+## Code structure
+
+Each fitting has a pure TypeScript calculation and colocated geometry tests. Angular calculator components own their input state and translations. Shared drawing types, previews and calculator styles support the fitting UIs. PDF options live in their own dialog component, and the PDF renderer is loaded when a download is requested. Both preview and export consume the calculated drawing geometry.
