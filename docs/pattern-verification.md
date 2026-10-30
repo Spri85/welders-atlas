@@ -176,3 +176,9 @@ Physical panel assembly and print scale remain pending.
 - All 149 tests and the production build passed (including the upcoming kerf/mass calculation tests).
 - Tests cover orientation selection, rotation-only fits, ties, exact spacing, zero fit and invalid inputs.
 - Browser checks verified sixteen blanks, 5 mm unused strips, zero fit and phone layout.
+
+## G18 circular kerf compensation
+
+- All 153 tests and the production build passed (including the upcoming mass/speed calculation tests).
+- Tests cover both scrap sides, controller compensation, zero kerf and nonpositive hole paths.
+- Browser checks verified 52/48 mm manual paths, 50 mm controller programming, reference-only tooltips and phone layout.

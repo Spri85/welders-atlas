@@ -12,6 +12,7 @@ import { tubeBendTool } from './calculators/tube-bend.tool';
 import { measuredRadiusTool } from './calculators/measured-radius.tool';
 import { squareTransitionTool } from './calculators/square-transition.tool';
 import { sheetGridTool } from './calculators/sheet-grid.tool';
+import { circularKerfTool } from './calculators/circular-kerf.tool';
 import type { CalculatorTool } from './calculator-tool';
 
-export const calculatorTools: readonly CalculatorTool[] = [miteredCornerTool, pipeOffsetTool, rectangularFrameTool, gateBarsTool, boltCircleTool, filletFillerTool, plateOpeningTool, bracketBlankTool, segmentedElbowTool, rolledSleeveTool, tubeBendTool, measuredRadiusTool, squareTransitionTool, sheetGridTool];
+export const calculatorTools: readonly CalculatorTool[] = [miteredCornerTool, pipeOffsetTool, rectangularFrameTool, gateBarsTool, boltCircleTool, filletFillerTool, plateOpeningTool, bracketBlankTool, segmentedElbowTool, rolledSleeveTool, tubeBendTool, measuredRadiusTool, squareTransitionTool, sheetGridTool, circularKerfTool];
