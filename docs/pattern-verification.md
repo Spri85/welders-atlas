@@ -150,3 +150,9 @@ Physical assembly, fit and print-scale checks remain pending.
 - All 127 tests and the production build passed.
 - Tests verify ID/OD equivalence, neutral-axis endpoints, adding allowance once and invalid walls/fractions.
 - Browser checks verified both diameter modes, the 627.04 mm allowance example and phone layout.
+
+## G15 continuous tube bend
+
+- All 134 tests and the production build passed (including the new chord/rise calculation tests).
+- Tests verify tangent setbacks, stock length, swapped legs, exact setback and invalid legs/angles.
+- Browser checks verified 328.54 mm stock, mirrored tangent marks, invalid clearing and phone layout.
