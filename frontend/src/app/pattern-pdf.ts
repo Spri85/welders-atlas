@@ -48,7 +48,7 @@ function drawDimensionReference(pdf: jsPDF, drawing: PatternDrawing, options: Pd
     pdf.setFontSize(9);
     pdf.text(text.coordinates, 10, y);
     pdf.setFontSize(7);
-    pdf.text(drawing.coordinateOrigin === 'upper-left' ? text.upperOrigin : text.origin, 10, y + 6);
+    pdf.text(drawing.coordinateOrigin === 'origin' ? text.centerOrigin : drawing.coordinateOrigin === 'upper-left' ? text.upperOrigin : text.origin, 10, y + 6);
     y += 14;
     pdf.setFontSize(8);
     pdf.text(text.id, 10, y);

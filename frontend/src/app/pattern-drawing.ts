@@ -10,7 +10,7 @@ export interface PatternDrawing {
   labels?: readonly PatternLabel[];
   vertices?: readonly { id: string; point: PatternPoint }[];
   coordinatePoints?: readonly { id: string; point: PatternPoint }[];
-  coordinateOrigin?: 'lower-left' | 'upper-left';
+  coordinateOrigin?: 'lower-left' | 'upper-left' | 'origin';
   measurements?: readonly PatternMeasurement[];
 }
 

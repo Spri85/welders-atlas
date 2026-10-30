@@ -19,8 +19,8 @@ export function drawingMeasurements(drawing: PatternDrawing): readonly PatternMe
 export function drawingCoordinates(drawing: PatternDrawing) {
   const bounds = drawingBounds(drawing);
   return (drawing.coordinatePoints ?? drawing.vertices ?? []).map((vertex) => ({
-    id: vertex.id, x: vertex.point.x - bounds.minX,
-    y: drawing.coordinateOrigin === 'upper-left' ? bounds.maxY - vertex.point.y : vertex.point.y - bounds.minY,
+    id: vertex.id, x: drawing.coordinateOrigin === 'origin' ? vertex.point.x : vertex.point.x - bounds.minX,
+    y: drawing.coordinateOrigin === 'origin' ? vertex.point.y : drawing.coordinateOrigin === 'upper-left' ? bounds.maxY - vertex.point.y : vertex.point.y - bounds.minY,
   }));
 }
 

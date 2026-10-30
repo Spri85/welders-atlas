@@ -105,3 +105,11 @@ Physical print and assembly checks remain pending.
 - All 103 tests and the production build passed.
 - Tests cover kerf/trim conservation, exact consumption, reusable offcuts, deterministic opened-bar ties, incompatible profiles, unavailable pieces and invalid quantities.
 - Browser checks verified editing the suggested plan, preserving the job in inches, phone layout and clearing invalid results.
+
+## G9 bolt-circle drilling template
+
+- All 107 tests and the production build passed.
+- Tests cover center-origin XY coordinates, angular/chord spacing, rotation, wraparound and invalid hole patterns.
+- Browser checks verified rotated coordinate tooltips, phone layout, PDF download and invalid export disabling. The two-page A4 PDF was reopened and rendered; label placement was corrected after visual inspection.
+
+Physical drilling-template registration and scale checks remain pending.
