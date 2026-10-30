@@ -87,7 +87,7 @@ export function createPatternPdf(drawing: PatternDrawing, options: PdfOptions, f
   pdf.setDocumentProperties({ title: options.title, creator: 'Welder’s Atlas' });
   drawDimensionReference(pdf, drawing, options);
   if (pdf.getNumberOfPages() + layout.tiles.length > 200) throw new RangeError('Pattern and reference exceed 200 pages.');
-  const outline = drawing.outline.flatMap((segment) => segment.kind === 'arc' ? arcPoints(segment) : [segment.start, segment.end]);
+  const contours = [drawing.outline, ...(drawing.contours ?? [])].map((outline) => outline.flatMap((segment) => segment.kind === 'arc' ? arcPoints(segment) : [segment.start, segment.end]));
 
   for (const tile of layout.tiles) {
     pdf.addPage([layout.page.width, layout.page.height]);
@@ -104,14 +104,16 @@ export function createPatternPdf(drawing: PatternDrawing, options: PdfOptions, f
     pdf.clip().discardPath();
     pdf.setLineWidth(0.2);
     pdf.setDrawColor(0);
-    const start = tile.project(outline[0]);
-    pdf.moveTo(start.x, start.y);
-    for (const point of outline.slice(1)) {
-      const projected = tile.project(point);
-      pdf.lineTo(projected.x, projected.y);
+    for (const [index, contour] of contours.entries()) {
+      const start = tile.project(contour[0]);
+      pdf.moveTo(start.x, start.y);
+      for (const point of contour.slice(1)) {
+        const projected = tile.project(point);
+        pdf.lineTo(projected.x, projected.y);
+      }
+      if (index > 0 || drawing.closed !== false) pdf.close();
+      pdf.stroke();
     }
-    if (drawing.closed !== false) pdf.close();
-    pdf.stroke();
     pdf.setLineDashPattern([2, 1], 0);
     for (const line of drawing.folds ?? []) {
       const from = tile.project(line.start);

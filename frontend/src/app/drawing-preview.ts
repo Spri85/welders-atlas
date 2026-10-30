@@ -22,7 +22,7 @@ export interface ModelLine { points: readonly Point3[]; seam?: boolean; label?: 
       <title>{{ title() }} — {{ activeView() === 'formed' ? text().formed : text().flat }}</title>
       @if (activeView() === 'flat') {
         @if (flat(); as drawing) {
-          <path class="blank" [class.open]="drawing.open" [attr.d]="drawing.path" />
+          <path class="blank" fill-rule="evenodd" [class.open]="drawing.open" [attr.d]="drawing.path" />
           @for (line of drawing.folds; track $index) {
             <line class="fold" [attr.x1]="line.start.x" [attr.y1]="line.start.y" [attr.x2]="line.end.x" [attr.y2]="line.end.y" />
           }

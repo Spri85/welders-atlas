@@ -32,7 +32,7 @@ const errors = {
           </fieldset>
           @for (field of tool().fields; track field.id) {
             @if (!field.when || field.when(values())) {
-              <label class="dimension" [for]="'tool-' + field.id">{{ field.label[language()] }} <span>{{ unitName(field.unit) }}</span></label>
+              <label class="dimension" [for]="'tool-' + field.id">{{ field.label[language()] }} <span>{{ unitName(field.unit) }} @if (field.optional) { ({{ optionalLabel[language()] }}) }</span></label>
               @if (field.choices) {
                 <select #choice [id]="'tool-' + field.id" [value]="values()[field.id]" (change)="update(field, +choice.value)">
                   @for (option of field.choices; track option.value) { <option [value]="option.value">{{ option.label[language()] }}</option> }
@@ -91,6 +91,7 @@ export class CalculatorWorkbench {
   readonly tool = input.required<CalculatorTool>();
   readonly language = input<Language>('ua');
   readonly common = computed(() => reducerCopy[this.language()]);
+  readonly optionalLabel = text('optional', 'необов’язково', 'необязательно');
   readonly inches = signal(false);
   readonly values = linkedSignal(() => Object.fromEntries(this.tool().fields.map((field) => [field.id, field.initial])));
   readonly calculation = computed(() => {
@@ -100,6 +101,7 @@ export class CalculatorWorkbench {
         const value = this.values()[field.id];
         if (field.optional && Number.isNaN(value)) continue;
         if (!Number.isFinite(value)) throw new CalculationError('range');
+        if (field.choices && !field.choices.some((choice) => choice.value === value)) throw new CalculationError('geometry');
       }
       return { result: this.tool().calculate(this.values()), error: null };
     } catch (error) {

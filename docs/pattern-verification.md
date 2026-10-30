@@ -87,3 +87,9 @@ Physical print and assembly checks remain pending.
 - All 89 tests and the production build passed.
 - The worked example returns 212.13 mm center travel, 150 mm advance and 142.13 mm straight cut. Tests cover zero straight, overlap and a rejected zero-degree angle.
 - Browser checks verified the worked result, a zero-straight job, a 1 mm overlap warning and removal of stale geometry after invalid input.
+
+## G6 rectangular frame
+
+- All 93 tests and the production build passed on Node 24.22.1.
+- Tests cover butt cuts, per-end clearance, miter long/short points, measured diagonals and invalid openings.
+- Browser checks verified 536 mm uprights with 2 mm end gaps, 740 mm miter short points, a 4 mm measured diagonal difference and the phone layout.
