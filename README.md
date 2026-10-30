@@ -6,6 +6,8 @@ Select round reducer, square-to-round transition or branch saddle from the actio
 
 Flat outlines include measurement tables. Square-to-round panels have numbered vertices with every cut-edge and fold-line length, overall dimensions and vertex coordinates. PDF downloads begin with the matching dimension reference sheet, followed by full-scale tiles.
 
+For manual saddle layout on metal, use the top-left reference corner. The outline labels the top-edge-to-profile heights A at 0°/180°/360° and B at 90°/270°. The marking table supplies absolute X distances across and Y distances down at 15° intervals.
+
 The square-to-round pattern uses four matching panels and a 16-sided approximation of the round rim. The saddle wrap includes a 20 mm reference band for transferring the profile. Templates use zero allowances. Print at actual size and complete the physical checks described in [pattern verification](docs/pattern-verification.md) before workshop use.
 
 | Language selector | Product name |

@@ -1,4 +1,4 @@
-import { drawingBounds, type PatternDrawing, type PatternMeasurement } from './pattern-drawing';
+import { drawingBounds, type PatternDrawing, type PatternLabel, type PatternMeasurement } from './pattern-drawing';
 import type { Language } from './export-copy';
 
 const lengthUnits = {
@@ -18,9 +18,16 @@ export function drawingMeasurements(drawing: PatternDrawing): readonly PatternMe
 
 export function drawingCoordinates(drawing: PatternDrawing) {
   const bounds = drawingBounds(drawing);
-  return (drawing.vertices ?? []).map((vertex) => ({
-    id: vertex.id, x: vertex.point.x - bounds.minX, y: vertex.point.y - bounds.minY,
+  return (drawing.coordinatePoints ?? drawing.vertices ?? []).map((vertex) => ({
+    id: vertex.id, x: vertex.point.x - bounds.minX,
+    y: drawing.coordinateOrigin === 'upper-left' ? bounds.maxY - vertex.point.y : vertex.point.y - bounds.minY,
   }));
+}
+
+export function drawingLabelText(drawing: PatternDrawing, label: PatternLabel, unit: 'mm' | 'in', language: Language): string {
+  const measurement = drawing.measurements?.find((item) => item.id === label.measurementId);
+  if (!measurement) return label.text;
+  return `${label.text} = ${formatPatternMeasurement(measurement.value, measurement.unit, unit, language)}`;
 }
 
 export function formatPatternMeasurement(value: number, measurementUnit: 'mm' | 'degree', unit: 'mm' | 'in', language: Language): string {

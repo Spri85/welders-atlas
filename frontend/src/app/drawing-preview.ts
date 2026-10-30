@@ -4,7 +4,7 @@ import type { Point3 } from './pattern-geometry';
 import { reducerCopy } from './reducer-copy';
 import type { Language } from './export-copy';
 import { PatternDimensions } from './pattern-dimensions';
-import { formatPatternMeasurement } from './pattern-measurements';
+import { drawingLabelText, formatPatternMeasurement } from './pattern-measurements';
 
 export interface ModelLine { points: readonly Point3[]; seam?: boolean; label?: string }
 
@@ -25,7 +25,8 @@ export interface ModelLine { points: readonly Point3[]; seam?: boolean; label?: 
             <line class="fold" [attr.x1]="line.start.x" [attr.y1]="line.start.y" [attr.x2]="line.end.x" [attr.y2]="line.end.y" />
           }
           @for (label of drawing.labels; track $index) {
-            <text [attr.x]="label.point.x + 4" [attr.y]="label.point.y - 4">{{ label.text }}</text>
+            <text [class.measurement-label]="label.measurementId" [attr.text-anchor]="label.anchor"
+              [attr.x]="label.point.x + 4" [attr.y]="label.point.y - 4">{{ label.text }}</text>
           }
           @for (vertex of drawing.vertices; track vertex.id) {
             <circle class="vertex" [attr.cx]="vertex.point.x" [attr.cy]="vertex.point.y" r="2.5" />
@@ -71,6 +72,7 @@ export interface ModelLine { points: readonly Point3[]; seam?: boolean; label?: 
     .vertex { fill: #172a30; }
     .vertex-label { fill: #172a30; font-size: 14px; }
     .dimension-label { fill: #526267; font-size: 13px; font-weight: 400; }
+    .measurement-label { font-size: 14px; }
     .dimension-line { stroke: #526267; stroke-width: 1; }
     label { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; font-size: 14px; }
     input { flex: 1; min-width: 100px; min-height: 44px; accent-color: #8a491f; }
@@ -97,7 +99,11 @@ export class DrawingPreview {
     return {
       path: drawingSvgPath(drawing, project),
       folds: (drawing.folds ?? []).map((line) => ({ start: project(line.start), end: project(line.end) })),
-      labels: (drawing.labels ?? []).map((label) => ({ ...label, point: project(label.point) })),
+      labels: (drawing.labels ?? []).map((label) => ({
+        ...label, point: project(label.point),
+        text: drawingLabelText(drawing, label, this.unit(), this.language()),
+        anchor: ({ left: 'start', center: 'middle', right: 'end' } as const)[label.align ?? 'left'],
+      })),
       vertices: (drawing.vertices ?? []).map((vertex) => ({
         ...vertex, point: project(vertex.point), showLabel: !drawing.labels?.some((label) => label.text === vertex.id),
       })),

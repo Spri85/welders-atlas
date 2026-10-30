@@ -4,14 +4,23 @@ export type { DrawingLine } from './pattern-geometry';
 export interface PatternDrawing {
   outline: readonly (PatternArc | DrawingLine)[];
   folds?: readonly DrawingLine[];
-  labels?: readonly { point: PatternPoint; text: string }[];
+  labels?: readonly PatternLabel[];
   vertices?: readonly { id: string; point: PatternPoint }[];
+  coordinatePoints?: readonly { id: string; point: PatternPoint }[];
+  coordinateOrigin?: 'lower-left' | 'upper-left';
   measurements?: readonly PatternMeasurement[];
+}
+
+export interface PatternLabel {
+  point: PatternPoint;
+  text: string;
+  measurementId?: string;
+  align?: 'left' | 'center' | 'right';
 }
 
 export interface PatternMeasurement {
   id: string;
-  kind: 'width' | 'height' | 'depth' | 'edge' | 'fold' | 'radius' | 'arc' | 'angle' | 'length';
+  kind: 'width' | 'height' | 'depth' | 'stationHeight' | 'edge' | 'fold' | 'radius' | 'arc' | 'angle' | 'length';
   value: number;
   unit: 'mm' | 'degree';
 }

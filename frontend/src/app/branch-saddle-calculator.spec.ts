@@ -3,6 +3,26 @@ import { describe, expect, it } from 'vitest';
 import { BranchSaddleCalculator } from './branch-saddle-calculator';
 
 describe('branch saddle controls', () => {
+  it('shows A/B heights on the flat outline and recalculates them after an edit', async () => {
+    const fixture = TestBed.createComponent(BranchSaddleCalculator);
+    fixture.componentRef.setInput('language', 'en');
+    await fixture.whenStable();
+    const root: HTMLElement = fixture.nativeElement;
+    root.querySelectorAll<HTMLButtonElement>('.view-buttons button')[1].click();
+    await fixture.whenStable();
+    expect(root.querySelector('svg')!.textContent).toContain('B = 30 mm');
+    expect(root.querySelectorAll('table[aria-label="Vertex coordinates"] tbody tr')).toHaveLength(25);
+    const field = root.querySelector<HTMLInputElement>('#branchDiameterMm')!;
+    field.value = '100';
+    field.dispatchEvent(new Event('input'));
+    await fixture.whenStable();
+    expect(root.querySelector('svg')!.textContent).toContain('B = 70 mm');
+    expect(root.querySelector('svg')!.textContent).toContain('A = 20 mm');
+    root.querySelectorAll<HTMLInputElement>('input[type=radio]')[1].click();
+    await fixture.whenStable();
+    expect(root.querySelector('svg')!.textContent).toContain('B = 2.7559 in');
+  });
+
   it('shows reference dimensions, accepts equal pipes and hides stale results for an oversized branch', async () => {
     const fixture = TestBed.createComponent(BranchSaddleCalculator);
     fixture.componentRef.setInput('language', 'en');

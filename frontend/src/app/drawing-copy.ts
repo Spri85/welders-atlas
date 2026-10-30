@@ -1,5 +1,7 @@
 export const drawingCopy = {
   ua: {
+    stationHeight: 'Від верхнього краю до профілю',
+    upperOrigin: 'Позначте точки від верхнього лівого кута: X праворуч, Y вниз до лінії різу. З’єднайте точки плавною кривою.',
     depth: 'Глибина вирізу',
     dimensions: 'Розміри розгортки', reference: 'Довідковий аркуш розмірів', id: 'Позначка', kind: 'Елемент', size: 'Розмір',
     width: 'Габаритна ширина', height: 'Габаритна висота', edge: 'Край різу', fold: 'Згин / орієнтир',
@@ -7,6 +9,8 @@ export const drawingCopy = {
     coordinates: 'Координати вершин', origin: 'X та Y відраховуються від нижнього лівого кута габаритів розгортки.',
   },
   ru: {
+    stationHeight: 'От верхнего края до профиля',
+    upperOrigin: 'Отметьте точки от верхнего левого угла: X вправо, Y вниз до линии реза. Соедините точки плавной кривой.',
     depth: 'Глубина выреза',
     dimensions: 'Размеры развёртки', reference: 'Справочный лист размеров', id: 'Метка', kind: 'Элемент', size: 'Размер',
     width: 'Габаритная ширина', height: 'Габаритная высота', edge: 'Край реза', fold: 'Сгиб / ориентир',
@@ -14,6 +18,8 @@ export const drawingCopy = {
     coordinates: 'Координаты вершин', origin: 'X и Y отсчитываются от нижнего левого угла габаритов развёртки.',
   },
   en: {
+    stationHeight: 'Top edge to profile',
+    upperOrigin: 'Mark points from the top-left corner: X to the right, Y down to the cut line. Join the points with a smooth curve.',
     depth: 'Notch depth',
     dimensions: 'Flat pattern dimensions', reference: 'Dimension reference sheet', id: 'Reference', kind: 'Element', size: 'Size',
     width: 'Overall width', height: 'Overall height', edge: 'Cut edge', fold: 'Fold / reference',

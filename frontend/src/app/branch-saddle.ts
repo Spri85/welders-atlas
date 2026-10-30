@@ -31,22 +31,35 @@ export function calculateBranchSaddle(dimensions: BranchSaddleDimensions) {
   }
   const bandTop = notchDepthMm + referenceBandMm;
   const perimeter = [...profile, { x: wrapLengthMm, y: bandTop }, { x: 0, y: bandTop }];
+  const stations = Array.from({ length: 5 }, (_, index) => ({
+    angle: index * 90,
+    id: index % 2 === 0 ? 'A' : 'B',
+    start: profile[index * 180],
+    end: { x: wrapLengthMm * index / 4, y: bandTop },
+  }));
+  const labelAlignments = ['left', 'center', 'center', 'center', 'right'] as const;
   const drawing: PatternDrawing = {
     outline: perimeter.map((start, index) => ({ kind: 'line', start, end: perimeter[(index + 1) % perimeter.length] })),
-    folds: Array.from({ length: 5 }, (_, index) => ({
-      kind: 'line', start: profile[index * 180], end: { x: wrapLengthMm * index / 4, y: bandTop },
-    })),
+    folds: stations.map((station) => ({ kind: 'line', start: station.start, end: station.end })),
     labels: [
-      ...Array.from({ length: 5 }, (_, index) => ({ text: `${index * 90}°`, point: { x: wrapLengthMm * index / 4 + (index === 4 ? -10 : 1), y: bandTop - 3 } })),
-      { text: 'A', point: { x: 1, y: notchDepthMm + 7 } },
-      { text: 'A', point: { x: wrapLengthMm - 5, y: notchDepthMm + 7 } },
+      ...stations.map((station, index) => ({ text: `${station.angle}°`, point: { x: station.start.x + (index === 4 ? -10 : 1), y: bandTop - 3 } })),
+      ...stations.map((station, index) => ({
+        text: station.id,
+        measurementId: station.id,
+        point: { x: station.start.x, y: (station.start.y + station.end.y) / 2 },
+        align: labelAlignments[index],
+      })),
     ],
     vertices: Array.from({ length: 5 }, (_, index) => ({ id: `${index * 90}°`, point: profile[index * 180] })),
+    coordinateOrigin: 'upper-left',
+    coordinatePoints: Array.from({ length: 25 }, (_, index) => ({ id: `${index * 15}°`, point: profile[index * 30] })),
     measurements: [
       { id: '0°–360°', kind: 'length', value: wrapLengthMm, unit: 'mm' },
       { id: '0°–90°', kind: 'length', value: wrapLengthMm / 4, unit: 'mm' },
       { id: 'Δ', kind: 'depth', value: notchDepthMm, unit: 'mm' },
-      { id: 'A', kind: 'edge', value: referenceBandMm, unit: 'mm' },
+      { id: 'A', kind: 'stationHeight', value: stations[0].end.y - stations[0].start.y, unit: 'mm' },
+      { id: 'B', kind: 'stationHeight', value: stations[1].end.y - stations[1].start.y, unit: 'mm' },
+      { id: 'P (15°)', kind: 'length', value: wrapLengthMm / 24, unit: 'mm' },
     ],
   };
   return { allowance: 'zero-allowance' as const, notchDepthMm, wrapLengthMm, referenceBandMm, sampleStepDegrees: 0.5, profile, intersection, drawing };

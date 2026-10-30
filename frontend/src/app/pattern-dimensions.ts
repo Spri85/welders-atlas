@@ -18,7 +18,7 @@ import type { Language } from './export-copy';
     </table>
     @if (coordinates().length) {
       <h3>{{ text().coordinates }}</h3>
-      <p>{{ text().origin }}</p>
+      <p>{{ drawing().coordinateOrigin === 'upper-left' ? text().upperOrigin : text().origin }}</p>
       <table [attr.aria-label]="text().coordinates">
         <thead><tr><th scope="col">{{ text().id }}</th><th scope="col">X</th><th scope="col">Y</th></tr></thead>
         <tbody>

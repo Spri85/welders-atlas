@@ -3,7 +3,7 @@ import { arcPoints, type PatternDrawing } from './pattern-drawing';
 import { layoutPatternTiles, type PaperSize } from './pattern-tiles';
 import { exportCopy, type Language } from './export-copy';
 import { drawingCopy } from './drawing-copy';
-import { drawingCoordinates, drawingMeasurements, formatPatternMeasurement } from './pattern-measurements';
+import { drawingCoordinates, drawingLabelText, drawingMeasurements, formatPatternMeasurement } from './pattern-measurements';
 
 export interface PdfOptions {
   paper: PaperSize;
@@ -16,6 +16,13 @@ export interface PdfOptions {
 function drawDimensionReference(pdf: jsPDF, drawing: PatternDrawing, options: PdfOptions): void {
   const text = drawingCopy[options.language];
   const printing = exportCopy[options.language];
+  const width = pdf.internal.pageSize.getWidth();
+  const height = pdf.internal.pageSize.getHeight();
+  const finishPage = () => {
+    pdf.setFontSize(7);
+    pdf.text(printing.zero, 10, height - 15);
+    pdf.text(printing.unverified, 10, height - 9);
+  };
   const format = (value: number, unit: 'mm' | 'degree') => formatPatternMeasurement(value, unit, options.unit, options.language);
   pdf.setFontSize(11);
   pdf.text(options.title, 10, 10);
@@ -41,27 +48,36 @@ function drawDimensionReference(pdf: jsPDF, drawing: PatternDrawing, options: Pd
     pdf.setFontSize(9);
     pdf.text(text.coordinates, 10, y);
     pdf.setFontSize(7);
-    pdf.text(text.origin, 10, y + 6);
+    pdf.text(drawing.coordinateOrigin === 'upper-left' ? text.upperOrigin : text.origin, 10, y + 6);
     y += 14;
     pdf.setFontSize(8);
     pdf.text(text.id, 10, y);
     pdf.text('X', 65, y);
     pdf.text('Y', 135, y);
     for (const point of coordinates) {
-      y += 6;
+      if (y + 5 > height - 20) {
+        finishPage();
+        pdf.addPage([width, height]);
+        pdf.setFontSize(11);
+        pdf.text(options.title, 10, 10);
+        pdf.text(text.coordinates, 10, 18);
+        pdf.setFontSize(8);
+        pdf.text(text.id, 10, 30);
+        pdf.text('X', 65, 30);
+        pdf.text('Y', 135, 30);
+        y = 30;
+      }
+      y += 5;
       pdf.text(point.id, 10, y);
       pdf.text(format(point.x, 'mm'), 65, y);
       pdf.text(format(point.y, 'mm'), 135, y);
     }
   }
-  pdf.setFontSize(7);
-  pdf.text(printing.zero, 10, pdf.internal.pageSize.getHeight() - 15);
-  pdf.text(printing.unverified, 10, pdf.internal.pageSize.getHeight() - 9);
+  finishPage();
 }
 
 export function createPatternPdf(drawing: PatternDrawing, options: PdfOptions, font: string): jsPDF {
   const layout = layoutPatternTiles(drawing, options.paper);
-  if (layout.tiles.length >= 200) throw new RangeError('Pattern and reference exceed 200 pages.');
   const text = exportCopy[options.language];
   const pdf = new jsPDF({ unit: 'mm', format: [layout.page.width, layout.page.height], precision: 6, putOnlyUsedFonts: true });
   pdf.addFileToVFS('NotoSans-Regular.ttf', font);
@@ -70,6 +86,7 @@ export function createPatternPdf(drawing: PatternDrawing, options: PdfOptions, f
   pdf.viewerPreferences({ PrintScaling: 'None' });
   pdf.setDocumentProperties({ title: options.title, creator: 'Welder’s Atlas' });
   drawDimensionReference(pdf, drawing, options);
+  if (pdf.getNumberOfPages() + layout.tiles.length > 200) throw new RangeError('Pattern and reference exceed 200 pages.');
   const outline = drawing.outline.flatMap((segment) => segment.kind === 'arc' ? arcPoints(segment) : [segment.start, segment.end]);
 
   for (const tile of layout.tiles) {
@@ -104,7 +121,7 @@ export function createPatternPdf(drawing: PatternDrawing, options: PdfOptions, f
     pdf.setFontSize(9);
     for (const label of drawing.labels ?? []) {
       const point = tile.project(label.point);
-      pdf.text(label.text, point.x, point.y);
+      pdf.text(drawingLabelText(drawing, label, options.unit, options.language), point.x, point.y, { align: label.align ?? 'left' });
     }
     for (const vertex of drawing.vertices ?? []) {
       const point = tile.project(vertex.point);

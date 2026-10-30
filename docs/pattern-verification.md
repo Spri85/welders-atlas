@@ -46,3 +46,13 @@ Physical pipe fitting and printed-template scale checks remain pending.
 - Each PDF now includes one dimension reference sheet before the tiles. The default samples have three panel pages, seven reducer pages and three saddle pages in total.
 
 Physical verification remains pending.
+
+## Manual saddle marking guide
+
+- All 75 tests and the production build passed on Node 24.22.1.
+- Heights are measured down from the top reference edge. A labels 0°, 180° and 360°; B labels 90° and 270°. For the 100 / 60 mm case, A is 20 mm and B is 30 mm. Equal 100 mm diameters give B = 70 mm.
+- The coordinate table uses the top-left datum and provides 25 absolute X/Y marking positions at 15° intervals. Square-to-round coordinates retain their lower-left datum.
+- Browser checks verified all five A/B numeric labels, inch conversion, all 25 table rows and the phone layout. Geometry and component tests verify updates after diameter edits.
+- A US Letter PDF was downloaded, reopened and rendered. Its reference sheet contains every marking station and top-datum instructions; the pattern tiles contain all A/B labels and values. Reference sheets paginate when needed.
+
+Physical marking and fitting checks remain pending.
