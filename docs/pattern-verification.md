@@ -56,3 +56,13 @@ Physical verification remains pending.
 - A US Letter PDF was downloaded, reopened and rendered. Its reference sheet contains every marking station and top-datum instructions; the pattern tiles contain all A/B labels and values. Reference sheets paginate when needed.
 
 Physical marking and fitting checks remain pending.
+
+## Square-to-round manual construction guides
+
+- All 76 tests and the production build passed on Node 24.22.1.
+- M is the midpoint of baseline 1–2. The centerline M–5 has dimension h. The horizontal 3–7 span is centered over M at height H.
+- The default 200 / 100 / 150 mm panel gives h = 158.11 mm and 3–7 = 76.65 mm, calculated before display rounding. M is included in the coordinate table.
+- Construction guides use a blue dash-dot style in the preview and PDF. The seven cutting edges and four fold lines retain their geometry. Translated instructions explain the marking sequence and the cutting path through 3–4–5–6–7.
+- Browser checks covered guide labels, millimetre/inch conversion and the phone layout. The downloaded Letter PDF was reopened and rendered, and its serialized guide lengths and line style were checked.
+
+Physical metal marking and fitting remain pending.

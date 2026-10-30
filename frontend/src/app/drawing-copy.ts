@@ -1,5 +1,6 @@
 export const drawingCopy = {
   ua: {
+    construction: 'Допоміжна побудова',
     stationHeight: 'Від верхнього краю до профілю',
     upperOrigin: 'Позначте точки від верхнього лівого кута: X праворуч, Y вниз до лінії різу. З’єднайте точки плавною кривою.',
     depth: 'Глибина вирізу',
@@ -9,6 +10,7 @@ export const drawingCopy = {
     coordinates: 'Координати вершин', origin: 'X та Y відраховуються від нижнього лівого кута габаритів розгортки.',
   },
   ru: {
+    construction: 'Вспомогательное построение',
     stationHeight: 'От верхнего края до профиля',
     upperOrigin: 'Отметьте точки от верхнего левого угла: X вправо, Y вниз до линии реза. Соедините точки плавной кривой.',
     depth: 'Глубина выреза',
@@ -18,6 +20,7 @@ export const drawingCopy = {
     coordinates: 'Координаты вершин', origin: 'X и Y отсчитываются от нижнего левого угла габаритов развёртки.',
   },
   en: {
+    construction: 'Construction guide',
     stationHeight: 'Top edge to profile',
     upperOrigin: 'Mark points from the top-left corner: X to the right, Y down to the cut line. Join the points with a smooth curve.',
     depth: 'Notch depth',

@@ -16,6 +16,7 @@ export interface ModelLine { points: readonly Point3[]; seam?: boolean; label?: 
       <button type="button" [attr.aria-pressed]="view() === 'formed'" (click)="view.set('formed')">{{ text().formed }}</button>
       <button type="button" [attr.aria-pressed]="view() === 'flat'" (click)="view.set('flat')">{{ text().flat }}</button>
     </div>
+    @if (view() === 'flat' && instructions()) { <p class="instructions">{{ instructions() }}</p> }
     <svg viewBox="0 0 560 360" role="img" [attr.aria-label]="title()">
       <title>{{ title() }} — {{ view() === 'formed' ? text().formed : text().flat }}</title>
       @if (view() === 'flat') {
@@ -24,8 +25,11 @@ export interface ModelLine { points: readonly Point3[]; seam?: boolean; label?: 
           @for (line of drawing.folds; track $index) {
             <line class="fold" [attr.x1]="line.start.x" [attr.y1]="line.start.y" [attr.x2]="line.end.x" [attr.y2]="line.end.y" />
           }
+          @for (line of drawing.construction; track $index) {
+            <line class="construction" [attr.x1]="line.start.x" [attr.y1]="line.start.y" [attr.x2]="line.end.x" [attr.y2]="line.end.y" />
+          }
           @for (label of drawing.labels; track $index) {
-            <text [class.measurement-label]="label.measurementId" [attr.text-anchor]="label.anchor"
+            <text [class.measurement-label]="label.measurementId" [class.construction-label]="label.construction" [attr.text-anchor]="label.anchor"
               [attr.x]="label.point.x + 4" [attr.y]="label.point.y - 4">{{ label.text }}</text>
           }
           @for (vertex of drawing.vertices; track vertex.id) {
@@ -68,6 +72,9 @@ export interface ModelLine { points: readonly Point3[]; seam?: boolean; label?: 
     polyline, line { fill: none; stroke: #526267; stroke-width: 1; }
     .blank { fill: #e5ebe6; stroke: #526267; stroke-width: 1.5; }
     .fold, .seam { stroke: #a24c21; stroke-dasharray: 5 3; stroke-width: 1.5; }
+    .construction { stroke: #366780; stroke-dasharray: 8 3 1 3; stroke-width: 1; }
+    .construction-label { fill: #366780; }
+    .instructions { font-size: 14px; line-height: 1.6; color: #526267; }
     text { fill: #8a491f; font-size: 16px; font-weight: 700; paint-order: stroke; stroke: #fafaf7; stroke-width: 3px; }
     .vertex { fill: #172a30; }
     .vertex-label { fill: #172a30; font-size: 14px; }
@@ -84,6 +91,7 @@ export class DrawingPreview {
   readonly language = input<Language>('ua');
   readonly unit = input<'mm' | 'in'>('mm');
   readonly title = input.required<string>();
+  readonly instructions = input('');
   readonly text = computed(() => reducerCopy[this.language()]);
   readonly view = signal<'formed' | 'flat'>('formed');
   readonly rotation = signal(30);
@@ -99,10 +107,12 @@ export class DrawingPreview {
     return {
       path: drawingSvgPath(drawing, project),
       folds: (drawing.folds ?? []).map((line) => ({ start: project(line.start), end: project(line.end) })),
+      construction: (drawing.construction ?? []).map((line) => ({ start: project(line.start), end: project(line.end) })),
       labels: (drawing.labels ?? []).map((label) => ({
         ...label, point: project(label.point),
         text: drawingLabelText(drawing, label, this.unit(), this.language()),
         anchor: ({ left: 'start', center: 'middle', right: 'end' } as const)[label.align ?? 'left'],
+        construction: drawing.measurements?.some((item) => item.id === label.measurementId && item.kind === 'construction'),
       })),
       vertices: (drawing.vertices ?? []).map((vertex) => ({
         ...vertex, point: project(vertex.point), showLabel: !drawing.labels?.some((label) => label.text === vertex.id),

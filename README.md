@@ -8,6 +8,8 @@ Flat outlines include measurement tables. Square-to-round panels have numbered v
 
 For manual saddle layout on metal, use the top-left reference corner. The outline labels the top-edge-to-profile heights A at 0°/180°/360° and B at 90°/270°. The marking table supplies absolute X distances across and Y distances down at 15° intervals.
 
+For square-to-round panels, mark M at the midpoint of 1–2 and use h to locate point 5 vertically above it. At height H, center the measured 3–7 construction span over M. Use the coordinates for points 4 and 6 and follow the 3–4–5–6–7 cutting path. Blue dash-dot lines identify construction guides.
+
 The square-to-round pattern uses four matching panels and a 16-sided approximation of the round rim. The saddle wrap includes a 20 mm reference band for transferring the profile. Templates use zero allowances. Print at actual size and complete the physical checks described in [pattern verification](docs/pattern-verification.md) before workshop use.
 
 | Language selector | Product name |

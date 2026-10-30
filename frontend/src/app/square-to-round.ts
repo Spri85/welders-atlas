@@ -47,11 +47,19 @@ export function calculateSquareToRound(dimensions: SquareToRoundDimensions) {
   const edge = (from: number, to: number) => ({ kind: 'line' as const, start: flat[from], end: flat[to] });
   const perimeter = [0, 1, 6, 5, 4, 3, 2];
   const foldPairs = [[0, 4], [0, 3], [1, 4], [1, 5]] as const;
+  const midpoint = { x: (flat[0].x + flat[1].x) / 2, y: (flat[0].y + flat[1].y) / 2 };
   const drawing: PatternDrawing = {
     outline: perimeter.map((from, index) => edge(from, perimeter[(index + 1) % perimeter.length])),
     folds: foldPairs.map(([from, to]) => edge(from, to)),
-    labels: [[0, 2], [1, 6]].map(([from, to]) => ({ text: 'A', point: { x: (flat[from].x + flat[to].x) / 2, y: (flat[from].y + flat[to].y) / 2 } })),
+    construction: [edge(2, 6), { kind: 'line', start: midpoint, end: flat[4] }],
+    labels: [
+      ...[[0, 2], [1, 6]].map(([from, to]) => ({ text: 'A', point: { x: (flat[from].x + flat[to].x) / 2, y: (flat[from].y + flat[to].y) / 2 } })),
+      { text: 'M', point: midpoint },
+      { text: 'h', measurementId: 'h', point: { x: midpoint.x + 2, y: flat[4].y / 2 } },
+      { text: '3–7', measurementId: '3–7', point: { x: midpoint.x, y: flat[4].y * 0.84 }, align: 'center' },
+    ],
     vertices: flat.map((point, index) => ({ id: String(index + 1), point })),
+    coordinatePoints: [...flat.map((point, index) => ({ id: String(index + 1), point })), { id: 'M', point: midpoint }],
     measurements: [
       ...perimeter.map((from, index) => {
         const to = perimeter[(index + 1) % perimeter.length];
@@ -61,6 +69,8 @@ export function calculateSquareToRound(dimensions: SquareToRoundDimensions) {
         id: `${from + 1}–${to + 1}`, kind: 'fold' as const, unit: 'mm' as const,
         value: Math.hypot(flat[to].x - flat[from].x, flat[to].y - flat[from].y),
       })),
+      { id: 'h', kind: 'construction', unit: 'mm', value: Math.hypot(flat[4].x - midpoint.x, flat[4].y - midpoint.y) },
+      { id: '3–7', kind: 'construction', unit: 'mm', value: Math.hypot(flat[6].x - flat[2].x, flat[6].y - flat[2].y) },
     ],
   };
   const formedPanels = Array.from({ length: 4 }, (_, index) => formed.map((point) => ({

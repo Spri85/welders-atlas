@@ -117,12 +117,25 @@ export function createPatternPdf(drawing: PatternDrawing, options: PdfOptions, f
       const to = tile.project(line.end);
       pdf.line(from.x, from.y, to.x, to.y);
     }
+    pdf.setLineDashPattern([4, 1, 0.5, 1], 0);
+    pdf.setDrawColor(54, 103, 128);
+    for (const line of drawing.construction ?? []) {
+      const from = tile.project(line.start);
+      const to = tile.project(line.end);
+      pdf.line(from.x, from.y, to.x, to.y);
+    }
     pdf.setLineDashPattern([], 0);
+    pdf.setDrawColor(0);
     pdf.setFontSize(9);
     for (const label of drawing.labels ?? []) {
       const point = tile.project(label.point);
+      pdf.setTextColor(0);
+      if (drawing.measurements?.some((item) => item.id === label.measurementId && item.kind === 'construction')) {
+        pdf.setTextColor(54, 103, 128);
+      }
       pdf.text(drawingLabelText(drawing, label, options.unit, options.language), point.x, point.y, { align: label.align ?? 'left' });
     }
+    pdf.setTextColor(0);
     for (const vertex of drawing.vertices ?? []) {
       const point = tile.project(vertex.point);
       pdf.circle(point.x, point.y, 0.5);

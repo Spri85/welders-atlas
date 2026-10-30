@@ -10,9 +10,10 @@ describe('flat pattern dimensions', () => {
 
   it('reports every perimeter and fold edge against its numbered endpoints', () => {
     expect(drawing.vertices).toHaveLength(7);
-    expect(drawing.measurements).toHaveLength(11);
+    expect(drawing.measurements).toHaveLength(13);
     const lines = [...drawing.outline, ...drawing.folds!];
-    for (const [index, measurement] of drawing.measurements!.entries()) {
+    const edges = drawing.measurements!.filter((item) => item.kind === 'edge' || item.kind === 'fold');
+    for (const [index, measurement] of edges.entries()) {
       const line = lines[index];
       expect(measurement.value).toBeCloseTo(Math.hypot(line.end.x - line.start.x, line.end.y - line.start.y), 10);
       const [from, to] = measurement.id.split('–');
@@ -44,7 +45,7 @@ describe('flat pattern dimensions', () => {
     fixture.componentRef.setInput('language', 'en');
     await fixture.whenStable();
     const root: HTMLElement = fixture.nativeElement;
-    expect(root.querySelectorAll('tbody tr')).toHaveLength(20);
+    expect(root.querySelectorAll('tbody tr')).toHaveLength(23);
     expect(root.textContent).toContain('200 mm');
     expect(root.textContent).toContain('Fold / reference');
     fixture.componentRef.setInput('unit', 'in');

@@ -4,6 +4,7 @@ export type { DrawingLine } from './pattern-geometry';
 export interface PatternDrawing {
   outline: readonly (PatternArc | DrawingLine)[];
   folds?: readonly DrawingLine[];
+  construction?: readonly DrawingLine[];
   labels?: readonly PatternLabel[];
   vertices?: readonly { id: string; point: PatternPoint }[];
   coordinatePoints?: readonly { id: string; point: PatternPoint }[];
@@ -20,7 +21,7 @@ export interface PatternLabel {
 
 export interface PatternMeasurement {
   id: string;
-  kind: 'width' | 'height' | 'depth' | 'stationHeight' | 'edge' | 'fold' | 'radius' | 'arc' | 'angle' | 'length';
+  kind: 'width' | 'height' | 'depth' | 'stationHeight' | 'construction' | 'edge' | 'fold' | 'radius' | 'arc' | 'angle' | 'length';
   value: number;
   unit: 'mm' | 'degree';
 }

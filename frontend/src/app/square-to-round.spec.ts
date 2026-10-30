@@ -21,8 +21,25 @@ describe('square-to-round panel development', () => {
     expect(result.allowance).toBe('zero-allowance');
     expect(result.drawing.folds).toHaveLength(4);
     expect(result.drawing.outline[0].start).toEqual(result.drawing.outline.at(-1)!.end);
-    expect(result.drawing.labels!.map((label) => label.text)).toEqual(['A', 'A']);
+    expect(result.drawing.labels!.map((label) => label.text)).toEqual(['A', 'A', 'M', 'h', '3–7']);
     expect(result.flatVertices[1].x - result.flatVertices[0].x).toBe(input.squareWidthMm);
+  });
+
+  it('provides the midpoint-to-5 height and centered 3–7 construction span', () => {
+    const result = calculateSquareToRound(dimensions);
+    const [span, centerline] = result.drawing.construction!;
+    const [one, two, three, , five, , seven] = result.flatVertices;
+    expect(centerline.start).toEqual({ x: (one.x + two.x) / 2, y: (one.y + two.y) / 2 });
+    expect(centerline.end).toEqual(five);
+    expect(centerline.start.x).toBe(five.x);
+    expect(span.start).toEqual(three);
+    expect(span.end).toEqual(seven);
+    expect(three.y).toBeCloseTo(seven.y, 12);
+    expect((three.x + seven.x) / 2).toBeCloseTo(centerline.start.x, 12);
+    expect(result.drawing.measurements!.find((item) => item.id === 'h')!.value.toFixed(2)).toBe('158.11');
+    expect(result.drawing.measurements!.find((item) => item.id === '3–7')!.value.toFixed(2)).toBe('76.65');
+    expect(result.drawing.outline).toHaveLength(7);
+    expect(result.drawing.folds).toHaveLength(4);
   });
 
   it('assembles four identical panels around the same square and 16-sided rim', () => {
