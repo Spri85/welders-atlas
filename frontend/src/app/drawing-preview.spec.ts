@@ -9,7 +9,7 @@ it('uses the same measurement for formed and flat reference tooltips', async () 
   const result = calculateSquareToRound({
     squareWidthMm: 200,
     roundDiameterMm: 100,
-    heightMm: 150,
+    heightMm: 150, maxDeviationMm: 1,
   });
   const fixture = TestBed.createComponent(DrawingPreview);
   fixture.componentRef.setInput('drawing', result.drawing);

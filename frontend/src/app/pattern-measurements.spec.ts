@@ -14,7 +14,7 @@ describe('flat pattern dimensions', () => {
   const drawing = calculateSquareToRound({
     squareWidthMm: 200,
     roundDiameterMm: 100,
-    heightMm: 150,
+    heightMm: 150, maxDeviationMm: 1,
   }).drawing;
 
   it('reports every perimeter and fold edge against its numbered endpoints', () => {

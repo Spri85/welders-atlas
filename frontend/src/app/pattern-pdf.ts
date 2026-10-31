@@ -37,6 +37,18 @@ function drawDimensionReference(pdf: jsPDF, drawing: PatternDrawing, options: Pd
   pdf.text(text.size, 135, 53);
   let y = 60;
   for (const item of drawingMeasurements(drawing)) {
+    if (y > height - 24) {
+      finishPage();
+      pdf.addPage([width, height]);
+      pdf.setFontSize(11);
+      pdf.text(options.title, 10, 10);
+      pdf.text(text.dimensions, 10, 18);
+      pdf.setFontSize(8);
+      pdf.text(text.id, 10, 30);
+      pdf.text(text.kind, 45, 30);
+      pdf.text(text.size, 135, 30);
+      y = 37;
+    }
     pdf.text(item.id, 10, y);
     pdf.text(text[item.kind], 45, y);
     pdf.text(format(item.value, item.unit), 135, y);
@@ -44,6 +56,13 @@ function drawDimensionReference(pdf: jsPDF, drawing: PatternDrawing, options: Pd
   }
   const coordinates = drawingCoordinates(drawing);
   if (coordinates.length) {
+    if (y + 37 > height - 20) {
+      finishPage();
+      pdf.addPage([width, height]);
+      pdf.setFontSize(11);
+      pdf.text(options.title, 10, 10);
+      y = 9;
+    }
     y += 9;
     pdf.setFontSize(9);
     pdf.text(text.coordinates, 10, y);

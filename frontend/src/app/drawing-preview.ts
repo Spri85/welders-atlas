@@ -35,7 +35,7 @@ export interface ModelLine { points: readonly Point3[]; seam?: boolean; construc
               [measurementTooltip]="label.tooltip" [attr.x]="label.point.x + 4" [attr.y]="label.point.y - 4">{{ label.text }}</text>
           }
           @for (vertex of drawing.vertices; track vertex.id) {
-            <circle class="vertex" [attr.cx]="vertex.point.x" [attr.cy]="vertex.point.y" r="2.5" />
+            <circle class="vertex" [measurementTooltip]="vertex.tooltip" [attr.cx]="vertex.point.x" [attr.cy]="vertex.point.y" r="2.5" />
             @if (vertex.showLabel) {
               <text class="vertex-label" [measurementTooltip]="vertex.tooltip" [attr.x]="vertex.point.x + 5" [attr.y]="vertex.point.y - 7">{{ vertex.id }}</text>
             }
@@ -98,6 +98,7 @@ export class DrawingPreview {
   readonly instructions = input('');
   readonly parameters = input<readonly InputReference[]>([]);
   readonly showDimensions = input(true);
+  readonly vertexLabelIds = input<readonly string[] | null>(null);
   readonly hints = input<Readonly<Partial<Record<string, string>>>>({});
   readonly text = computed(() => reducerCopy[this.language()]);
   readonly view = signal<'formed' | 'flat'>('formed');
@@ -128,7 +129,7 @@ export class DrawingPreview {
         construction: drawing.measurements?.some((item) => item.id === label.measurementId && item.kind === 'construction'),
       })),
       vertices: (drawing.vertices ?? []).map((vertex) => ({
-        ...vertex, point: project(vertex.point), showLabel: !drawing.labels?.some((label) => label.text === vertex.id),
+        ...vertex, point: project(vertex.point), showLabel: (!this.vertexLabelIds() || this.vertexLabelIds()!.includes(vertex.id)) && !drawing.labels?.some((label) => label.text === vertex.id),
         tooltip: coordinateHints.get(vertex.id) ?? vertex.id,
       })),
       width: cutBounds.width, height: cutBounds.height,

@@ -17,7 +17,7 @@ Physical verification is pending. Print at 100% with page fitting disabled, meas
 
 - All 57 tests and the production build passed after the shared preview and export-dialog changes.
 - Every edge of all five developed triangles matches its corresponding 3D edge, including a shallow transition and a tall transition.
-- Four rotated copies share their square corners and rim endpoints. The rim is explicitly a 16-sided approximation of the specified round diameter.
+- Four rotated copies share their square corners and rim endpoints. The original rim was a fixed 16-sided approximation; the adaptive update below supersedes that count.
 - Browser checks covered keyboard rotation and view switching, unit changes, invalid-input hiding, and the phone layout.
 - A downloaded two-page A4 panel PDF contains fold marks, seam labels, the 16-facet designation and the instruction to cut four identical panels. The rendered page was inspected.
 - Export settings open in a modal dialog. Escape closes it and restores focus to the download button.
@@ -60,7 +60,7 @@ Physical marking and fitting checks remain pending.
 ## Square-to-round manual construction guides
 
 - All 76 tests and the production build passed on Node 24.22.1.
-- M is the midpoint of baseline 1–2. The centerline M–5 has dimension h. The horizontal 3–7 span is centered over M at height H.
+- M is the midpoint of baseline 1–2. The centerline M–5 has dimension h. The default horizontal 3–7 span is centered over M at height Hflat. Point numbers change with adaptive segmentation.
 - The default 200 / 100 / 150 mm panel gives h = 158.11 mm and 3–7 = 76.65 mm, calculated before display rounding. M is included in the coordinate table.
 - Construction guides use a blue dash-dot style in the preview and PDF. The seven cutting edges and four fold lines retain their geometry. Translated instructions explain the marking sequence and the cutting path through 3–4–5–6–7.
 - Browser checks covered guide labels, millimetre/inch conversion and the phone layout. The downloaded Letter PDF was reopened and rendered, and its serialized guide lengths and line style were checked.
@@ -228,3 +228,12 @@ Physical panel assembly and print scale remain pending.
 - The new calculation modules and tool adapters were formatted for readability; shared input, result, drawing and PDF contracts remain reusable. README coverage now reflects the complete library.
 
 Automated verification does not complete physical print-scale, assembly, coupon, cutting or drilling-registration checks. Those remain pending as recorded above.
+
+## G2 adaptive segmentation — 2026-10-31
+
+- Maximum radial deviation ε defaults to 1 mm and is independent of any weld gap. The smallest symmetric count N (multiple of 8, at least 8) satisfies `D × sin²(π/(2N)) ≤ ε`. Counts above 1024 are rejected.
+- The 200 / 100 / 150 mm default retains 16 segments. The 2000 / 1500 / 150 mm example now uses 64 total, 16 per panel, and radial deviation about 0.903408 mm.
+- Triangle development, folds, endpoint references, coordinates and instructions use the calculated count. Dense preview numbering is reduced for readability; all points are retained in coordinate tables and the PDF.
+- The stated deviation is the radial chord error of the faceted outlet. It does not certify weld fit, material forming, thickness compensation or assembly accuracy. Physical assembly remains unverified.
+
+**Verified 2026-10-31.** All 227 tests in 37 files, production build and diff checks passed. Browser checks covered ua/ru/en at 1366 and 375 px, 1→4 mm recalculation, mm/in switching, blank-input export blocking, and A4/Letter downloads. Rendered reference and tiled PDF pages were inspected; dimension pagination and Unicode labels remain readable. Artifacts: `/tmp/atlas-auto-segments`. Physical assembly remains pending.
