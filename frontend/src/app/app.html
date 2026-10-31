@@ -7,19 +7,28 @@
   </nav>
 </header>
 <main>
-  <section class="hero" aria-labelledby="welcome">
-    <p class="eyebrow"><span aria-hidden="true"></span>{{ text().eyebrow }}</p>
+  <section class="workspace-intro" aria-labelledby="welcome">
     <h1 id="welcome">{{ text().heading }}</h1>
     <p class="intro">{{ text().intro }}</p>
-    <div class="weld-lines" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
   </section>
   <div class="configurator">
-    <label for="calculator-action">{{ text().action }}</label>
-    <select #action id="calculator-action" [value]="selectedCalculator()" (change)="selectCalculator(action.value)">
-      @for (calculator of calculators(); track calculator.id) {
-        <option [value]="calculator.id">{{ calculator.title }}</option>
+    <div class="transition-shortcuts" role="group" [attr.aria-label]="text().shortcuts">
+      @for (shortcut of transitionShortcuts; track shortcut.id) {
+        <button type="button" [attr.aria-pressed]="selectedCalculator() === shortcut.id" (click)="selectCalculator(shortcut.id)">{{ shortcut.title[language()] }}</button>
       }
-    </select>
+    </div>
+    <div class="calculator-picker">
+      <label for="calculator-select">{{ text().calculator }}</label>
+      <select #calculatorSelect id="calculator-select" [value]="selectedCalculator()" (change)="selectCalculator(calculatorSelect.value)">
+        @for (group of calculatorGroups; track group.id) {
+          <optgroup [label]="group.title[language()]">
+            @for (calculator of group.calculators; track calculator.id) {
+              <option [value]="calculator.id">{{ calculator.title[language()] }}</option>
+            }
+          </optgroup>
+        }
+      </select>
+    </div>
   </div>
   @switch (selectedCalculator()) {
     @case ('stock-planner') { <app-stock-planner [language]="language()" /> }

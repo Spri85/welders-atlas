@@ -1,5 +1,8 @@
 <section class="calculator" aria-labelledby="square-heading">
-  <div class="calculator-heading"><h2 id="square-heading">{{ text().heading }}</h2><p>{{ text().intro }}</p></div>
+  <div class="calculator-heading">
+    <div class="calculator-heading-copy"><h2 id="square-heading">{{ text().heading }}</h2><p>{{ text().intro }}</p></div>
+    <app-pattern-export [drawing]="calculation().result?.drawing ?? null" [language]="language()" [title]="text().heading" [summary]="summary()" [unit]="unit()" />
+  </div>
   <div class="workbench">
     <div class="controls">
       <fieldset class="units">
@@ -15,7 +18,6 @@
           (input)="update(field.key, dimension.valueAsNumber)">
       }
       <div class="validation" aria-live="polite">@if (calculation().error; as error) { <p id="square-error">{{ error }}</p> }</div>
-      <app-pattern-export [drawing]="calculation().result?.drawing ?? null" [language]="language()" [title]="text().heading" [summary]="summary()" [unit]="unit()" />
     </div>
     <div class="output">
       @if (calculation().result; as result) {

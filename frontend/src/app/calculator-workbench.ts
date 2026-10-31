@@ -74,8 +74,39 @@ const errors = {
   template: `
     <section class="calculator" aria-labelledby="tool-heading">
       <div class="calculator-heading">
-        <h2 id="tool-heading">{{ tool().title[language()] }}</h2>
-        <p>{{ tool().description[language()] }}</p>
+        <div class="calculator-heading-copy">
+          <h2 id="tool-heading">{{ tool().title[language()] }}</h2>
+          <p>{{ tool().description[language()] }}</p>
+        </div>
+        @if (tool().printable) {
+          <div class="calculator-actions">
+            @if (templates().length > 1) {
+              <label for="export-template">{{
+                templateLabel[language()]
+              }}</label>
+              <select
+                #template
+                id="export-template"
+                [value]="templateIndex()"
+                (change)="templateIndex.set(+template.value)"
+              >
+                @for (item of templates(); track $index) {
+                  <option [value]="$index">{{ item.title[language()] }}</option>
+                }
+              </select>
+            }
+            <app-pattern-export
+              [drawing]="selectedTemplate()?.drawing ?? null"
+              [language]="language()"
+              [title]="
+                selectedTemplate()?.title?.[language()] ??
+                tool().title[language()]
+              "
+              [unit]="inches() ? 'in' : 'mm'"
+              [summary]="summary()"
+            />
+          </div>
+        }
       </div>
       <div class="workbench">
         <div class="controls">
@@ -149,13 +180,6 @@ const errors = {
               <p id="tool-error">{{ error }}</p>
             }
           </div>
-          @if (tool().printable && calculation().error) {
-            <app-pattern-export
-              [drawing]="null"
-              [language]="language()"
-              [title]="tool().title[language()]"
-            />
-          }
         </div>
         <div class="output">
           @if (calculation().result; as result) {
@@ -216,16 +240,6 @@ const errors = {
                 [title]="diagram.title[language()]"
                 [showDimensions]="false"
                 [hints]="hints()"
-              />
-            }
-            @for (template of result.templates ?? []; track $index) {
-              <h3>{{ template.title[language()] }}</h3>
-              <app-pattern-export
-                [drawing]="template.drawing"
-                [language]="language()"
-                [title]="template.title[language()]"
-                [unit]="inches() ? 'in' : 'mm'"
-                [summary]="summary()"
               />
             }
           }
@@ -305,6 +319,23 @@ export class CalculatorWorkbench {
       return { result: null, error: errors[error.code][this.language()] };
     }
   });
+  readonly templateLabel = text('Template', 'Шаблон', 'Шаблон');
+  readonly templates = computed(
+    () => this.calculation().result?.templates ?? [],
+  );
+  readonly templateIndex = linkedSignal<
+    { tool: CalculatorTool; count: number },
+    number
+  >({
+    source: () => ({ tool: this.tool(), count: this.templates().length }),
+    computation: (source, previous) =>
+      previous?.source.tool === source.tool
+        ? Math.min(previous.value, Math.max(0, source.count - 1))
+        : 0,
+  });
+  readonly selectedTemplate = computed(
+    () => this.templates().at(this.templateIndex()) ?? null,
+  );
   readonly hints = computed(() =>
     Object.fromEntries(
       (this.calculation().result?.metrics ?? []).map((metric) => [

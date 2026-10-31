@@ -4,28 +4,37 @@ body { margin: 0; }
 button, a { -webkit-tap-highlight-color: transparent; }
 button:focus-visible, a:focus-visible { outline: 3px solid #bd5c2b; outline-offset: 5px; }
 .site-header, main, footer { width: min(1120px, calc(100% - 64px)); margin-inline: auto; }
-.site-header { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-block: 30px; border-bottom: 1px solid #d8ddd8; }
-.brand { display: flex; align-items: center; gap: 14px; color: inherit; text-decoration: none; font-size: 19px; font-weight: 700; letter-spacing: -.5px; }
+.site-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 72px; padding-block: 12px; border-bottom: 1px solid #d8ddd8; }
+.brand { display: flex; align-items: center; min-height: 44px; gap: 10px; color: inherit; text-decoration: none; font-size: 19px; font-weight: 700; letter-spacing: -.5px; }
 .brand-mark { display: flex; align-items: center; background: #172a30; color: #fff; padding: 12px 9px; font-size: 15px; letter-spacing: -1px; border-radius: 3px; }
 .brand-mark span { color: #efab69; padding-inline: 3px; }
 .languages { display: flex; gap: 5px; }
-.languages button { border: 0; border-radius: 3px; padding: 9px 11px; font: inherit; font-size: 13px; text-transform: uppercase; color: #526267; background: transparent; cursor: pointer; }
+.languages button { min-height: 44px; min-width: 44px; border: 0; border-radius: 3px; padding: 9px 11px; font: inherit; font-size: 13px; text-transform: uppercase; color: #526267; background: transparent; cursor: pointer; }
 .languages button[aria-pressed=true] { color: #fff; background: #172a30; }
-.hero { position: relative; overflow: hidden; padding-block: 80px 94px; }
-.eyebrow { display: flex; align-items: center; gap: 10px; color: #8a491f; font-weight: 700; text-transform: uppercase; letter-spacing: 1.9px; font-size: 11px; }
-.eyebrow span { width: 22px; height: 2px; background: #b76531; }
-h1 { position: relative; z-index: 1; max-width: 800px; margin: 26px 0; font-size: clamp(40px, 5.7vw, 68px); line-height: 1.1; font-weight: 600; letter-spacing: -2.8px; }
-.intro { max-width: 580px; font-size: 18px; line-height: 1.7; color: #526267; margin: 0; }
-.weld-lines { position: absolute; right: 10px; top: 70px; display: flex; gap: 19px; transform: rotate(30deg); opacity: .4; z-index: 0; }
-.weld-lines span { height: 260px; width: 1px; background: #bac8c3; }
+.workspace-intro { padding-block: 24px 20px; }
+h1 { margin: 0 0 8px; font-size: clamp(28px, 3vw, 32px); line-height: 1.2; font-weight: 600; letter-spacing: -.7px; }
+.intro { max-width: 760px; font-size: 16px; line-height: 1.5; color: #526267; margin: 0; }
 h2 { font-size: 22px; margin: 0; letter-spacing: -.5px; }
 footer { border-top: 1px solid #d8ddd8; padding-block: 24px; font-size: 11px; color: #526267; }
 .footer-divider { margin-inline: 10px; color: #a6b0ab; }
-@media (max-width: 700px) { .site-header, main, footer { width: calc(100% - 36px); } .site-header { padding-block: 20px; gap: 10px; } .brand { gap: 8px; font-size: 16px; } .languages { gap: 0; } .languages button { padding: 8px; } .hero { padding-block: 54px 60px; } h1 { letter-spacing: -1.7px; } .intro { font-size: 16px; } .weld-lines { opacity: .2; right: -40px; } }
-.configurator { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; padding-bottom: 24px; }
-.configurator label { font-size: 14px; font-weight: 700; }
-.configurator select { font: inherit; max-width: 100%; min-height: 44px; padding: 10px 16px; color: #172a30; background: #fff; border: 1px solid #a6b0ab; border-radius: 3px; }
-.configurator select:focus-visible { outline: 3px solid #bd5c2b; outline-offset: 3px; }
+.configurator { display: grid; gap: 16px; padding-bottom: 24px; }
+.transition-shortcuts { display: flex; flex-wrap: wrap; gap: 8px; }
+.transition-shortcuts button { min-height: 44px; max-width: 100%; padding: 10px 14px; font: inherit; line-height: 1.4; text-align: start; overflow-wrap: anywhere; border: 1px solid #a6b0ab; border-radius: 4px; color: #172a30; background: transparent; cursor: pointer; }
+.transition-shortcuts button:hover { border-color: #8a491f; background: #eee9de; }
+.transition-shortcuts button[aria-pressed=true] { color: #fff; background: #172a30; border-color: #172a30; }
+.calculator-picker { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; min-width: 0; }
+.calculator-picker label { font-size: 14px; font-weight: 700; }
+.calculator-picker select { font: inherit; width: min(100%, 440px); min-width: 0; min-height: 44px; padding: 10px 12px; color: #172a30; background: #fff; border: 1px solid #a6b0ab; border-radius: 4px; }
+.calculator-picker select:focus-visible { outline: 3px solid #bd5c2b; outline-offset: 3px; }
+@media (max-width: 700px) {
+  .site-header, main, footer { width: calc(100% - 32px); }
+  .site-header { flex-wrap: wrap; gap: 8px; padding-block: 10px; }
+  .brand { gap: 8px; font-size: 16px; }
+  .languages { gap: 0; }
+  .workspace-intro { padding-block: 20px 16px; }
+  .calculator-picker { align-items: stretch; flex-direction: column; }
+  .calculator-picker select { width: 100%; }
+}
 .measurement-tooltip { position: fixed; z-index: 1000; max-width: min(320px, calc(100vw - 16px)); padding: 9px 12px; border-radius: 4px; color: #fff; background: #172a30; font-size: 13px; line-height: 1.5; pointer-events: none; }
 svg [tabindex="0"] { cursor: help; }
 svg [tabindex="0"]:focus-visible { outline: 2px solid #bd5c2b; outline-offset: 4px; }

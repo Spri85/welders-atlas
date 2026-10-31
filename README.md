@@ -2,7 +2,7 @@
 
 A multilingual workbench for metal fabrication calculations and cutting templates. The application runs entirely in the browser.
 
-Choose one of 25 calculators from the action selector. Tools cover fitting layouts, pipe offsets and bends, frames and bar spacing, stock and sheet cutting, material estimates, weld preparation and measured process values. Inputs and results support Ukrainian, Russian and English. Lengths support millimetres or decimal inches, preserving the physical job when switching units.
+Choose one of 25 calculators from the grouped Calculator selector, or use the round-to-round, square-to-round and square-to-square shortcuts. Groups separate transitions, pipework and forming, frames and layout, cutting and materials, and welding. Tools cover fitting layouts, pipe offsets and bends, frames and bar spacing, stock and sheet cutting, material estimates, weld preparation and measured process values. Inputs and results support Ukrainian, Russian and English. Lengths support millimetres or decimal inches, preserving the physical job when switching units.
 
 Drawings show reference identifiers; hover or focus them for numeric measurements. Matching results and marking tables stay below the drawing. Tools use formed views, sections, flat outlines or timelines as appropriate.
 
