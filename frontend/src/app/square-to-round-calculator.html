@@ -11,7 +11,7 @@
         <label><input type="radio" name="square-units" [checked]="unit() === 'in'" (change)="unit.set('in')"> {{ common().inches }}</label>
       </fieldset>
       @for (field of fields; track field.key) {
-        <label class="dimension" [for]="field.key">{{ text()[field.label] }} ({{ unitLabel() }})</label>
+        <label class="dimension" [for]="field.key" [attr.data-field-reference]="field.reference">{{ field.reference }} · {{ text()[field.label] }} ({{ unitLabel() }})</label>
         <input #dimension [id]="field.key" type="number" step="any" required inputmode="decimal"
           [value]="inputValue(field.key)" [attr.aria-invalid]="!!calculation().error"
           [attr.aria-describedby]="calculation().error ? 'square-error' : null"
@@ -21,7 +21,7 @@
     </div>
     <div class="output">
       @if (calculation().result; as result) {
-        <app-drawing-preview [drawing]="result.drawing" [model]="model()" [language]="language()" [unit]="unit()" [title]="text().heading" [instructions]="text().layout" />
+        <app-drawing-preview [parameters]="inputReferences()" [drawing]="result.drawing" [model]="model()" [language]="language()" [unit]="unit()" [title]="text().heading" [instructions]="text().layout" />
         <p>{{ text().folds }}</p>
         <dl class="measurements">
           <div><dt>{{ text().width }}</dt><dd>{{ measurement(dimensions().squareWidthMm) }}</dd></div>

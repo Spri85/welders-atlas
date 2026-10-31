@@ -38,6 +38,19 @@ export function calculateBoltCircle(
     coordinateOrigin: 'origin',
     coordinatePoints: holes,
     construction: [
+      ...Array.from({ length: 72 }, (_, i) =>
+        line(
+          {
+            x: radius * Math.cos((i * Math.PI) / 36),
+            y: radius * Math.sin((i * Math.PI) / 36),
+          },
+          {
+            x: radius * Math.cos(((i + 1) * Math.PI) / 36),
+            y: radius * Math.sin(((i + 1) * Math.PI) / 36),
+          },
+        ),
+      ),
+      line({ x: 0, y: 0 }, holes[0].point),
       line({ x: -radius, y: 0 }, { x: radius, y: 0 }),
       line({ x: 0, y: -radius }, { x: 0, y: radius }),
       ...holes.flatMap(({ point: p }) => [
@@ -46,6 +59,24 @@ export function calculateBoltCircle(
       ]),
     ],
     labels: [
+      {
+        text: 'P',
+        point: { x: radius * Math.SQRT1_2, y: radius * Math.SQRT1_2 },
+      },
+      {
+        text: 'd',
+        point: {
+          x: holes[0].point.x,
+          y: holes[0].point.y + holeDiameterMm / 2 + radius * 0.08,
+        },
+      },
+      {
+        text: 'θ₀',
+        point: {
+          x: radius * 0.4 * Math.cos((first * Math.PI) / 360),
+          y: radius * 0.4 * Math.sin((first * Math.PI) / 360),
+        },
+      },
       ...holes.map((h) => ({
         text: h.id,
         point: {

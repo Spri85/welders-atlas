@@ -21,8 +21,14 @@ export function calculateCircularKerf(
   const drawing: PatternDrawing = {
     ...circle({ x: 0, y: 0 }, diameterMm / 2),
     closed: false,
-    construction: path.slice(1).map((p, i) => line(path[i], p)),
+    construction: [
+      ...path.slice(1).map((p, i) => line(path[i], p)),
+      line({ x: 0, y: r - kerfMm / 2 }, { x: 0, y: r + kerfMm / 2 }),
+    ],
     labels: [
+      ...(kerfMm > 0
+        ? [{ text: 'k', point: { x: 0, y: r + kerfMm / 2 } }]
+        : []),
       { text: 'D', point: { x: -diameterMm / 4, y: 0 } },
       { text: 'P', point: { x: r, y: 0 } },
       {

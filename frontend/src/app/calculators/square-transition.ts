@@ -1,5 +1,7 @@
 import { finiteResult, positive } from './validation';
 import { line, polygon } from './drawings';
+import type { ModelLine } from '../drawing-preview';
+import { modelDimension } from '../pattern-geometry';
 import type { PatternDrawing } from '../pattern-drawing';
 export function calculateSquareTransition(
   inletMm: number,
@@ -34,7 +36,7 @@ export function calculateSquareTransition(
     measurements: [
       { id: 'A', kind: 'length', value: inletMm, unit: 'mm' },
       { id: 'B', kind: 'length', value: outletMm, unit: 'mm' },
-      { id: 'L', kind: 'length', value: faceHeightMm, unit: 'mm' },
+      { id: 'L', kind: 'height', value: faceHeightMm, unit: 'mm' },
       { id: 'C', kind: 'length', value: seamMm, unit: 'mm' },
     ],
   };
@@ -46,15 +48,38 @@ export function calculateSquareTransition(
   ];
   const inlet = ring(inletMm, 0),
     outlet = ring(outletMm, heightMm);
-  const model = [
+  const model: ModelLine[] = [
     { points: [...inlet, inlet[0]] },
     { points: [...outlet, outlet[0]] },
     ...inlet.map((p, i) => ({
-      points: [p, outlet[i]],
+      ...modelDimension(p, outlet[i], 'C'),
+      construction: false,
       seam: true,
-      label: 'C',
     })),
+    modelDimension(inlet[0], inlet[1], 'A'),
+    modelDimension(outlet[0], outlet[1], 'B'),
+    modelDimension({ x: 0, y: 0, z: 0 }, { x: 0, y: 0, z: heightMm }, 'H'),
+    modelDimension(
+      { x: 0, y: -inletMm / 2, z: 0 },
+      { x: 0, y: -outletMm / 2, z: heightMm },
+      'L',
+    ),
   ];
+  const sideDrawing: PatternDrawing = {
+    ...polygon([
+      { x: -inletMm / 2, y: 0 },
+      { x: inletMm / 2, y: 0 },
+      { x: outletMm / 2, y: heightMm },
+      { x: -outletMm / 2, y: heightMm },
+    ]),
+    construction: [line({ x: 0, y: 0 }, { x: 0, y: heightMm })],
+    labels: [
+      { text: 'A', point: { x: -inletMm / 4, y: 0 } },
+      { text: 'B', point: { x: -outletMm / 4, y: heightMm } },
+      { text: 'H', point: { x: 0, y: heightMm / 2 } },
+      { text: 'L', point: { x: (inletMm + outletMm) / 4, y: heightMm / 2 } },
+    ],
+  };
   return {
     allowance: 'zero' as const,
     insetMm,
@@ -64,5 +89,6 @@ export function calculateSquareTransition(
     inlet,
     outlet,
     model,
+    sideDrawing,
   };
 }

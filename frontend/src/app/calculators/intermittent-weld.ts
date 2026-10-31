@@ -55,11 +55,30 @@ export function calculateIntermittentWeld(
       line({ x: 0, y: -h }, { x: 0, y: h }),
       line({ x: jointMm, y: -h }, { x: jointMm, y: h }),
     ],
-    labels: segments.map((s) => ({
-      text: s.id,
-      measurementId: s.id,
-      point: { x: (s.startMm + s.endMm) / 2, y: h },
-    })),
+    labels: [
+      { text: 'J', point: { x: jointMm / 2, y: -h } },
+      ...(count
+        ? [
+            { text: 'ℓ', point: { x: firstStartMm + segmentMm / 2, y: 4 * h } },
+            ...(firstStartMm > 0
+              ? [{ text: 's₀', point: { x: firstStartMm / 2, y: -2 * h } }]
+              : []),
+            ...(count > 1
+              ? [
+                  {
+                    text: 'p',
+                    point: { x: firstStartMm + pitchMm / 2, y: -h / 2 },
+                  },
+                ]
+              : []),
+          ]
+        : []),
+      ...segments.map((s) => ({
+        text: s.id,
+        measurementId: s.id,
+        point: { x: (s.startMm + s.endMm) / 2, y: h },
+      })),
+    ],
     measurements: segments.map((s) => ({
       id: s.id,
       kind: 'length',

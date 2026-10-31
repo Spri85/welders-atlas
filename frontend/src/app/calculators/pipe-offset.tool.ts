@@ -22,21 +22,25 @@ export const pipeOffsetTool: CalculatorTool = {
   fields: [
     field(
       'shift',
+      'S',
       text('Centerline shift', 'Зміщення осей', 'Смещение осей'),
       150,
     ),
     field(
       'angle',
+      'θ',
       text('Elbow angle', 'Кут відводу', 'Угол отвода'),
       45,
       'degree',
     ),
     field(
       'a',
+      'a',
       text('First takeoff', 'Перший монтажний винос', 'Первый монтажный вынос'),
       30,
     ),
     field(
+      'b',
       'b',
       text(
         'Second takeoff',

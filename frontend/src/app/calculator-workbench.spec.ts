@@ -74,6 +74,19 @@ describe('shared calculator units and translations', () => {
         );
         expect(fixture.componentInstance.calculation().error).toBeNull();
         expect(fixture.componentInstance.values()).toEqual(initial);
+        const fields = tool.fields.filter(
+          (field) => !field.when || field.when(initial),
+        );
+        const references = root.querySelectorAll('[data-input-reference]');
+        expect(references).toHaveLength(fields.length);
+        for (const [index, field] of fields.entries()) {
+          expect(references[index].textContent).toContain(
+            field.label[language],
+          );
+          expect(
+            references[index].querySelector('dd')?.textContent,
+          ).not.toMatch(/NaN|undefined|Infinity/);
+        }
       }
     },
   );
@@ -126,4 +139,126 @@ it('exports each selected template and keeps selection valid when piece count or
   expect(exporter.drawing()).toBe(
     fixture.componentInstance.templates()[1].drawing,
   );
+});
+
+it.each(['en', 'ua', 'ru'] as const)(
+  'connects square transition input references to formed, flat and side views in %s',
+  async (language) => {
+    const fixture = TestBed.createComponent(CalculatorWorkbench);
+    fixture.componentRef.setInput(
+      'tool',
+      calculatorTools.find((tool) => tool.id === 'square-transition')!,
+    );
+    fixture.componentRef.setInput('language', language);
+    await fixture.whenStable();
+    const root: HTMLElement = fixture.nativeElement;
+    for (const [field, letter] of [
+      ['inlet', 'A'],
+      ['outlet', 'B'],
+      ['height', 'H'],
+    ]) {
+      expect(
+        root.querySelector(`label[for=tool-${field}]`)?.textContent?.trim(),
+      ).toMatch(new RegExp(`^${letter} ·`));
+    }
+    const primary = root.querySelector('app-drawing-preview')!;
+    const label = (scope: Element, id: string) =>
+      Array.from(scope.querySelectorAll('svg text')).find(
+        (node) => node.textContent === id,
+      );
+    for (const [id, expected] of [
+      ['A', '300'],
+      ['B', '180'],
+      ['H', '80'],
+      ['L', '100'],
+    ]) {
+      expect(label(primary, id)?.getAttribute('aria-label')).toContain(
+        expected,
+      );
+    }
+    expect(root.querySelector('[data-metric=H]')?.textContent).toContain('80');
+    expect(root.querySelector('[data-metric=L]')?.textContent).toContain('100');
+    const radios = root.querySelectorAll<HTMLInputElement>(
+      'input[name=tool-units]',
+    );
+    radios[1].click();
+    await fixture.whenStable();
+    expect(label(primary, 'H')?.getAttribute('aria-label')).toMatch(
+      /3[.,]1496/,
+    );
+    expect(label(primary, 'L')?.getAttribute('aria-label')).toMatch(/3[.,]937/);
+    radios[0].click();
+    const height = root.querySelector<HTMLInputElement>('#tool-height')!;
+    await fixture.whenStable();
+    height.value = '120';
+    height.dispatchEvent(new Event('input'));
+    await fixture.whenStable();
+    expect(label(primary, 'H')?.getAttribute('aria-label')).toContain('120');
+    expect(label(primary, 'L')?.getAttribute('aria-label')).toMatch(
+      /134[.,]16/,
+    );
+    primary.querySelectorAll<HTMLButtonElement>('button')[1].click();
+    await fixture.whenStable();
+    expect(label(primary, 'H')).toBeUndefined();
+    expect(label(primary, 'L')?.getAttribute('aria-label')).toMatch(
+      /134[.,]16/,
+    );
+    const side = root.querySelectorAll('app-drawing-preview')[1];
+    expect(label(side, 'H')?.getAttribute('aria-label')).toContain('120');
+  },
+);
+
+it('updates the diagram key for conditional fields, optional values and units', async () => {
+  const fixture = TestBed.createComponent(CalculatorWorkbench);
+  fixture.componentRef.setInput(
+    'tool',
+    calculatorTools.find((tool) => tool.id === 'stock-mass')!,
+  );
+  fixture.componentRef.setInput('language', 'en');
+  await fixture.whenStable();
+  const root: HTMLElement = fixture.nativeElement;
+  const mode = root.querySelector<HTMLSelectElement>('#tool-mode')!;
+  mode.value = '1';
+  mode.dispatchEvent(new Event('change'));
+  await fixture.whenStable();
+  const refs = fixture.componentInstance.inputReferences();
+  expect(refs.map((ref) => ref.id)).toContain('μ');
+  expect(refs.map((ref) => ref.id)).not.toContain('W');
+  expect(refs.find((ref) => ref.id === 'J')?.value).toBe(
+    mode.selectedOptions[0].textContent?.trim(),
+  );
+});
+
+it('keeps per-cycle gas times distinct from timeline totals and displays omitted inputs as a dash', async () => {
+  const fixture = TestBed.createComponent(CalculatorWorkbench);
+  fixture.componentRef.setInput(
+    'tool',
+    calculatorTools.find((tool) => tool.id === 'gas-budget')!,
+  );
+  fixture.componentRef.setInput('language', 'en');
+  await fixture.whenStable();
+  const root: HTMLElement = fixture.nativeElement;
+  expect(
+    root.querySelector('[data-input-reference="t₁"] dd')?.textContent,
+  ).toBe('1 s');
+  expect(root.querySelector('[data-metric=P]')?.textContent?.trim()).toBe(
+    '0.5 min',
+  );
+  const pre = root.querySelector<HTMLInputElement>('#tool-pre')!;
+  pre.value = '2';
+  pre.dispatchEvent(new Event('input'));
+  const available = root.querySelector<HTMLInputElement>('#tool-available')!;
+  available.value = '';
+  available.dispatchEvent(new Event('input'));
+  await fixture.whenStable();
+  expect(
+    root.querySelector('[data-input-reference="t₁"] dd')?.textContent,
+  ).toBe('2 s');
+  expect(root.querySelector('[data-metric=P]')?.textContent?.trim()).toBe(
+    '1 min',
+  );
+  expect(
+    root.querySelector('[data-input-reference="V₀"] dd')?.textContent,
+  ).toBe('—');
+  expect(fixture.componentInstance.calculation().error).toBeNull();
 });

@@ -5,6 +5,7 @@ import {
   requireCondition,
 } from './validation';
 import { line, polygon } from './drawings';
+import { modelDimension } from '../pattern-geometry';
 import type { PatternDrawing } from '../pattern-drawing';
 export function calculatePlateOpening(
   diameterMm: number,
@@ -63,6 +64,26 @@ export function calculatePlateOpening(
     ],
     labels: [
       { text: 'O', point: { x: 0, y: 0 } },
+      {
+        text: 'D',
+        point: {
+          x:
+            (mirrored ? -center.x : 0) +
+            (((mirrored ? 1 : -1) * diameterMm) / 2) * Math.sin(direction),
+          y: (mirrored ? center.y : 0) + (diameterMm / 2) * Math.cos(direction),
+        },
+      },
+      ...(!mirrored
+        ? [
+            {
+              text: 'φ',
+              point: {
+                x: extent * 0.35 * Math.cos(direction / 2),
+                y: extent * 0.35 * Math.sin(direction / 2),
+              },
+            },
+          ]
+        : []),
       { text: 'A', point: { x: 0, y: extent * 0.85 } },
       { text: 'B', point: { x: (mirrored ? -1 : 1) * extent * 0.85, y: 0 } },
       { text: mirrored ? '-X' : '+X', point: { x: extent * 0.6, y: 0 } },
@@ -96,6 +117,24 @@ export function calculatePlateOpening(
   const frontRing = ellipse.map((p) => ({ ...p, z: 0 }));
   const farRing = far.map((p) => ({ ...p, z: thicknessMm }));
   const model = [
+    modelDimension(
+      {
+        x: (-diameterMm / 2) * Math.sin(direction),
+        y: (diameterMm / 2) * Math.cos(direction),
+        z: 0,
+      },
+      {
+        x: (diameterMm / 2) * Math.sin(direction),
+        y: (-diameterMm / 2) * Math.cos(direction),
+        z: 0,
+      },
+      'D',
+    ),
+    modelDimension(
+      { x: extent, y: 0, z: 0 },
+      { x: extent, y: 0, z: thicknessMm },
+      't',
+    ),
     { points: [...frontRing, frontRing[0]] },
     { points: [...farRing, farRing[0]], seam: true },
     ...Array.from({ length: 8 }, (_, i) => {
@@ -117,6 +156,7 @@ export function calculatePlateOpening(
     ],
     labels: [
       { text: 'a', point: { x: 0, y: 0 } },
+      { text: 'β', point: { x: shiftMm / 2, y: -thicknessMm / 2 } },
       { text: 't', point: { x: extent * 0.8, y: -thicknessMm / 2 } },
     ],
   };

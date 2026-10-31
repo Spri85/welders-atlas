@@ -19,3 +19,14 @@ describe('G17 sheet grid', () => {
     expect(() => calc(1000, 600, 240, 140, 10, -1, true)).toThrow();
   });
 });
+
+it('keeps exact-fit counts across decimal inch conversion without accepting oversized blanks', () => {
+  const result = calc(2.4 * 25.4, 25.4, 0.4 * 25.4, 25.4, 0, 0, false);
+  expect(result.columns).toBe(6);
+  expect(result.count).toBe(6);
+  expect(result.remainderWidthMm).toBeCloseTo(0, 10);
+  expect(calc(0.6, 1, 0.1, 1, 0, 0, false).count).toBe(6);
+  expect(
+    calc(2.4 * 25.4 - 0.001, 25.4, 0.4 * 25.4, 25.4, 0, 0, false).count,
+  ).toBe(5);
+});

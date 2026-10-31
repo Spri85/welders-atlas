@@ -36,6 +36,7 @@ export function calculatePositionerSpeed(
       line({ x: -diameterMm / 2, y: 0 }, { x: diameterMm / 2, y: 0 }),
     ],
     labels: [
+      { text: 'v', point: { x: 0, y: diameterMm / 2 } },
       { text: 'D', point: { x: 0, y: 0 } },
       { text: 'N', point: { x: diameterMm / 2, y: 0 } },
     ],

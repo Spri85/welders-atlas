@@ -7,7 +7,7 @@ import {
 import { calculateMiteredCorner } from './mitered-corner';
 import { line, polygon } from './drawings';
 import type { PatternDrawing } from '../pattern-drawing';
-import type { Point3 } from '../pattern-geometry';
+import { modelDimension, type Point3 } from '../pattern-geometry';
 export function calculateSegmentedElbow(
   diameterMm: number,
   throatRadiusMm: number,
@@ -99,18 +99,41 @@ export function calculateSegmentedElbow(
     Array.from({ length: 73 }, (_, k) =>
       surfacePoint(i, (k * Math.PI) / 36, end),
     );
-  const model: { points: Point3[]; seam?: boolean; label?: string }[] =
-    pieces.flatMap((_, i) => [
-      { points: ring(i, false) },
-      { points: ring(i, true) },
-      ...Array.from({ length: 8 }, (_, k) => ({
-        points: [
-          surfacePoint(i, (k * Math.PI) / 4, false),
-          surfacePoint(i, (k * Math.PI) / 4, true),
-        ],
-        seam: k === 0,
-      })),
-    ]);
+  const model: {
+    points: Point3[];
+    seam?: boolean;
+    label?: string;
+    construction?: boolean;
+  }[] = pieces.flatMap((_, i) => [
+    { points: ring(i, false) },
+    { points: ring(i, true) },
+    ...Array.from({ length: 8 }, (_, k) => ({
+      points: [
+        surfacePoint(i, (k * Math.PI) / 4, false),
+        surfacePoint(i, (k * Math.PI) / 4, true),
+      ],
+      seam: k === 0,
+    })),
+  ]);
+  model.push(
+    modelDimension(
+      surfacePoint(0, 0, false),
+      surfacePoint(0, Math.PI, false),
+      'D',
+    ),
+  );
+  model.push({
+    points: Array.from({ length: 25 }, (_, i) => {
+      const angle = (((turnDegrees * Math.PI) / 180) * i) / 24;
+      return {
+        x: throatRadiusMm * 0.5 * Math.sin(angle),
+        y: centerRadiusMm - throatRadiusMm * 0.5 * Math.cos(angle),
+        z: 0,
+      };
+    }),
+    label: 'θ',
+    construction: true,
+  });
   const mid = (turnDegrees * Math.PI) / 360;
   model.push({
     points: [

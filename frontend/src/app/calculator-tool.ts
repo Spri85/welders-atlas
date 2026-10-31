@@ -34,6 +34,7 @@ export type CalculatorValues = Readonly<Record<string, number>>;
 
 export interface CalculatorField {
   id: string;
+  reference: string;
   label: Localized;
   initial: number;
   unit: QuantityUnit;
@@ -44,11 +45,12 @@ export interface CalculatorField {
 
 export const field = (
   id: string,
+  reference: string,
   label: Localized,
   initial: number,
   unit: QuantityUnit = 'mm',
   options: Pick<CalculatorField, 'optional' | 'choices' | 'when'> = {},
-): CalculatorField => ({ id, label, initial, unit, ...options });
+): CalculatorField => ({ id, reference, label, initial, unit, ...options });
 
 export interface CalculatorMetric {
   id: string;

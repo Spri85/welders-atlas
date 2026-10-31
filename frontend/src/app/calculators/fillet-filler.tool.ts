@@ -20,9 +20,10 @@ export const filletFillerTool: CalculatorTool = {
     'Угловой шов с равными катетами, заданными пользователем. Введите фактическую длину швов на деталь, учитывая обе стороны. Плотность, усиление и эффективность — изменяемые допущения оценки; схема показывает номинальный треугольник.',
   ),
   fields: [
-    field('leg', text('Leg size', 'Катет шва', 'Катет шва'), 6),
+    field('leg', 'z', text('Leg size', 'Катет шва', 'Катет шва'), 6),
     field(
       'length',
+      'L',
       text(
         'Bead length per item',
         'Довжина швів на деталь',
@@ -32,18 +33,21 @@ export const filletFillerTool: CalculatorTool = {
     ),
     field(
       'quantity',
+      'n',
       text('Item count', 'Кількість деталей', 'Количество деталей'),
       1,
       'count',
     ),
     field(
       'density',
+      'ρ',
       text('Material density', 'Густина матеріалу', 'Плотность материала'),
       7.85,
       'g/cm³',
     ),
     field(
       'reinforcement',
+      'k',
       text(
         'Reinforcement factor ≥ 1',
         'Коефіцієнт підсилення ≥ 1',
@@ -54,6 +58,7 @@ export const filletFillerTool: CalculatorTool = {
     ),
     field(
       'efficiency',
+      'η',
       text(
         'Deposition efficiency',
         'Ефективність наплавлення',
@@ -64,6 +69,7 @@ export const filletFillerTool: CalculatorTool = {
     ),
     field(
       'price',
+      'p',
       text('Price per kg', 'Ціна за кг', 'Цена за кг'),
       NaN,
       'money',
@@ -137,6 +143,19 @@ export const filletFillerTool: CalculatorTool = {
         value: r.cost,
         unit: 'money',
       });
-    return { drawing: r.drawing, metrics };
+    return {
+      drawing: r.drawing,
+      metrics,
+      diagrams: [
+        {
+          title: text(
+            'Length of one weld',
+            'Довжина одного шва',
+            'Длина одного шва',
+          ),
+          drawing: r.lengthDrawing,
+        },
+      ],
+    };
   },
 };

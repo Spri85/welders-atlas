@@ -1,4 +1,5 @@
 import { field, text, type CalculatorTool } from '../calculator-tool';
+import { modelDimension } from '../pattern-geometry';
 import { calculateMiteredCorner } from './mitered-corner';
 
 export const miteredCornerTool: CalculatorTool = {
@@ -14,11 +15,13 @@ export const miteredCornerTool: CalculatorTool = {
   fields: [
     field(
       'diameter',
+      'D',
       text('Outside diameter', 'Зовнішній діаметр', 'Наружный диаметр'),
       60,
     ),
     field(
       'turn',
+      'θ',
       text('Turn from straight', 'Поворот від прямої', 'Поворот от прямой'),
       60,
       'degree',
@@ -31,7 +34,22 @@ export const miteredCornerTool: CalculatorTool = {
     });
     return {
       drawing: result.drawing,
-      model: result.assembly.map((points) => ({ points })),
+      model: [
+        ...result.assembly.map((points) => ({ points })),
+        modelDimension(result.assembly[0][0], result.assembly[0][36], 'D'),
+        {
+          points: Array.from({ length: 25 }, (_, i) => {
+            const angle = (((turn * Math.PI) / 180) * i) / 24;
+            return {
+              x: diameter * Math.cos(angle),
+              y: diameter * Math.sin(angle),
+              z: 0,
+            };
+          }),
+          label: 'θ',
+          construction: true,
+        },
+      ],
       metrics: [
         { id: 'D', label: this.fields[0].label, value: diameter, unit: 'mm' },
         {

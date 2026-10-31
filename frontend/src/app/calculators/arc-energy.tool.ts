@@ -22,6 +22,7 @@ export const arcEnergyTool: CalculatorTool = {
   fields: [
     field(
       'volts',
+      'U',
       text(
         'Measured arc voltage',
         'Виміряна напруга дуги',
@@ -32,6 +33,7 @@ export const arcEnergyTool: CalculatorTool = {
     ),
     field(
       'amps',
+      'I',
       text(
         'Measured arc current',
         'Виміряний струм дуги',
@@ -42,6 +44,7 @@ export const arcEnergyTool: CalculatorTool = {
     ),
     field(
       'speed',
+      'v',
       text(
         'Measured travel speed',
         'Виміряна швидкість руху',
@@ -52,6 +55,7 @@ export const arcEnergyTool: CalculatorTool = {
     ),
     field(
       'efficiency',
+      'η',
       text(
         'Thermal efficiency (0,1]',
         'Теплова ефективність (0,1]',

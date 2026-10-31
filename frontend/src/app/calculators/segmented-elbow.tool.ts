@@ -23,16 +23,19 @@ export const segmentedElbowTool: CalculatorTool = {
   fields: [
     field(
       'diameter',
+      'D',
       text('Pipe OD', 'Зовнішній діаметр', 'Наружный диаметр'),
       60,
     ),
     field(
       'radius',
+      'R',
       text('Throat radius', 'Радіус горловини', 'Радиус горловины'),
       90,
     ),
     field(
       'turn',
+      'θ',
       text(
         'Total turn (0,180]',
         'Загальний поворот (0,180]',
@@ -43,6 +46,7 @@ export const segmentedElbowTool: CalculatorTool = {
     ),
     field(
       'count',
+      'n',
       text(
         'Piece count [3,100]',
         'Кількість деталей [3,100]',

@@ -16,35 +16,38 @@ export const squareTransitionTool: CalculatorTool = {
     'Переход с квадрата на квадрат',
   ),
   description: text(
-    'Centered parallel square openings with matching edge directions. Dimensions are at the sheet layout surface. A/B are the panel bases, L the face height, C each corner seam. Blue dash-dot line is the center guide. Zero allowance for thickness, kerf or seams.',
-    'Співвісні паралельні квадратні отвори з однаковим напрямком ребер. Розміри на поверхні розгортки листа. A/B — основи панелі, L — висота грані, C — кожен кутовий шов. Синій штрихпунктир — осьова напрямна. Без припусків на товщину, різ чи шви.',
-    'Соосные параллельные квадратные отверстия с одинаковым направлением рёбер. Размеры на поверхности развёртки листа. A/B — основания панели, L — высота грани, C — каждый угловой шов. Синий штрихпунктир — осевая направляющая. Без припусков на толщину, рез или швы.',
+    'Centered square openings with parallel edges. Enter dimensions at the sheet layout surface. No allowances for thickness, kerf or seams.',
+    'Співвісні квадратні отвори з паралельними ребрами. Введіть розміри на поверхні розгортки листа. Без припусків на товщину, різ чи шви.',
+    'Соосные квадратные отверстия с параллельными рёбрами. Введите размеры на поверхности развёртки листа. Без припусков на толщину, рез или швы.',
   ),
   fields: [
     field(
       'inlet',
+      'A',
       text(
-        'Inlet square side A',
-        'Сторона вхідного квадрата A',
-        'Сторона входного квадрата A',
+        'Inlet square side',
+        'Сторона вхідного квадрата',
+        'Сторона входного квадрата',
       ),
       300,
     ),
     field(
       'outlet',
+      'B',
       text(
-        'Outlet square side B',
-        'Сторона вихідного квадрата B',
-        'Сторона выходного квадрата B',
+        'Outlet square side',
+        'Сторона вихідного квадрата',
+        'Сторона выходного квадрата',
       ),
       180,
     ),
     field(
       'height',
+      'H',
       text(
-        'Perpendicular axial height',
-        'Перпендикулярна осьова висота',
-        'Перпендикулярная осевая высота',
+        'Assembled height between openings',
+        'Висота між отворами зібраної деталі',
+        'Высота между отверстиями собранной детали',
       ),
       80,
     ),
@@ -54,7 +57,24 @@ export const squareTransitionTool: CalculatorTool = {
     return {
       drawing: r.drawing,
       model: r.model,
-      notes: [cut4],
+      diagrams: [
+        {
+          title: text(
+            'Side view · assembled H and sloping L',
+            'Вигляд збоку · висота H та похила L',
+            'Вид сбоку · высота H и наклонная L',
+          ),
+          drawing: r.sideDrawing,
+        },
+      ],
+      notes: [
+        cut4,
+        text(
+          'H is the straight height between openings. L is the sloping panel length used for the flat blank: L² = H² + d².',
+          'H — пряма висота між отворами. L — похила довжина панелі для розгортки: L² = H² + d².',
+          'H — прямая высота между отверстиями. L — наклонная длина панели для развёртки: L² = H² + d².',
+        ),
+      ],
       metrics: [
         {
           id: 'A',
@@ -66,6 +86,16 @@ export const squareTransitionTool: CalculatorTool = {
           id: 'B',
           label: text('Base B', 'Основа B', 'Основание B'),
           value: outlet,
+          unit: 'mm',
+        },
+        {
+          id: 'H',
+          label: text(
+            'Assembled height between openings',
+            'Висота між отворами зібраної деталі',
+            'Высота между отверстиями собранной детали',
+          ),
+          value: height,
           unit: 'mm',
         },
         {
@@ -81,9 +111,9 @@ export const squareTransitionTool: CalculatorTool = {
         {
           id: 'L',
           label: text(
-            'Panel face height',
-            'Висота грані панелі',
-            'Высота грани панели',
+            'Sloping panel length (flat blank height)',
+            'Похила довжина панелі (висота розгортки)',
+            'Наклонная длина панели (высота развёртки)',
           ),
           value: r.faceHeightMm,
           unit: 'mm',

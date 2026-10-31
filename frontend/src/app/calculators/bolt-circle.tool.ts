@@ -17,6 +17,7 @@ export const boltCircleTool: CalculatorTool = {
   fields: [
     field(
       'pitch',
+      'P',
       text(
         'Bolt-circle diameter',
         'Діаметр кола центрів',
@@ -26,17 +27,20 @@ export const boltCircleTool: CalculatorTool = {
     ),
     field(
       'hole',
+      'd',
       text('Hole diameter', 'Діаметр отвору', 'Диаметр отверстия'),
       10,
     ),
     field(
       'count',
+      'n',
       text('Hole count', 'Кількість отворів', 'Количество отверстий'),
       4,
       'count',
     ),
     field(
       'angle',
+      'θ₀',
       text('First-hole angle', 'Кут першого отвору', 'Угол первого отверстия'),
       0,
       'degree',

@@ -38,3 +38,32 @@ describe('G25 square transition', () => {
     }
   });
 });
+
+it.each([
+  [300, 180],
+  [180, 300],
+  [200, 200],
+])(
+  'matches A/B/H/L model references to their actual lengths for %s → %s',
+  (inlet, outlet) => {
+    const r = calc(inlet, outlet, 80);
+    const lengths = { A: inlet, B: outlet, H: 80, L: r.faceHeightMm };
+    for (const [id, expected] of Object.entries(lengths)) {
+      const guide = r.model.find((line) => line.label === id)!;
+      const first = guide.points[0],
+        last = guide.points.at(-1)!;
+      expect(
+        Math.hypot(last.x - first.x, last.y - first.y, last.z - first.z),
+      ).toBeCloseTo(expected, 10);
+    }
+    expect(r.sideDrawing.construction![0].end.y).toBe(80);
+    expect(r.drawing.construction![0].end.y).toBe(r.faceHeightMm);
+    expect(r.sideDrawing.labels!.map((label) => label.text)).toEqual([
+      'A',
+      'B',
+      'H',
+      'L',
+    ]);
+    expect(r.drawing.labels!.some((label) => label.text === 'H')).toBe(false);
+  },
+);

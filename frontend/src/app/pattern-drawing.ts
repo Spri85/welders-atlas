@@ -28,10 +28,10 @@ export interface PatternMeasurement {
   unit: 'mm' | 'degree';
 }
 
-export function drawingBounds(drawing: PatternDrawing) {
+export function drawingBounds(drawing: PatternDrawing, includeGuides = drawing.closed === false) {
   const segments = [drawing.outline, ...(drawing.contours ?? [])].flat();
   const points = segments.flatMap((segment) => [segment.start, segment.end]);
-  if (drawing.closed === false) {
+  if (includeGuides) {
     points.push(...[...(drawing.construction ?? []), ...(drawing.folds ?? [])].flatMap((segment) => [segment.start, segment.end]));
   }
   for (const segment of segments) {

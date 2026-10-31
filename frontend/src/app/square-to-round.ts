@@ -61,6 +61,7 @@ export function calculateSquareToRound(dimensions: SquareToRoundDimensions) {
     vertices: flat.map((point, index) => ({ id: String(index + 1), point })),
     coordinatePoints: [...flat.map((point, index) => ({ id: String(index + 1), point })), { id: 'M', point: midpoint }],
     measurements: [
+      { id: 'Hflat', kind: 'height', unit: 'mm', value: Math.max(...flat.map((p) => p.y)) - Math.min(...flat.map((p) => p.y)) },
       ...perimeter.map((from, index) => {
         const to = perimeter[(index + 1) % perimeter.length];
         return { id: `${from + 1}–${to + 1}`, kind: 'edge' as const, unit: 'mm' as const, value: Math.hypot(flat[to].x - flat[from].x, flat[to].y - flat[from].y) };

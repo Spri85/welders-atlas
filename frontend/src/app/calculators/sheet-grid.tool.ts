@@ -14,20 +14,33 @@ export const sheetGridTool: CalculatorTool = {
     'Только однородные прямоугольные сетки; сравниваются заданная и повёрнутая на 90° ориентации. При равенстве сохраняется заданная. Промежуток между заготовками включает ширину реза. После последней заготовки промежуток не добавляется. Предел 10 000 заготовок.',
   ),
   fields: [
-    field('sheetW', text('Sheet width', 'Ширина листа', 'Ширина листа'), 1000),
-    field('sheetH', text('Sheet height', 'Висота листа', 'Высота листа'), 600),
+    field(
+      'sheetW',
+      'W',
+      text('Sheet width', 'Ширина листа', 'Ширина листа'),
+      1000,
+    ),
+    field(
+      'sheetH',
+      'H',
+      text('Sheet height', 'Висота листа', 'Высота листа'),
+      600,
+    ),
     field(
       'partW',
+      'w',
       text('Blank width', 'Ширина заготовки', 'Ширина заготовки'),
       240,
     ),
     field(
       'partH',
+      'h',
       text('Blank height', 'Висота заготовки', 'Высота заготовки'),
       140,
     ),
     field(
       'margin',
+      'm',
       text(
         'Margin at every edge',
         'Відступ від кожного краю',
@@ -37,6 +50,7 @@ export const sheetGridTool: CalculatorTool = {
     ),
     field(
       'spacing',
+      's',
       text(
         'Total blank spacing',
         'Повний проміжок між заготовками',
@@ -46,6 +60,7 @@ export const sheetGridTool: CalculatorTool = {
     ),
     field(
       'rotate',
+      'O',
       text(
         'Allow 90° rotation',
         'Дозволити поворот 90°',

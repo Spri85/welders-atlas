@@ -30,6 +30,14 @@ export function calculateRolledSleeve(
     drawing: {
       ...rectangle(cutLengthMm, widthMm),
       labels: [
+        ...(allowanceMm > 0
+          ? [
+              {
+                text: 'A',
+                point: { x: zeroLengthMm + allowanceMm / 2, y: widthMm },
+              },
+            ]
+          : []),
         { text: 'L', point: { x: cutLengthMm / 2, y: 0 } },
         { text: 'W', point: { x: 0, y: widthMm / 2 } },
       ],
@@ -38,7 +46,7 @@ export function calculateRolledSleeve(
       ...circle({ x: 0, y: 0 }, insideMm / 2 + thicknessMm),
       contours: [circle({ x: 0, y: 0 }, insideMm / 2).outline],
       labels: [
-        { text: 'ID', point: { x: 0, y: insideMm / 2 } },
+        { text: 'D', point: { x: 0, y: diameterMm / 2 } },
         { text: 't', point: { x: insideMm / 2 + thicknessMm / 2, y: 0 } },
       ],
     },

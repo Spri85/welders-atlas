@@ -133,8 +133,11 @@ const errors = {
           </fieldset>
           @for (field of tool().fields; track field.id) {
             @if (!field.when || field.when(values())) {
-              <label class="dimension" [for]="'tool-' + field.id"
-                >{{ field.label[language()] }}
+              <label
+                class="dimension"
+                [for]="'tool-' + field.id"
+                [attr.data-field-reference]="field.reference"
+                >{{ field.reference }} · {{ field.label[language()] }}
                 <span
                   >{{ unitName(field.unit) }}
                   @if (field.optional) {
@@ -188,6 +191,7 @@ const errors = {
             }
             <app-drawing-preview
               [drawing]="result.drawing"
+              [parameters]="inputReferences()"
               [model]="result.model ?? []"
               [language]="language()"
               [unit]="inches() ? 'in' : 'mm'"
@@ -336,13 +340,32 @@ export class CalculatorWorkbench {
   readonly selectedTemplate = computed(
     () => this.templates().at(this.templateIndex()) ?? null,
   );
+  readonly inputReferences = computed(() =>
+    this.tool()
+      .fields.filter((field) => !field.when || field.when(this.values()))
+      .map((field) => ({
+        id: field.reference,
+        label: field.label[this.language()],
+        value: field.choices
+          ? (field.choices.find(
+              (choice) => choice.value === this.values()[field.id],
+            )?.label[this.language()] ?? '—')
+          : Number.isFinite(this.values()[field.id])
+            ? this.format(this.values()[field.id], field.unit)
+            : '—',
+      })),
+  );
   readonly hints = computed(() =>
-    Object.fromEntries(
-      (this.calculation().result?.metrics ?? []).map((metric) => [
+    Object.fromEntries([
+      ...this.inputReferences().map((parameter) => [
+        parameter.id,
+        `${parameter.label} = ${parameter.value}`,
+      ]),
+      ...(this.calculation().result?.metrics ?? []).map((metric) => [
         metric.id,
         `${metric.label[this.language()]} = ${this.format(metric.value, metric.unit)}`,
       ]),
-    ),
+    ]),
   );
   readonly summary = computed(() =>
     [

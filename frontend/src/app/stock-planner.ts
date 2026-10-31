@@ -1,3 +1,4 @@
+import { InputReferenceKey } from './input-reference-key';
 import { Component, computed, input, signal } from '@angular/core';
 import { text, formatQuantity } from './calculator-tool';
 import type { Language } from './export-copy';
@@ -66,7 +67,7 @@ const copy = {
 type Collection = 'parts' | 'stock';
 @Component({
   selector: 'app-stock-planner',
-  imports: [DrawingPreview],
+  imports: [DrawingPreview, InputReferenceKey],
   styleUrls: ['./calculator.css'],
   styles: `
     .stock-rows {
@@ -174,13 +175,22 @@ type Collection = 'parts' | 'stock';
                   (input)="edit(collection, i, 'group', group.value)"
               /></label>
               <label
-                >{{ t('length')
+                [attr.data-field-reference]="
+                  rowReference(collection, i, 'length')
+                "
+                >{{ rowReference(collection, i, 'length') }} · {{ t('length')
                 }}<input
                   #length
                   type="number"
                   step="any"
                   [attr.aria-label]="
-                    t(collection) + ' ' + (i + 1) + ' ' + t('length')
+                    rowReference(collection, i, 'length') +
+                    ' · ' +
+                    t(collection) +
+                    ' ' +
+                    (i + 1) +
+                    ' ' +
+                    t('length')
                   "
                   [value]="row.lengthMm / factor()"
                   (input)="
@@ -193,12 +203,22 @@ type Collection = 'parts' | 'stock';
                   "
               /></label>
               <label
-                >{{ t('quantity')
+                [attr.data-field-reference]="
+                  rowReference(collection, i, 'quantity')
+                "
+                >{{ rowReference(collection, i, 'quantity') }} ·
+                {{ t('quantity')
                 }}<input
                   #quantity
                   type="number"
                   [attr.aria-label]="
-                    t(collection) + ' ' + (i + 1) + ' ' + t('quantity')
+                    rowReference(collection, i, 'quantity') +
+                    ' · ' +
+                    t(collection) +
+                    ' ' +
+                    (i + 1) +
+                    ' ' +
+                    t('quantity')
                   "
                   [value]="row.quantity"
                   (input)="
@@ -224,13 +244,13 @@ type Collection = 'parts' | 'stock';
     }
     <div class="stock-settings">
       @for (setting of settings; track setting) {
-        <label
-          >{{ t(setting)
+        <label [attr.data-field-reference]="settingReferences[setting]"
+          >{{ settingReferences[setting] }} · {{ t(setting)
           }}<input
             #entry
             type="number"
             step="any"
-            [attr.aria-label]="t(setting)"
+            [attr.aria-label]="settingReferences[setting] + ' · ' + t(setting)"
             [value]="allowances()[setting] / factor()"
             (input)="setAllowance(setting, entry.valueAsNumber * factor())"
         /></label>
@@ -241,10 +261,17 @@ type Collection = 'parts' | 'stock';
         @if (plan.bars.length) {
           <app-drawing-preview
             [drawing]="drawing()"
+            [parameters]="inputReferences()"
+            [unit]="inches() ? 'in' : 'mm'"
             [title]="t('title')"
             [language]="language()"
             [showDimensions]="false"
             [hints]="hints()"
+          />
+        } @else {
+          <app-input-reference-key
+            [parameters]="inputReferences()"
+            [language]="language()"
           />
         }
         @for (bar of plan.bars; track bar.id) {
@@ -300,6 +327,7 @@ export class StockPlanner {
   readonly factor = computed(() => (this.inches() ? 25.4 : 1));
   readonly collections: Collection[] = ['parts', 'stock'];
   readonly settings = ['kerf', 'trim', 'reuse'] as const;
+  readonly settingReferences = { kerf: 'k', trim: 't', reuse: 'r' } as const;
   readonly rows = signal<Record<Collection, StockItem[]>>({
     parts: [{ id: 'P1', group: 'steel', lengthMm: 400, quantity: 2 }],
     stock: [{ id: 'S1', group: 'steel', lengthMm: 1000, quantity: 1 }],
@@ -318,14 +346,40 @@ export class StockPlanner {
       return null;
     }
   });
+  rowReference(
+    collection: Collection,
+    index: number,
+    field: 'length' | 'quantity',
+  ): string {
+    return `${field === 'length' ? 'L' : 'n'}${collection === 'parts' ? 'p' : 's'}${index + 1}`;
+  }
+  readonly inputReferences = computed(() => [
+    ...this.collections.flatMap((collection) =>
+      this.rows()[collection].flatMap((row, index) => [
+        {
+          id: this.rowReference(collection, index, 'length'),
+          label: `${this.t(collection)} · ${row.id} · ${this.t('length')}`,
+          value: this.format(row.lengthMm),
+        },
+        {
+          id: this.rowReference(collection, index, 'quantity'),
+          label: `${this.t(collection)} · ${row.id} · ${this.t('quantity')}`,
+          value: String(row.quantity),
+        },
+      ]),
+    ),
+    ...this.settings.map((setting) => ({
+      id: this.settingReferences[setting],
+      label: this.t(setting),
+      value: this.format(this.allowances()[setting]),
+    })),
+  ]);
   readonly hints = computed(() =>
     Object.fromEntries(
-      (this.result()?.bars ?? []).flatMap((bar) =>
-        bar.cuts.map((cut, i) => [
-          `${bar.id}:${i + 1}`,
-          `${cut.id} · ${this.format(cut.lengthMm)}`,
-        ]),
-      ),
+      this.inputReferences().map((parameter) => [
+        parameter.id,
+        `${parameter.label} = ${parameter.value}`,
+      ]),
     ),
   );
   readonly drawing = computed<PatternDrawing>(() => {
@@ -342,10 +396,21 @@ export class StockPlanner {
     const construction = [];
     const labels = [];
     for (const [i, bar] of bars.entries()) {
+      const stockIndex = this.rows().stock.findIndex(
+        (stock) => bar.id.slice(0, bar.id.lastIndexOf('/')) === stock.id,
+      );
+      labels.push({
+        text: this.rowReference('stock', stockIndex, 'length'),
+        point: { x: bar.lengthMm / 2, y: i * height * 2 },
+      });
       let x = bar.trimMm / 2;
-      for (const [j, cut] of bar.cuts.entries()) {
+      for (const cut of bar.cuts) {
         labels.push({
-          text: `${bar.id}:${j + 1}`,
+          text: this.rowReference(
+            'parts',
+            this.rows().parts.findIndex((part) => part.id === cut.id),
+            'length',
+          ),
           point: { x: x + cut.lengthMm / 2, y: i * height * 2 + height / 2 },
           align: 'center' as const,
         });

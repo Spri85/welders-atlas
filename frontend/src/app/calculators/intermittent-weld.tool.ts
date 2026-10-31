@@ -14,9 +14,15 @@ export const intermittentWeldTool: CalculatorTool = {
     'Одна сторона стыка. Нумерованные отрезки имеют заданный чертежом шаг центров и полную длину. Отметки от левой базы; подсказки показывают начала. Если полный отрезок не помещается, весь стык остаётся несваренным. Заданный конечный отступ проверяется без изменения шага.',
   ),
   fields: [
-    field('joint', text('Joint length', 'Довжина стику', 'Длина стыка'), 350),
+    field(
+      'joint',
+      'J',
+      text('Joint length', 'Довжина стику', 'Длина стыка'),
+      350,
+    ),
     field(
       'first',
+      's₀',
       text(
         'First start from datum',
         'Перший початок від бази',
@@ -26,6 +32,7 @@ export const intermittentWeldTool: CalculatorTool = {
     ),
     field(
       'segment',
+      'ℓ',
       text(
         'Full segment length',
         'Повна довжина відрізка',
@@ -35,11 +42,13 @@ export const intermittentWeldTool: CalculatorTool = {
     ),
     field(
       'pitch',
+      'p',
       text('Center-to-center pitch', 'Крок між центрами', 'Шаг между центрами'),
       100,
     ),
     field(
       'clearance',
+      'e',
       text(
         'Required far-end clearance',
         'Заданий кінцевий відступ',

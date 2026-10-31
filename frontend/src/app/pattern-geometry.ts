@@ -21,3 +21,11 @@ export interface DrawingLine {
   start: PatternPoint;
   end: PatternPoint;
 }
+
+export function modelDimension(start: Point3, end: Point3, label: string) {
+  return {
+    points: [start, { x: (start.x + end.x) / 2, y: (start.y + end.y) / 2, z: (start.z + end.z) / 2 }, end],
+    label,
+    construction: true,
+  };
+}

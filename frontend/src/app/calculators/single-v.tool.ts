@@ -16,17 +16,20 @@ export const singleVTool: CalculatorTool = {
   fields: [
     field(
       'thickness',
+      't',
       text('Plate thickness', 'Товщина плити', 'Толщина плиты'),
       12,
     ),
-    field('face', text('Root face', 'Притуплення', 'Притупление'), 2),
+    field('face', 'f', text('Root face', 'Притуплення', 'Притупление'), 2),
     field(
       'opening',
+      'g',
       text('Root opening', 'Кореневий зазор', 'Корневой зазор'),
       2,
     ),
     field(
       'angle',
+      'θ',
       text(
         'Included groove angle',
         'Повний кут розкриття',

@@ -38,6 +38,7 @@ export const positionerSpeedTool: CalculatorTool = {
   fields: [
     field(
       'diameter',
+      'D',
       text(
         'Weld-path diameter',
         'Діаметр траєкторії шва',
@@ -47,6 +48,7 @@ export const positionerSpeedTool: CalculatorTool = {
     ),
     field(
       'speed',
+      'v',
       text(
         'Linear weld travel speed',
         'Лінійна швидкість зварювання',
@@ -57,6 +59,7 @@ export const positionerSpeedTool: CalculatorTool = {
     ),
     field(
       'minimum',
+      'Nmin',
       text(
         'Minimum workpiece RPM',
         'Мінімальні оберти деталі',
@@ -68,6 +71,7 @@ export const positionerSpeedTool: CalculatorTool = {
     ),
     field(
       'maximum',
+      'Nmax',
       text(
         'Maximum workpiece RPM',
         'Максимальні оберти деталі',

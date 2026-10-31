@@ -75,6 +75,30 @@ it('offers all 25 calculators and mounts only the selected one', async () => {
       option.textContent,
     );
     expect(root.querySelector('svg')).not.toBeNull();
+    const fields = Array.from(
+      root.querySelectorAll<HTMLElement>('[data-field-reference]'),
+    );
+    const references = Array.from(
+      root.querySelectorAll<HTMLElement>('[data-input-reference]'),
+    );
+    expect(fields.length).toBeGreaterThan(0);
+    expect(references.map((node) => node.dataset['inputReference'])).toEqual(
+      fields.map((node) => node.dataset['fieldReference']),
+    );
+    expect(
+      new Set(references.map((node) => node.dataset['inputReference'])).size,
+    ).toBe(references.length);
+    for (const input of Array.from(
+      root.querySelectorAll<HTMLInputElement>(
+        'section.calculator input[type=number]',
+      ),
+    )) {
+      expect(
+        input.closest('[data-field-reference]') ??
+          root.querySelector(`[data-field-reference][for="${input.id}"]`),
+      ).not.toBeNull();
+    }
+
     const printable = [
       'round-reducer',
       'square-to-round',

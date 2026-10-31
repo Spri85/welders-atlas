@@ -15,7 +15,7 @@
         <label><input type="radio" name="units" value="in" [checked]="unit() === 'in'" (change)="unit.set('in')"> {{ text().inches }}</label>
       </fieldset>
       @for (field of fields; track field.key) {
-        <label class="dimension" [for]="field.key">{{ text()[field.label] }} <span>({{ unitLabel() }})</span></label>
+        <label class="dimension" [for]="field.key" [attr.data-field-reference]="field.reference">{{ field.reference }} · {{ text()[field.label] }} <span>({{ unitLabel() }})</span></label>
         <input #dimension type="number" [id]="field.key" inputmode="decimal" step="any" required
           [value]="inputValue(field.key)" [attr.aria-invalid]="invalidField(field.key)"
           [attr.aria-describedby]="calculation().error ? 'reducer-error' : null"
@@ -48,6 +48,10 @@
                   <line class="seam" [attr.x1]="model.seam.start.x" [attr.y1]="model.seam.start.y" [attr.x2]="model.seam.end.x" [attr.y2]="model.seam.end.y" />
                   <text [measurementTooltip]="'A = ' + measurement(pattern.slantHeightMm)" class="seam-label" [attr.x]="(model.seam.start.x + model.seam.end.x) / 2 + 12" [attr.y]="(model.seam.start.y + model.seam.end.y) / 2">A</text>
                 </g>
+                @for (dimension of model.dimensions; track dimension.reference.id) {
+                  <line class="input-dimension" [attr.x1]="dimension.start.x" [attr.y1]="dimension.start.y" [attr.x2]="dimension.end.x" [attr.y2]="dimension.end.y" />
+                  <text [measurementTooltip]="dimension.reference.label + ' = ' + dimension.reference.value" [attr.x]="(dimension.start.x + dimension.end.x) / 2 + 6" [attr.y]="(dimension.start.y + dimension.end.y) / 2 - 6">{{ dimension.reference.id }}</text>
+                }
               }
             } @else {
               @if (flat(); as outline) {
@@ -67,6 +71,7 @@
           </svg>
           <figcaption>{{ text().seam }}</figcaption>
         </figure>
+        <app-input-reference-key [parameters]="inputReferences()" [language]="language()" />
         @if (view() === 'flat') {
           @if (printDrawing(); as drawing) {
             <app-pattern-dimensions [drawing]="drawing" [language]="language()" [unit]="unit()" />

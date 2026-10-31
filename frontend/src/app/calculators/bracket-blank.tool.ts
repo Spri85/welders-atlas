@@ -16,22 +16,26 @@ export const bracketBlankTool: CalculatorTool = {
   fields: [
     field(
       'leg1',
+      'L₁',
       text('Outside leg 1', 'Зовнішня полиця 1', 'Наружная полка 1'),
       50,
     ),
     field(
       'leg2',
+      'L₂',
       text('Outside leg 2', 'Зовнішня полиця 2', 'Наружная полка 2'),
       30,
     ),
-    field('thickness', text('Thickness', 'Товщина', 'Толщина'), 2),
+    field('thickness', 't', text('Thickness', 'Товщина', 'Толщина'), 2),
     field(
       'radius',
+      'r',
       text('Inside radius', 'Внутрішній радіус', 'Внутренний радиус'),
       3,
     ),
     field(
       'angle',
+      'θ',
       text(
         'Bend from flat',
         'Кут від плоского стану',
@@ -42,6 +46,7 @@ export const bracketBlankTool: CalculatorTool = {
     ),
     field(
       'method',
+      'M',
       text('Allowance method', 'Метод припуску', 'Метод припуска'),
       0,
       'ratio',
@@ -59,11 +64,12 @@ export const bracketBlankTool: CalculatorTool = {
         ],
       },
     ),
-    field('k', text('K-factor', 'K-фактор', 'K-фактор'), 0.4, 'ratio', {
+    field('k', 'k', text('K-factor', 'K-фактор', 'K-фактор'), 0.4, 'ratio', {
       when: (v) => v['method'] === 0,
     }),
     field(
       'measured',
+      'BA',
       text(
         'Measured bend allowance',
         'Виміряний припуск на згин',
@@ -93,13 +99,13 @@ export const bracketBlankTool: CalculatorTool = {
       ],
       metrics: [
         {
-          id: '1',
+          id: 'L₁',
           label: text('Outside leg 1', 'Зовнішня полиця 1', 'Наружная полка 1'),
           value: leg1,
           unit: 'mm',
         },
         {
-          id: '2',
+          id: 'L₂',
           label: text('Outside leg 2', 'Зовнішня полиця 2', 'Наружная полка 2'),
           value: leg2,
           unit: 'mm',

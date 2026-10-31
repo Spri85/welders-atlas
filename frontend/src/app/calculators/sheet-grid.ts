@@ -14,15 +14,14 @@ export function calculateSheetGrid(
   nonnegative(marginMm, spacingMm);
   const usableWidthMm = Math.max(0, sheetWidthMm - 2 * marginMm),
     usableHeightMm = Math.max(0, sheetHeightMm - 2 * marginMm);
+  const fitCount = (available: number, part: number) => {
+    const ratio = (available + spacingMm) / (part + spacingMm);
+    const tolerance = 8 * Number.EPSILON * Math.max(1, Math.abs(ratio));
+    return Math.max(0, Math.floor(ratio + tolerance));
+  };
   const fit = (width: number, height: number, rotated: boolean) => {
-    const columns = Math.max(
-      0,
-      Math.floor((usableWidthMm + spacingMm) / (width + spacingMm)),
-    );
-    const rows = Math.max(
-      0,
-      Math.floor((usableHeightMm + spacingMm) / (height + spacingMm)),
-    );
+    const columns = fitCount(usableWidthMm, width);
+    const rows = fitCount(usableHeightMm, height);
     return { columns, rows, count: columns * rows, width, height, rotated };
   };
   const entered = fit(partWidthMm, partHeightMm, false),
@@ -36,8 +35,8 @@ export function calculateSheetGrid(
   const usedHeight = chosen.rows
     ? chosen.rows * chosen.height + (chosen.rows - 1) * spacingMm
     : 0;
-  const remainderWidthMm = usableWidthMm - usedWidth,
-    remainderHeightMm = usableHeightMm - usedHeight;
+  const remainderWidthMm = Math.max(0, usableWidthMm - usedWidth),
+    remainderHeightMm = Math.max(0, usableHeightMm - usedHeight);
   finiteResult(remainderWidthMm, remainderHeightMm);
   const contours = Array.from({ length: chosen.count }, (_, i) => {
     const x = marginMm + (i % chosen.columns) * (chosen.width + spacingMm),
@@ -53,6 +52,38 @@ export function calculateSheetGrid(
     ...rectangle(sheetWidthMm, sheetHeightMm),
     contours,
     labels: [
+      ...(chosen.count
+        ? [
+            {
+              text: chosen.rotated ? 'h' : 'w',
+              point: { x: marginMm + chosen.width / 2, y: marginMm },
+            },
+            {
+              text: chosen.rotated ? 'w' : 'h',
+              point: { x: marginMm, y: marginMm + chosen.height / 2 },
+            },
+          ]
+        : []),
+      ...(marginMm > 0
+        ? [{ text: 'm', point: { x: marginMm / 2, y: sheetHeightMm * 0.75 } }]
+        : []),
+      ...(spacingMm > 0 && chosen.count > 1
+        ? [
+            {
+              text: 's',
+              point:
+                chosen.columns > 1
+                  ? {
+                      x: marginMm + chosen.width + spacingMm / 2,
+                      y: marginMm + chosen.height / 2,
+                    }
+                  : {
+                      x: marginMm + chosen.width / 2,
+                      y: marginMm + chosen.height + spacingMm / 2,
+                    },
+            },
+          ]
+        : []),
       { text: 'W', point: { x: sheetWidthMm / 2, y: 0 } },
       { text: 'H', point: { x: 0, y: sheetHeightMm / 2 } },
     ],

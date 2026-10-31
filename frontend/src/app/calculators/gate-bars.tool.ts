@@ -16,12 +16,14 @@ export const gateBarsTool: CalculatorTool = {
   fields: [
     field(
       'opening',
+      'W',
       text('Clear opening', 'Чистий отвір', 'Чистый проём'),
       1000,
     ),
-    field('bar', text('Bar width', 'Ширина прута', 'Ширина прута'), 20),
+    field('bar', 'b', text('Bar width', 'Ширина прута', 'Ширина прута'), 20),
     field(
       'count',
+      'n',
       text('Bar count', 'Кількість прутів', 'Количество прутьев'),
       5,
       'count',

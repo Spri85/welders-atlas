@@ -9,10 +9,15 @@ const lengthUnits = {
 
 export function drawingMeasurements(drawing: PatternDrawing): readonly PatternMeasurement[] {
   const bounds = drawingBounds(drawing);
+  const measurements = drawing.measurements ?? [];
   return [
-    { id: 'W', kind: 'width', value: bounds.width, unit: 'mm' },
-    { id: 'H', kind: 'height', value: bounds.height, unit: 'mm' },
-    ...(drawing.measurements ?? []),
+    ...(!measurements.some((item) => item.kind === 'width')
+      ? [{ id: 'W', kind: 'width' as const, value: bounds.width, unit: 'mm' as const }]
+      : []),
+    ...(!measurements.some((item) => item.kind === 'height')
+      ? [{ id: 'H', kind: 'height' as const, value: bounds.height, unit: 'mm' as const }]
+      : []),
+    ...measurements,
   ];
 }
 

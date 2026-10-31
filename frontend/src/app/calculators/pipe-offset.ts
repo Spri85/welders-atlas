@@ -59,6 +59,7 @@ export function calculatePipeOffset({
     folds: [faceMark(faceA), faceMark(faceB)],
     construction: [line(a, { x: b.x, y: 0 }), line({ x: b.x, y: 0 }, b)],
     labels: [
+      { text: 'θ', point: { x: lead / 2, y: shiftMm / 12 } },
       { text: 'T', point: { x: b.x / 2, y: b.y / 2 } },
       { text: 'a', point: faceA },
       { text: 'b', point: faceB },

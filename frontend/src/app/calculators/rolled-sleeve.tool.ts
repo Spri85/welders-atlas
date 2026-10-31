@@ -16,11 +16,13 @@ export const rolledSleeveTool: CalculatorTool = {
   fields: [
     field(
       'diameter',
+      'D',
       text('Finished diameter', 'Готовий діаметр', 'Готовый диаметр'),
       200,
     ),
     field(
       'outside',
+      'J',
       text('Diameter reference', 'База діаметра', 'База диаметра'),
       1,
       'ratio',
@@ -45,9 +47,15 @@ export const rolledSleeveTool: CalculatorTool = {
         ],
       },
     ),
-    field('thickness', text('Thickness', 'Товщина', 'Толщина'), 2),
-    field('width', text('Axial width', 'Осьова ширина', 'Осевая ширина'), 100),
+    field('thickness', 't', text('Thickness', 'Товщина', 'Толщина'), 2),
     field(
+      'width',
+      'W',
+      text('Axial width', 'Осьова ширина', 'Осевая ширина'),
+      100,
+    ),
+    field(
+      'k',
       'k',
       text(
         'Neutral-axis fraction',
@@ -59,6 +67,7 @@ export const rolledSleeveTool: CalculatorTool = {
     ),
     field(
       'allowance',
+      'A',
       text(
         'Total additional allowance',
         'Загальний додатковий припуск',

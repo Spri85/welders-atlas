@@ -1,3 +1,4 @@
+import { InputReferenceKey } from './input-reference-key';
 import { Component, computed, input, signal } from '@angular/core';
 import { calculateCenteredRoundReducer, type PatternPoint, type ReducerDimensions } from './centered-round-reducer';
 import { reducerCopy } from './reducer-copy';
@@ -11,7 +12,7 @@ type Dimension = keyof ReducerDimensions;
 
 @Component({
   selector: 'app-reducer-calculator',
-  imports: [PatternExport, PatternDimensions, MeasurementTooltip],
+  imports: [PatternExport, PatternDimensions, MeasurementTooltip, InputReferenceKey],
   templateUrl: './reducer-calculator.html',
   styleUrls: ['./calculator.css', './reducer-calculator.css'],
 })
@@ -28,11 +29,16 @@ export class ReducerCalculator {
     inletDiameterMm: 200, outletDiameterMm: 100, axialLengthMm: 150,
   });
   readonly fields = [
-    { key: 'inletDiameterMm', label: 'inlet' },
-    { key: 'outletDiameterMm', label: 'outlet' },
-    { key: 'axialLengthMm', label: 'length' },
+    { key: 'inletDiameterMm', label: 'inlet', reference: 'D₁' },
+    { key: 'outletDiameterMm', label: 'outlet', reference: 'D₂' },
+    { key: 'axialLengthMm', label: 'length', reference: 'H' },
   ] as const;
 
+  readonly inputReferences = computed(() => this.fields.map((field) => ({
+    id: field.reference,
+    label: this.text()[field.label],
+    value: this.measurement(this.dimensions()[field.key]),
+  })));
   readonly calculation = computed(() => {
     const dimensions = this.dimensions();
     if (!Object.values(dimensions).every((value) => Number.isFinite(value) && value > 0)) {
@@ -58,6 +64,7 @@ export class ReducerCalculator {
         text: 'A', point: { x: (seam.start.x + seam.end.x) / 2 + 2, y: (seam.start.y + seam.end.y) / 2 + 2 },
       })),
       measurements: [
+        { id: 'Hflat', kind: 'height', value: drawingBounds({ outline: pattern.outline.segments }).height, unit: 'mm' },
         { id: 'A', kind: 'edge', value: pattern.slantHeightMm, unit: 'mm' },
         { id: 'R', kind: 'radius', value: pattern.outerRadiusMm, unit: 'mm' },
         { id: 'r', kind: 'radius', value: pattern.innerRadiusMm, unit: 'mm' },
@@ -106,6 +113,11 @@ export class ReducerCalculator {
         start: inlet(index * Math.PI / 6), end: outlet(index * Math.PI / 6),
       })),
       seam: { start: inlet(0), end: outlet(0) },
+      dimensions: [
+        { start: inlet(0), end: inlet(Math.PI), reference: this.inputReferences()[0] },
+        { start: outlet(0), end: outlet(Math.PI), reference: this.inputReferences()[1] },
+        { start: project(0, -axialLengthMm / 2, 0), end: project(0, axialLengthMm / 2, 0), reference: this.inputReferences()[2] },
+      ],
     };
   });
 

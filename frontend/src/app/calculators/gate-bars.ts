@@ -42,11 +42,15 @@ export function calculateGateBars(
       value: bar.centerMm,
       unit: 'mm',
     })),
-    labels: bars.map((bar) => ({
-      point: { x: bar.centerMm, y: height / 2 },
-      text: String(bar.id),
-      measurementId: String(bar.id),
-    })),
+    labels: [
+      { text: 'W', point: { x: openingMm / 2, y: 0 } },
+      { text: 'b', point: { x: bars[0].centerMm, y: height } },
+      ...bars.map((bar) => ({
+        point: { x: bar.centerMm, y: height / 2 },
+        text: String(bar.id),
+        measurementId: String(bar.id),
+      })),
+    ],
   };
   return { gapMm, bars, drawing };
 }

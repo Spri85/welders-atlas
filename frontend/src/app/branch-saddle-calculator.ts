@@ -1,3 +1,4 @@
+import { modelDimension } from './pattern-geometry';
 import { Component, computed, input, signal } from '@angular/core';
 import { calculateBranchSaddle, type BranchSaddleDimensions } from './branch-saddle';
 import { branchSaddleCopy } from './branch-saddle-copy';
@@ -20,7 +21,12 @@ export class BranchSaddleCalculator {
   readonly factor = computed(() => this.unit() === 'mm' ? 1 : 25.4);
   readonly unitLabel = computed(() => this.unit() === 'mm' ? this.common().unitMm : this.common().unitIn);
   readonly dimensions = signal<BranchSaddleDimensions>({ mainDiameterMm: 100, branchDiameterMm: 60 });
-  readonly fields = [{ key: 'mainDiameterMm', label: 'main' }, { key: 'branchDiameterMm', label: 'branch' }] as const;
+  readonly fields = [{ key: 'mainDiameterMm', label: 'main', reference: 'D₁' }, { key: 'branchDiameterMm', label: 'branch', reference: 'D₂' }] as const;
+  readonly inputReferences = computed(() => this.fields.map((field) => ({
+    id: field.reference,
+    label: this.text()[field.label],
+    value: this.measurement(this.dimensions()[field.key]),
+  })));
   readonly calculation = computed(() => {
     const values = this.dimensions();
     if (!Object.values(values).every((value) => Number.isFinite(value) && value > 0)) return { result: null, error: this.common().positive };
@@ -45,6 +51,8 @@ export class BranchSaddleCalculator {
         const angle = index * Math.PI / 4;
         return { points: [-1, 1].map((side) => ({ x: side * mainRadius * 1.4, y: mainRadius * Math.cos(angle), z: mainRadius * Math.sin(angle) })) };
       }),
+      modelDimension({ x: -mainRadius * 1.4, y: -mainRadius, z: 0 }, { x: -mainRadius * 1.4, y: mainRadius, z: 0 }, 'D₁'),
+      modelDimension({ x: -branchRadius, y: 0, z: mainRadius + result.referenceBandMm }, { x: branchRadius, y: 0, z: mainRadius + result.referenceBandMm }, 'D₂'),
       { points: result.intersection },
       { points: Array.from({ length: 73 }, (_, index) => top(index * 10)) },
       ...Array.from({ length: 8 }, (_, index) => ({ points: [result.intersection[index * 90], top(index * 90)], seam: index === 0, label: index === 0 ? 'A' : undefined })),

@@ -1,3 +1,4 @@
+import { InputReferenceKey, type InputReference } from './input-reference-key';
 import { Component, computed, input, signal } from '@angular/core';
 import { drawingBounds, drawingSvgPath, type PatternDrawing } from './pattern-drawing';
 import type { Point3 } from './pattern-geometry';
@@ -7,11 +8,11 @@ import { PatternDimensions } from './pattern-dimensions';
 import { drawingCoordinates, drawingLabelText, formatPatternMeasurement } from './pattern-measurements';
 import { MeasurementTooltip } from './measurement-tooltip';
 
-export interface ModelLine { points: readonly Point3[]; seam?: boolean; label?: string }
+export interface ModelLine { points: readonly Point3[]; seam?: boolean; construction?: boolean; label?: string }
 
 @Component({
   selector: 'app-drawing-preview',
-  imports: [PatternDimensions, MeasurementTooltip],
+  imports: [PatternDimensions, MeasurementTooltip, InputReferenceKey],
   template: `
     @if (model().length) { <div class="view-buttons" role="group" [attr.aria-label]="text().view">
       <button type="button" [attr.aria-pressed]="activeView() === 'formed'" (click)="view.set('formed')">{{ text().formed }}</button>
@@ -40,17 +41,18 @@ export interface ModelLine { points: readonly Point3[]; seam?: boolean; label?: 
             }
           }
           @if (showDimensions()) { <line class="dimension-line" [attr.x1]="drawing.left" [attr.x2]="drawing.right" y1="329" y2="329" />
-          <text class="dimension-label" x="280" y="350" text-anchor="middle" [measurementTooltip]="'W = ' + measurement(drawing.width)">W</text>
+          <text class="dimension-label" x="280" y="350" text-anchor="middle" [measurementTooltip]="drawing.widthId + ' = ' + measurement(drawing.width)">{{ drawing.widthId }}</text>
           <line class="dimension-line" x1="24" x2="24" [attr.y1]="drawing.top" [attr.y2]="drawing.bottom" />
-          <text class="dimension-label" x="-180" y="15" transform="rotate(-90)" text-anchor="middle" [measurementTooltip]="'H = ' + measurement(drawing.height)">H</text> }
+          <text class="dimension-label" x="-180" y="15" transform="rotate(-90)" text-anchor="middle" [measurementTooltip]="drawing.heightId + ' = ' + measurement(drawing.height)">{{ drawing.heightId }}</text> }
         }
       } @else {
         @for (line of formed(); track $index) {
-          <polyline [class.seam]="line.seam" [attr.points]="line.points" />
+          <polyline [class.seam]="line.seam" [class.construction]="line.construction" [attr.points]="line.points" />
           @if (line.label) { <text [measurementTooltip]="labelHint(line.label)" [attr.x]="line.labelPoint.x + 5" [attr.y]="line.labelPoint.y - 5">{{ line.label }}</text> }
         }
       }
     </svg>
+    <app-input-reference-key [parameters]="parameters()" [language]="language()" />
     @if (activeView() === 'formed') {
       <label>{{ text().rotation }} <output>{{ rotation() }}°</output>
         <input #rotate type="range" min="0" max="360" [attr.aria-label]="text().rotation" [value]="rotation()" (input)="rotation.set(rotate.valueAsNumber)">
@@ -94,6 +96,7 @@ export class DrawingPreview {
   readonly unit = input<'mm' | 'in'>('mm');
   readonly title = input.required<string>();
   readonly instructions = input('');
+  readonly parameters = input<readonly InputReference[]>([]);
   readonly showDimensions = input(true);
   readonly hints = input<Readonly<Partial<Record<string, string>>>>({});
   readonly text = computed(() => reducerCopy[this.language()]);
@@ -103,7 +106,8 @@ export class DrawingPreview {
   readonly tilt = signal(65);
   readonly flat = computed(() => {
     const drawing = this.drawing();
-    const bounds = drawingBounds(drawing);
+    const bounds = drawingBounds(drawing, true);
+    const cutBounds = drawingBounds(drawing);
     const coordinateHints = new Map(drawingCoordinates(drawing).map((point) => [point.id,
       `${point.id} · X = ${this.measurement(point.x)} · Y = ${this.measurement(point.y)}`,
     ]));
@@ -119,7 +123,7 @@ export class DrawingPreview {
       construction: (drawing.construction ?? []).map((line) => ({ start: project(line.start), end: project(line.end) })),
       labels: (drawing.labels ?? []).map((label) => ({
         ...label, point: project(label.point),
-        tooltip: this.hints()[label.text] ?? (label.measurementId ? drawingLabelText(drawing, label, this.unit(), this.language()) : coordinateHints.get(label.text) ?? label.text),
+        tooltip: this.hints()[label.text] ?? this.parameterHint(label.text) ?? (label.measurementId ? drawingLabelText(drawing, label, this.unit(), this.language()) : coordinateHints.get(label.text) ?? label.text),
         anchor: ({ left: 'start', center: 'middle', right: 'end' } as const)[label.align ?? 'left'],
         construction: drawing.measurements?.some((item) => item.id === label.measurementId && item.kind === 'construction'),
       })),
@@ -127,9 +131,11 @@ export class DrawingPreview {
         ...vertex, point: project(vertex.point), showLabel: !drawing.labels?.some((label) => label.text === vertex.id),
         tooltip: coordinateHints.get(vertex.id) ?? vertex.id,
       })),
-      width: bounds.width, height: bounds.height,
-      left: 280 - bounds.width * scale / 2, right: 280 + bounds.width * scale / 2,
-      top: 180 - bounds.height * scale / 2, bottom: 180 + bounds.height * scale / 2,
+      width: cutBounds.width, height: cutBounds.height,
+      widthId: drawing.measurements?.find((item) => item.kind === 'width')?.id ?? 'W',
+      heightId: drawing.measurements?.find((item) => item.kind === 'height')?.id ?? 'H',
+      left: project({ x: cutBounds.minX, y: 0 }).x, right: project({ x: cutBounds.maxX, y: 0 }).x,
+      top: project({ x: 0, y: cutBounds.maxY }).y, bottom: project({ x: 0, y: cutBounds.minY }).y,
     };
   });
   readonly formed = computed(() => {
@@ -154,7 +160,12 @@ export class DrawingPreview {
   labelHint(id: string): string {
     const label = this.drawing().labels?.find((label) => label.text === id)
       ?? { point: { x: 0, y: 0 }, text: id, measurementId: id };
-    return this.hints()[id] ?? drawingLabelText(this.drawing(), label, this.unit(), this.language());
+    return this.hints()[id] ?? this.parameterHint(id) ?? drawingLabelText(this.drawing(), label, this.unit(), this.language());
+  }
+
+  private parameterHint(id: string): string | undefined {
+    const parameter = this.parameters().find((item) => item.id === id);
+    return parameter ? `${parameter.label} = ${parameter.value}` : undefined;
   }
 
   measurement(mm: number): string {

@@ -46,6 +46,9 @@ export function calculateTubeBend(
       { id: 'T2', point: t2 },
     ],
     labels: [
+      { text: 'L₁', point: { x: -leg1Mm / 2, y: 0 } },
+      { text: 'L₂', point: { x: end.x / 2, y: end.y / 2 } },
+      { text: 'θ', point: { x: radiusMm / 8, y: radiusMm / 8 } },
       { text: 'T1', point: t1 },
       { text: 'T2', point: t2 },
       { text: 'S', point: { x: -setbackMm / 2, y: 0 } },

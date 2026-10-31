@@ -20,9 +20,10 @@ export const stockMassTool: CalculatorTool = {
     'Используйте изменяемую плотность материала для листа или каталожную массу кг/м поставщика для профилей. Цена за кг в вашей валюте. Схема — план листа или база длины профиля.',
   ),
   fields: [
-    field('length', text('Length', 'Довжина', 'Длина'), 1000),
+    field('length', 'L', text('Length', 'Довжина', 'Длина'), 1000),
     field(
       'mode',
+      'J',
       text('Stock type', 'Тип прокату', 'Тип проката'),
       0,
       'ratio',
@@ -42,6 +43,7 @@ export const stockMassTool: CalculatorTool = {
     ),
     field(
       'width',
+      'W',
       text('Plate width', 'Ширина листа', 'Ширина листа'),
       500,
       'mm',
@@ -49,6 +51,7 @@ export const stockMassTool: CalculatorTool = {
     ),
     field(
       'thickness',
+      't',
       text('Plate thickness', 'Товщина листа', 'Толщина листа'),
       6,
       'mm',
@@ -56,6 +59,7 @@ export const stockMassTool: CalculatorTool = {
     ),
     field(
       'density',
+      'ρ',
       text('Material density', 'Густина матеріалу', 'Плотность материала'),
       7850,
       'kg/m³',
@@ -63,6 +67,7 @@ export const stockMassTool: CalculatorTool = {
     ),
     field(
       'massPerMetre',
+      'μ',
       text(
         'Catalog mass per metre',
         'Каталожна маса на метр',
@@ -72,9 +77,16 @@ export const stockMassTool: CalculatorTool = {
       'kg/m',
       { when: (v) => v['mode'] === 1 },
     ),
-    field('quantity', text('Quantity', 'Кількість', 'Количество'), 4, 'count'),
+    field(
+      'quantity',
+      'n',
+      text('Quantity', 'Кількість', 'Количество'),
+      4,
+      'count',
+    ),
     field(
       'price',
+      'p',
       text('Price per kg', 'Ціна за кг', 'Цена за кг'),
       2,
       'money',

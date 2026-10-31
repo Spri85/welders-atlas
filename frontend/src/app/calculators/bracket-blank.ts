@@ -79,8 +79,10 @@ export function calculateBracketBlank(v: BracketBlankInputs) {
       line({ x: 0, y: 0 }, end),
     ],
     labels: [
-      { text: '1', point: { x: -v.leg1Mm / 2, y: 0 } },
-      { text: '2', point: end },
+      { text: 'L₁', point: { x: -v.leg1Mm / 2, y: 0 } },
+      { text: 'L₂', point: end },
+      { text: 't', point: { x: -v.leg1Mm, y: v.thicknessMm / 2 } },
+      { text: 'θ', point: { x: 0, y: outsideR / 2 } },
       { text: 'r', point: { x: -setbackMm, y: outsideR } },
     ],
   };

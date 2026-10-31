@@ -19,17 +19,20 @@ export const rectangularFrameTool: CalculatorTool = {
   fields: [
     field(
       'width',
+      'W',
       text('Outside width', 'Зовнішня ширина', 'Наружная ширина'),
       800,
     ),
     field(
       'height',
+      'H',
       text('Outside height', 'Зовнішня висота', 'Наружная высота'),
       600,
     ),
-    field('tube', text('Tube width', 'Ширина труби', 'Ширина трубы'), 30),
+    field('tube', 't', text('Tube width', 'Ширина труби', 'Ширина трубы'), 30),
     field(
       'corner',
+      'J',
       text('Corner type', 'Тип кутового стику', 'Тип углового стыка'),
       0,
       'ratio',
@@ -49,6 +52,7 @@ export const rectangularFrameTool: CalculatorTool = {
     ),
     field(
       'gap',
+      'g',
       text(
         'Clearance at each butt end',
         'Зазор на кожному торці',
@@ -60,10 +64,11 @@ export const rectangularFrameTool: CalculatorTool = {
     ),
     field(
       'diagonalA',
+      'D₁',
       text(
-        'Measured diagonal A',
-        'Виміряна діагональ A',
-        'Измеренная диагональ A',
+        'Measured diagonal 1',
+        'Виміряна діагональ 1',
+        'Измеренная диагональ 1',
       ),
       NaN,
       'mm',
@@ -71,10 +76,11 @@ export const rectangularFrameTool: CalculatorTool = {
     ),
     field(
       'diagonalB',
+      'D₂',
       text(
-        'Measured diagonal B',
-        'Виміряна діагональ B',
-        'Измеренная диагональ B',
+        'Measured diagonal 2',
+        'Виміряна діагональ 2',
+        'Измеренная диагональ 2',
       ),
       NaN,
       'mm',
@@ -136,21 +142,21 @@ export const rectangularFrameTool: CalculatorTool = {
           unit: 'mm',
         },
         {
-          id: 'ΔA',
+          id: 'ΔD₁',
           label: text(
-            'A deviation from target',
-            'Відхилення A від цілі',
-            'Отклонение A от цели',
+            'D₁ deviation from target',
+            'Відхилення D₁ від цілі',
+            'Отклонение D₁ от цели',
           ),
           value: result.deviationAMm!,
           unit: 'mm',
         },
         {
-          id: 'ΔB',
+          id: 'ΔD₂',
           label: text(
-            'B deviation from target',
-            'Відхилення B від цілі',
-            'Отклонение B от цели',
+            'D₂ deviation from target',
+            'Відхилення D₂ від цілі',
+            'Отклонение D₂ от цели',
           ),
           value: result.deviationBMm!,
           unit: 'mm',

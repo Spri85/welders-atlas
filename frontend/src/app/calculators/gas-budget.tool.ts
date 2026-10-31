@@ -22,6 +22,7 @@ export const gasBudgetTool: CalculatorTool = {
   fields: [
     field(
       'flow',
+      'q',
       text(
         'Measured gas flow',
         'Виміряний потік газу',
@@ -32,12 +33,14 @@ export const gasBudgetTool: CalculatorTool = {
     ),
     field(
       'arc',
+      'A',
       text('Total arc-on minutes', 'Загальний час дуги', 'Общее время дуги'),
       20,
       'min',
     ),
     field(
       'cycles',
+      'n',
       text(
         'Gas-cycle count',
         'Кількість газових циклів',
@@ -48,6 +51,7 @@ export const gasBudgetTool: CalculatorTool = {
     ),
     field(
       'pre',
+      't₁',
       text(
         'Preflow per cycle',
         'Передпродувка за цикл',
@@ -58,6 +62,7 @@ export const gasBudgetTool: CalculatorTool = {
     ),
     field(
       'post',
+      't₂',
       text(
         'Postflow per cycle',
         'Післяпродувка за цикл',
@@ -68,6 +73,7 @@ export const gasBudgetTool: CalculatorTool = {
     ),
     field(
       'available',
+      'V₀',
       text(
         'Available usable free gas',
         'Доступний запас вільного газу',

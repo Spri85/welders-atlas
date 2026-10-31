@@ -42,6 +42,7 @@ export function calculateSingleV(
       line({ x, y: rootFaceMm }, { x, y: thicknessMm }),
     ),
     labels: [
+      { text: 'θ', point: { x: 0, y: rootFaceMm + depthMm / 3 } },
       { text: 't', point: { x: -outer, y: thicknessMm / 2 } },
       { text: 'f', point: { x: edge, y: rootFaceMm / 2 } },
       { text: 'g', point: { x: 0, y: 0 } },

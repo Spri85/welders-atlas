@@ -5,7 +5,7 @@ import {
   positive,
   requireCondition,
 } from './validation';
-import { polygon } from './drawings';
+import { line, polygon } from './drawings';
 export interface FilletFillerInputs {
   legMm: number;
   lengthMm: number;
@@ -42,5 +42,13 @@ export function calculateFilletFiller(v: FilletFillerInputs) {
       { text: 'z', point: { x: 0, y: v.legMm / 2 } },
     ],
   };
-  return { areaMm2, depositedKg, consumableKg, cost, drawing };
+  const lengthDrawing = {
+    closed: false,
+    outline: [line({ x: 0, y: 0 }, { x: v.lengthMm, y: 0 })],
+    construction: [0, v.lengthMm].map((x) =>
+      line({ x, y: -v.lengthMm / 30 }, { x, y: v.lengthMm / 30 }),
+    ),
+    labels: [{ text: 'L', point: { x: v.lengthMm / 2, y: 0 } }],
+  };
+  return { areaMm2, depositedKg, consumableKg, cost, drawing, lengthDrawing };
 }

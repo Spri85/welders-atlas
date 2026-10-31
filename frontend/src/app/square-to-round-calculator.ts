@@ -1,3 +1,4 @@
+import { modelDimension } from './pattern-geometry';
 import { Component, computed, input, signal } from '@angular/core';
 import { calculateSquareToRound, type SquareToRoundDimensions } from './square-to-round';
 import { squareToRoundCopy } from './square-to-round-copy';
@@ -21,8 +22,13 @@ export class SquareToRoundCalculator {
   readonly unitLabel = computed(() => this.unit() === 'mm' ? this.common().unitMm : this.common().unitIn);
   readonly dimensions = signal<SquareToRoundDimensions>({ squareWidthMm: 200, roundDiameterMm: 100, heightMm: 150 });
   readonly fields = [
-    { key: 'squareWidthMm', label: 'width' }, { key: 'roundDiameterMm', label: 'outlet' }, { key: 'heightMm', label: 'height' },
+    { key: 'squareWidthMm', label: 'width', reference: 'S' }, { key: 'roundDiameterMm', label: 'outlet', reference: 'D' }, { key: 'heightMm', label: 'height', reference: 'H' },
   ] as const;
+  readonly inputReferences = computed(() => this.fields.map((field) => ({
+    id: field.reference,
+    label: this.text()[field.label],
+    value: this.measurement(this.dimensions()[field.key]),
+  })));
   readonly calculation = computed(() => {
     const values = this.dimensions();
     if (!Object.values(values).every((value) => Number.isFinite(value) && value > 0)) return { result: null, error: this.common().positive };
@@ -37,10 +43,16 @@ export class SquareToRoundCalculator {
   readonly model = computed<ModelLine[]>(() => {
     const result = this.calculation().result;
     if (!result) return [];
-    return result.formedPanels.flatMap((panel) => [
+    const model: ModelLine[] = result.formedPanels.flatMap((panel) => [
       ...result.triangles.map((triangle) => ({ points: [...triangle.map((index) => panel[index]), panel[triangle[0]]] })),
       { points: [panel[0], panel[2]], seam: true, label: 'A' },
     ]);
+    const { squareWidthMm: side, roundDiameterMm: diameter, heightMm: height } = this.dimensions();
+    return [...model,
+      modelDimension({ x: -side / 2, y: -side / 2, z: 0 }, { x: side / 2, y: -side / 2, z: 0 }, 'S'),
+      modelDimension({ x: -diameter / 2, y: 0, z: height }, { x: diameter / 2, y: 0, z: height }, 'D'),
+      modelDimension({ x: 0, y: 0, z: 0 }, { x: 0, y: 0, z: height }, 'H'),
+    ];
   });
   readonly summary = computed(() => `${this.text().width} ${this.measurement(this.dimensions().squareWidthMm)} / ${this.text().outlet} ${this.measurement(this.dimensions().roundDiameterMm)} / ${this.text().height} ${this.measurement(this.dimensions().heightMm)}. ${this.text().approximation}`);
 

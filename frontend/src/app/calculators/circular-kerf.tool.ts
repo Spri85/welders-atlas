@@ -16,11 +16,13 @@ export const circularKerfTool: CalculatorTool = {
   fields: [
     field(
       'diameter',
+      'D',
       text('Finished diameter', 'Готовий діаметр', 'Готовый диаметр'),
       50,
     ),
     field(
       'kerf',
+      'k',
       text(
         'Measured full kerf',
         'Виміряна повна ширина різу',
@@ -28,7 +30,7 @@ export const circularKerfTool: CalculatorTool = {
       ),
       2,
     ),
-    field('keep', text('Keep', 'Зберегти', 'Сохранить'), 1, 'ratio', {
+    field('keep', 'M', text('Keep', 'Зберегти', 'Сохранить'), 1, 'ratio', {
       choices: [
         { value: 1, label: text('Disc', 'Диск', 'Диск') },
         { value: 0, label: text('Hole', 'Отвір', 'Отверстие') },
@@ -36,6 +38,7 @@ export const circularKerfTool: CalculatorTool = {
     }),
     field(
       'controller',
+      'C',
       text(
         'CAM/controller compensation',
         'Компенсація CAM/контролера',

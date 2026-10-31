@@ -27,6 +27,7 @@ export const plateOpeningTool: CalculatorTool = {
   fields: [
     field(
       'diameter',
+      'D',
       text(
         'Pipe outside diameter',
         'Зовнішній діаметр труби',
@@ -36,11 +37,13 @@ export const plateOpeningTool: CalculatorTool = {
     ),
     field(
       'thickness',
+      't',
       text('Plate thickness', 'Товщина плити', 'Толщина плиты'),
       20,
     ),
     field(
       'tilt',
+      'β',
       text(
         'Tilt from plate normal [0,90)',
         'Нахил від нормалі [0,90)',
@@ -51,6 +54,7 @@ export const plateOpeningTool: CalculatorTool = {
     ),
     field(
       'direction',
+      'φ',
       text('Tilt direction', 'Напрям нахилу', 'Направление наклона'),
       0,
       'degree',

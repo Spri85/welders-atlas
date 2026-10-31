@@ -1,6 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { expect, it } from 'vitest';
 import { DrawingPreview } from './drawing-preview';
+import { calculateGateBars } from './calculators/gate-bars';
+import { drawingBounds } from './pattern-drawing';
 import { calculateSquareToRound } from './square-to-round';
 
 it('uses the same measurement for formed and flat reference tooltips', async () => {
@@ -36,3 +38,25 @@ it('uses the same measurement for formed and flat reference tooltips', async () 
   await fixture.whenStable();
   expect(flat.getAttribute('aria-label')).toContain('in');
 });
+
+it.each([1, 5])(
+  'fits the full gate frame for %i bars without changing cut bounds',
+  async (count) => {
+    const drawing = calculateGateBars(1000, 20, count).drawing;
+    const fixture = TestBed.createComponent(DrawingPreview);
+    fixture.componentRef.setInput('drawing', drawing);
+    fixture.componentRef.setInput('title', 'Gate spacing');
+    await fixture.whenStable();
+    const flat = fixture.componentInstance.flat();
+    for (const edge of flat.construction) {
+      for (const point of [edge.start, edge.end]) {
+        expect(point.x).toBeGreaterThanOrEqual(50);
+        expect(point.x).toBeLessThanOrEqual(510);
+        expect(point.y).toBeGreaterThanOrEqual(45);
+        expect(point.y).toBeLessThanOrEqual(315);
+      }
+    }
+    expect(drawingBounds(drawing).width).toBe(count === 5 ? 700 : 20);
+    expect(flat.width).toBe(count === 5 ? 700 : 20);
+  },
+);

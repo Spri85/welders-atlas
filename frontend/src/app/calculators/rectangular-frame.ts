@@ -114,13 +114,24 @@ export function calculateRectangularFrame(input: RectangularFrameInputs) {
   const drawing: PatternDrawing = {
     ...polygon(members[0]),
     contours: members.slice(1).map((member) => polygon(member).outline),
-    construction: [line({ x: 0, y: 0 }, { x: w, y: h })],
+    construction: [
+      line({ x: 0, y: 0 }, { x: w, y: h }),
+      line({ x: 0, y: h }, { x: w, y: 0 }),
+    ],
     labels: [
+      { text: 'W', point: { x: w / 2, y: -h * 0.07 } },
+      { text: 'H', point: { x: -w * 0.07, y: h / 2 } },
+      { text: 't', point: { x: t / 2, y: h / 3 } },
+      ...(corner === 'butt' && gap > 0
+        ? [{ text: 'g', point: { x: t, y: t + gap / 2 } }]
+        : []),
       { text: 'R', point: { x: w / 2, y: t / 2 } },
       { text: 'R', point: { x: w / 2, y: h - t / 2 } },
       { text: 'U', point: { x: t / 2, y: h / 2 } },
       { text: 'U', point: { x: w - t / 2, y: h / 2 } },
       { text: 'D', point: { x: w / 2, y: h / 2 } },
+      { text: 'D₁', point: { x: w / 3, y: h / 3 } },
+      { text: 'D₂', point: { x: w / 3, y: (h * 2) / 3 } },
     ],
   };
   return {

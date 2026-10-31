@@ -16,22 +16,26 @@ export const tubeBendTool: CalculatorTool = {
   fields: [
     field(
       'leg1',
+      'L₁',
       text('Centerline leg 1', 'Осьове плече 1', 'Осевое плечо 1'),
       200,
     ),
     field(
       'leg2',
+      'L₂',
       text('Centerline leg 2', 'Осьове плече 2', 'Осевое плечо 2'),
       150,
     ),
     field(
       'turn',
+      'θ',
       text('Turn from straight', 'Поворот від прямого', 'Поворот от прямого'),
       90,
       'degree',
     ),
     field(
       'radius',
+      'R',
       text(
         'Die centerline radius',
         'Осьовий радіус оснащення',
