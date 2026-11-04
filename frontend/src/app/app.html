@@ -1,5 +1,5 @@
 <header class="site-header">
-  <a class="brand" href="/"><span class="brand-mark" aria-hidden="true">W<span>•</span>A</span><span>{{ text().title }}</span></a>
+  <a class="brand" href="./"><span class="brand-mark" aria-hidden="true">W<span>•</span>A</span><span>{{ text().title }}</span></a>
   <nav class="languages" [attr.aria-label]="text().language">
     @for (option of languages; track option) {
       <button type="button" [attr.aria-pressed]="option === language()" (click)="selectLanguage(option)">{{ option }}</button>

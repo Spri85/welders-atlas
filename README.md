@@ -63,6 +63,24 @@ npm run build
 
 The production build writes static files to `dist/welders-atlas/browser`.
 
+## Publish with GitHub Pages
+
+The GitHub Actions workflow checks pull requests and publishes successful builds from `main`. In the repository's **Settings → Pages**, select **GitHub Actions** as the build source. GitHub Free requires the repository to be public for Pages hosting.
+
+After the first successful deployment, the app is available at [spri85.github.io/welders-atlas](https://spri85.github.io/welders-atlas/), with no account or installation required.
+
+The workflow uses the Node version in `.nvmrc`, runs the tests, and builds with `--base-href /welders-atlas/` so scripts and PDF fonts load from the project URL. It publishes only `frontend/dist/welders-atlas/browser`.
+
+## Contributing
+
+Bug reports and pull requests are welcome. Fork the repository, create a branch, and follow the local setup above. Keep calculation changes in the pure TypeScript modules, add regression tests for changed behavior, and run `npm test` and `npm run build` from `frontend` before opening a pull request. Update Ukrainian, Russian and English text together when changing the interface.
+
+For geometry or PDF changes, include the input dimensions and expected result, and distinguish automated checks from physical print or assembly verification.
+
+## License
+
+The application source is available under the [MIT license](LICENSE). The bundled Noto Sans font retains its [SIL Open Font License](frontend/public/fonts/OFL.txt).
+
 ## Code structure
 
 Each fitting has a pure TypeScript calculation and colocated geometry tests. The shared calculator workbench uses small tool adapters for input definitions, translations, results and tables. The stock planner adds editable part and stock rows. The original fitting components retain their shared preview/export contracts. Shared drawing types, previews and calculator styles support the tools. PDF options live in their own dialog component, and the PDF renderer is loaded when a download is requested. Both preview and export consume the calculated drawing geometry.
