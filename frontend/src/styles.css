@@ -32,6 +32,8 @@ footer { border-top: 1px solid #d8ddd8; padding-block: 24px; font-size: 11px; co
   .brand { gap: 8px; font-size: 16px; }
   .languages { gap: 0; }
   .workspace-intro { padding-block: 20px 16px; }
+  .transition-shortcuts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+  .transition-shortcuts button { min-width: 0; padding-inline: 6px; font-size: 14px; text-align: center; overflow-wrap: normal; }
   .calculator-picker { align-items: stretch; flex-direction: column; }
   .calculator-picker select { width: 100%; }
 }
