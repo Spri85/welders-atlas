@@ -1,30 +1,97 @@
 import { TestBed } from '@angular/core/testing';
 import { App } from './app';
 
-describe('Welder’s Atlas shell', () => {
-  beforeEach(() => {
-    document.documentElement.lang = 'uk';
-  });
+beforeEach(() => {
+  localStorage.removeItem('welders-atlas.language');
+  vi.spyOn(navigator, 'languages', 'get').mockReturnValue(['uk-UA']);
+});
 
+afterEach(() => {
+  vi.restoreAllMocks();
+  localStorage.removeItem('welders-atlas.language');
+});
+
+describe('Welder’s Atlas shell', () => {
   it('renders the selected language and updates document metadata through the controls', async () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
     expect(fixture.nativeElement.textContent).toContain('Атлас зварника');
-    const buttons = fixture.nativeElement.querySelectorAll(
-      '.languages button',
-    ) as NodeListOf<HTMLButtonElement>;
-    buttons[1].click();
+    const selector: HTMLSelectElement = fixture.nativeElement.querySelector('.language-select');
+    expect(selector.value).toBe('ua');
+    expect(selector.getAttribute('aria-label')).toBe('Мова');
+    expect(Array.from(selector.options, (option) => option.textContent)).toEqual(['UA', 'RU', 'EN']);
+    selector.value = 'ru';
+    selector.dispatchEvent(new Event('change'));
     await fixture.whenStable();
     expect(document.documentElement.lang).toBe('ru');
     expect(document.title).toBe('Атлас сварщика');
-    expect(buttons[1].getAttribute('aria-pressed')).toBe('true');
-    buttons[2].click();
+    expect(selector.getAttribute('aria-label')).toBe('Язык');
+    selector.value = 'en';
+    selector.dispatchEvent(new Event('change'));
     await fixture.whenStable();
     expect(document.documentElement.lang).toBe('en');
     expect(fixture.nativeElement.textContent).toContain('Welder’s Atlas');
-    buttons[0].click();
+    expect(selector.getAttribute('aria-label')).toBe('Language');
+    selector.value = 'ua';
+    selector.dispatchEvent(new Event('change'));
     await fixture.whenStable();
     expect(document.documentElement.lang).toBe('uk');
+  });
+
+  it.each([
+    { preferences: ['uk-UA', 'en-US'], selected: 'ua', lang: 'uk', title: 'Атлас зварника' },
+    { preferences: ['ru-RU', 'uk-UA'], selected: 'ru', lang: 'ru', title: 'Атлас сварщика' },
+    { preferences: ['de-DE', 'en-GB', 'uk-UA'], selected: 'en', lang: 'en', title: 'Welder’s Atlas' },
+    { preferences: ['de-DE', 'pl-PL'], selected: 'en', lang: 'en', title: 'Welder’s Atlas' },
+  ])('chooses $selected from browser preferences $preferences', async ({ preferences, selected, lang, title }) => {
+    vi.spyOn(navigator, 'languages', 'get').mockReturnValue(preferences);
+    const fixture = TestBed.createComponent(App);
+    await fixture.whenStable();
+    expect(fixture.componentInstance.language()).toBe(selected);
+    expect(document.documentElement.lang).toBe(lang);
+    expect(document.title).toBe(title);
+    expect(fixture.nativeElement.querySelector('.language-select').value).toBe(selected);
+    expect(localStorage.getItem('welders-atlas.language')).toBeNull();
+  });
+
+  it('uses navigator.language when the preference list is empty and ignores invalid saved values', async () => {
+    vi.spyOn(navigator, 'languages', 'get').mockReturnValue([]);
+    vi.spyOn(navigator, 'language', 'get').mockReturnValue('ru-RU');
+    localStorage.setItem('welders-atlas.language', 'invalid');
+    const fixture = TestBed.createComponent(App);
+    await fixture.whenStable();
+    expect(fixture.nativeElement.querySelector('.language-select').value).toBe('ru');
+  });
+
+  it('remembers an explicit selection ahead of browser preferences on the next visit', async () => {
+    const fixture = TestBed.createComponent(App);
+    await fixture.whenStable();
+    const selector: HTMLSelectElement = fixture.nativeElement.querySelector('.language-select');
+    selector.value = 'en';
+    selector.dispatchEvent(new Event('change'));
+    await fixture.whenStable();
+    expect(localStorage.getItem('welders-atlas.language')).toBe('en');
+    fixture.destroy();
+    const nextVisit = TestBed.createComponent(App);
+    await nextVisit.whenStable();
+    expect(nextVisit.nativeElement.querySelector('.language-select').value).toBe('en');
+    expect(document.documentElement.lang).toBe('en');
+    expect(document.title).toBe('Welder’s Atlas');
+  });
+
+  it('still follows browser preferences and switches language when storage is blocked', async () => {
+    vi.spyOn(window, 'localStorage', 'get').mockImplementation(() => {
+      throw new DOMException('Storage blocked', 'SecurityError');
+    });
+    const fixture = TestBed.createComponent(App);
+    await fixture.whenStable();
+    const selector: HTMLSelectElement = fixture.nativeElement.querySelector('.language-select');
+    expect(selector.value).toBe('ua');
+    selector.value = 'en';
+    selector.dispatchEvent(new Event('change'));
+    await fixture.whenStable();
+    expect(document.title).toBe('Welder’s Atlas');
+    expect(document.documentElement.lang).toBe('en');
   });
 
   it('shows only the selected calculator and translates the calculator selector', async () => {
@@ -233,8 +300,7 @@ it('translates navigation while preserving the selected tool and its inputs', as
   input.value = '25';
   input.dispatchEvent(new Event('input'));
   await fixture.whenStable();
-  const languageButtons =
-    root.querySelectorAll<HTMLButtonElement>('.languages button');
+  const languageSelector = root.querySelector<HTMLSelectElement>('.language-select')!;
   const expected = [
     {
       heading: 'Калькулятори для майстерні',
@@ -274,7 +340,8 @@ it('translates navigation while preserving the selected tool and its inputs', as
     },
   ];
   for (const [index, copy] of expected.entries()) {
-    languageButtons[index].click();
+    languageSelector.selectedIndex = index;
+    languageSelector.dispatchEvent(new Event('change'));
     await fixture.whenStable();
     expect(root.querySelector('h1')?.textContent).toBe(copy.heading);
     expect(

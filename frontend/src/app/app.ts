@@ -1,6 +1,6 @@
 import { StockPlanner } from './stock-planner';
 import { DOCUMENT } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { ReducerCalculator } from './reducer-calculator';
 import { SquareToRoundCalculator } from './square-to-round-calculator';
 import { BranchSaddleCalculator } from './branch-saddle-calculator';
@@ -10,6 +10,7 @@ import { calculatorGroups, transitionShortcuts } from './calculator-navigation';
 import { MeasurementTooltip } from './measurement-tooltip';
 
 type Language = 'ua' | 'ru' | 'en';
+const languageStorageKey = 'welders-atlas.language';
 const copy = {
   ua: {
     title: 'Атлас зварника',
@@ -57,9 +58,9 @@ const copy = {
 })
 export class App {
   private readonly document = inject(DOCUMENT);
-  readonly language = signal<Language>('ua');
-  readonly text = computed(() => copy[this.language()]);
   readonly languages = ['ua', 'ru', 'en'] as const;
+  readonly language = signal<Language>(this.initialLanguage());
+  readonly text = computed(() => copy[this.language()]);
   readonly selectedCalculator = signal<string>('round-reducer');
   readonly calculatorGroups = calculatorGroups;
   readonly transitionShortcuts = transitionShortcuts;
@@ -67,6 +68,14 @@ export class App {
   readonly selectedTool = computed(() =>
     calculatorTools.find((tool) => tool.id === this.selectedCalculator()),
   );
+
+  constructor() {
+    effect(() => {
+      const language = this.language();
+      this.document.documentElement.lang = language === 'ua' ? 'uk' : language;
+      this.document.title = this.text().title;
+    });
+  }
 
   selectCalculator(value: string): void {
     if (
@@ -78,9 +87,34 @@ export class App {
     }
   }
 
-  selectLanguage(language: Language): void {
+  selectLanguage(value: string): void {
+    const language = this.languages.find((option) => option === value);
+    if (!language) return;
     this.language.set(language);
-    this.document.documentElement.lang = language === 'ua' ? 'uk' : language;
-    this.document.title = this.text().title;
+    try {
+      this.document.defaultView?.localStorage.setItem(languageStorageKey, language);
+    } catch {
+      // Keep language switching available when browser storage is blocked.
+    }
+  }
+
+  private initialLanguage(): Language {
+    const browser = this.document.defaultView;
+    try {
+      const saved = browser?.localStorage.getItem(languageStorageKey);
+      const language = this.languages.find((option) => option === saved);
+      if (language) return language;
+    } catch {
+      // Browser preferences still work when storage is blocked.
+    }
+    const preferences = browser?.navigator.languages.length
+      ? browser.navigator.languages
+      : [browser?.navigator.language ?? 'en'];
+    for (const locale of preferences) {
+      const code = locale.toLowerCase().split('-')[0];
+      const language = this.languages.find((option) => option === (code === 'uk' ? 'ua' : code));
+      if (language) return language;
+    }
+    return 'en';
   }
 }
