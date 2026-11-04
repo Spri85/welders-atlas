@@ -20,7 +20,7 @@ export class MeasurementTooltip implements OnDestroy {
   readonly measurementTooltip = input.required<string>();
   readonly visible = signal(false);
   readonly tooltipId = `measurement-tooltip-${++nextTooltipId}`;
-  private readonly element = inject<ElementRef<SVGElement>>(ElementRef);
+  private readonly element = inject<ElementRef<HTMLElement | SVGElement>>(ElementRef);
   private readonly document = inject(DOCUMENT);
   private tooltip: HTMLDivElement | null = null;
 

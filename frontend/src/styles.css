@@ -18,8 +18,9 @@ h2 { font-size: 22px; margin: 0; letter-spacing: -.5px; }
 footer { border-top: 1px solid #d8ddd8; padding-block: 24px; font-size: 11px; color: #526267; }
 .footer-divider { margin-inline: 10px; color: #a6b0ab; }
 .configurator { display: grid; gap: 16px; padding-bottom: 24px; }
-.transition-shortcuts { display: flex; flex-wrap: wrap; gap: 8px; }
-.transition-shortcuts button { min-height: 44px; max-width: 100%; padding: 10px 14px; font: inherit; line-height: 1.4; text-align: start; overflow-wrap: anywhere; border: 1px solid #a6b0ab; border-radius: 4px; color: #172a30; background: transparent; cursor: pointer; }
+.transition-shortcuts { display: flex; gap: 8px; }
+.transition-shortcuts button { display: grid; place-items: center; width: 80px; min-height: 44px; padding: 9px 11px; border: 1px solid #a6b0ab; border-radius: 4px; color: #172a30; background: transparent; cursor: pointer; }
+.transition-shortcuts svg { display: block; width: 56px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .transition-shortcuts button:hover { border-color: #8a491f; background: #eee9de; }
 .transition-shortcuts button[aria-pressed=true] { color: #fff; background: #172a30; border-color: #172a30; }
 .calculator-picker { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; min-width: 0; }
@@ -32,8 +33,6 @@ footer { border-top: 1px solid #d8ddd8; padding-block: 24px; font-size: 11px; co
   .brand { gap: 8px; font-size: 16px; }
   .languages { gap: 0; }
   .workspace-intro { padding-block: 20px 16px; }
-  .transition-shortcuts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
-  .transition-shortcuts button { min-width: 0; padding-inline: 6px; font-size: 14px; text-align: center; overflow-wrap: normal; }
   .calculator-picker { align-items: stretch; flex-direction: column; }
   .calculator-picker select { width: 100%; }
 }

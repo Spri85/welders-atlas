@@ -7,6 +7,7 @@ import { BranchSaddleCalculator } from './branch-saddle-calculator';
 import { CalculatorWorkbench } from './calculator-workbench';
 import { calculatorTools } from './calculator-registry';
 import { calculatorGroups, transitionShortcuts } from './calculator-navigation';
+import { MeasurementTooltip } from './measurement-tooltip';
 
 type Language = 'ua' | 'ru' | 'en';
 const copy = {
@@ -50,6 +51,7 @@ const copy = {
     BranchSaddleCalculator,
     CalculatorWorkbench,
     StockPlanner,
+    MeasurementTooltip,
   ],
   templateUrl: './app.html',
 })

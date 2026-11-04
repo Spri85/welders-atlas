@@ -194,6 +194,33 @@ it('keeps shortcuts and the selector synchronized without resetting the active c
   expect(shortcuts[1].getAttribute('aria-pressed')).toBe('true');
 });
 
+it('labels icon shortcuts and reveals their names on hover and keyboard focus', async () => {
+  const fixture = TestBed.createComponent(App);
+  await fixture.whenStable();
+  const shortcuts = Array.from(
+    fixture.nativeElement.querySelectorAll('.transition-shortcuts button'),
+  ) as HTMLButtonElement[];
+  expect(shortcuts.map((button) => button.getAttribute('aria-label'))).toEqual([
+    'Круг → круг', 'Квадрат → круг', 'Квадрат → квадрат',
+  ]);
+  for (const button of shortcuts) {
+    expect(button.textContent?.trim()).toBe('');
+    expect(button.querySelector('svg')?.getAttribute('aria-hidden')).toBe('true');
+    expect(button.querySelector('svg')?.getAttribute('focusable')).toBe('false');
+  }
+  shortcuts[0].dispatchEvent(new MouseEvent('mouseenter'));
+  expect(document.querySelector('[role=tooltip]')?.textContent).toBe('Круг → круг');
+  shortcuts[0].dispatchEvent(new MouseEvent('mouseleave'));
+  expect(document.querySelector('[role=tooltip]')).toBeNull();
+  shortcuts[1].focus();
+  await fixture.whenStable();
+  const tooltipId = shortcuts[1].getAttribute('aria-describedby')!;
+  expect(document.getElementById(tooltipId)?.textContent).toBe('Квадрат → круг');
+  shortcuts[1].dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+  expect(document.querySelector('[role=tooltip]')).toBeNull();
+  shortcuts[1].blur();
+});
+
 it('translates navigation while preserving the selected tool and its inputs', async () => {
   const fixture = TestBed.createComponent(App);
   await fixture.whenStable();
@@ -256,9 +283,11 @@ it('translates navigation while preserving the selected tool and its inputs', as
     expect(
       Array.from(root.querySelectorAll('optgroup'), (group) => group.label),
     ).toEqual(copy.groups);
-    expect(root.querySelector('.transition-shortcuts')?.textContent).toContain(
-      copy.shortcut,
-    );
+    const shortcut = root.querySelector<HTMLButtonElement>('.transition-shortcuts button:last-child')!;
+    expect(shortcut.getAttribute('aria-label')).toBe(copy.shortcut);
+    shortcut.dispatchEvent(new MouseEvent('mouseenter'));
+    expect(document.querySelector('[role=tooltip]')?.textContent).toBe(copy.shortcut);
+    shortcut.dispatchEvent(new MouseEvent('mouseleave'));
     expect(selector.value).toBe('arc-energy');
     expect(root.querySelector('input[type=number]')).toBe(input);
     expect(input.value).toBe('25');
